@@ -79,28 +79,24 @@
         );
 
         async function initPage() {
-            // 1. Verificamos si el usuario tiene una sesión activa
             const { data: { session }, error } = await supabaseClient.auth.getSession();
 
             if (!session) {
-                // Si no está logueado, lo regresamos al index
                 window.location.href = 'index.html';
                 return;
             }
 
-            // 2. Si está logueado, mostramos su correo en la barra superior
             const user = session.user;
             document.getElementById('displayEmail').innerText = user.email;
 
-            // 3. Ocultamos el texto de carga y armamos la URL de AdGem con su ID ÚNICO
             document.getElementById('cargandoMuro').style.display = 'none';
             const adgemAppId = "32676";
             
-            // Inyectamos el iframe de AdGem
+            // INYECCIÓN CORREGIDA CON LA URL OFICIAL DE ADUNITS Y VARIABLES EXACTAS
             const iframeWrapper = document.getElementById('iframe-wrapper');
             iframeWrapper.innerHTML = `
                 <iframe 
-                    src="https://www.adgem.com/offerwall?app_id=${adgemAppId}&player_id=${user.id}" 
+                    src="https://adunits.adgem.com/v1/wall?appid=${adgemAppId}&playerid=${user.id}" 
                     frameborder="0">
                 </iframe>
             `;
@@ -111,7 +107,6 @@
             window.location.href = 'index.html';
         }
 
-        // Ejecutar la función principal apenas cargue la página
         window.onload = initPage;
     </script>
 </body>
