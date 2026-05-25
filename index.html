@@ -2,23 +2,40 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ofertas | NetGamer MX</title>
+    <title>NetGamer MX | Login</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { background-color: #0a0a0a; color: #ffffff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; text-align: center; }
-        iframe { width: 100%; height: 800px; border: none; border-radius: 12px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0a0a0a; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .box { background: #1a1a1a; padding: 40px; border-radius: 15px; width: 320px; text-align: center; border: 1px solid #333; }
+        input { width: 100%; margin: 10px 0; padding: 12px; border-radius: 5px; border: 1px solid #444; background: #000; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #ff9900; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Centro de Recompensas NetGamer MX</h1>
-        <p>Completa tareas y gana NetCoins</p>
-        
-        <iframe 
-            src="https://www.adgem.com/offerwall?app_id=32676&player_id=USUARIO_ID_O_EMAIL" 
-            frameborder="0">
-        </iframe>
+    <div class="box">
+        <h2>NetGamer MX</h2>
+        <input type="email" id="email" placeholder="Correo electrónico">
+        <input type="password" id="password" placeholder="Contraseña">
+        <button onclick="authAction('signup')">Registrarse</button>
+        <button onclick="authAction('login')" style="background: #333;">Iniciar Sesión</button>
     </div>
+
+    <script>
+        const supabase = supabase.createClient('https://meiwuluwrdjszxeyoqtt.supabase.co', 'sb_publishable_gZgGIamNJqf8ir8vvt1OTw_bJ-rosi4');
+        
+        async function authAction(type) {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const { data, error } = type === 'signup' 
+                ? await supabase.auth.signUp({ email, password })
+                : await supabase.auth.signInWithPassword({ email, password });
+            
+            if (error) alert(error.message);
+            else {
+                alert(type === 'signup' ? "Revisa tu correo para confirmar" : "¡Bienvenido!");
+                if(type === 'login') window.location.href = 'ofertas.html';
+            }
+        }
+    </script>
 </body>
 </html>
