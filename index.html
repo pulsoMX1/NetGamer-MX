@@ -2,22 +2,70 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>NetGamer MX | Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetGamer MX | Portal de Acceso</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: sans-serif; background: #0a0a0a; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .box { background: #1a1a1a; padding: 30px; border-radius: 10px; width: 300px; text-align: center; }
-        input { width: 100%; margin: 10px 0; padding: 10px; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; background: #00ffcc; border: none; cursor: pointer; margin-top: 5px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { 
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); 
+            color: #fff; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+        }
+        .login-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+        .login-container h1 { font-size: 28px; font-weight: 800; margin-bottom: 5px; color: #00ffcc; text-transform: uppercase; letter-spacing: 2px;}
+        .login-container p { color: #aaa; margin-bottom: 30px; font-size: 14px; }
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 8px; font-size: 12px; color: #ccc; text-transform: uppercase; letter-spacing: 1px;}
+        .input-group input { 
+            width: 100%; padding: 15px; border-radius: 10px; border: none; 
+            background: rgba(0, 0, 0, 0.5); color: #fff; font-size: 14px; outline: none;
+            transition: 0.3s border; border: 1px solid transparent;
+        }
+        .input-group input:focus { border: 1px solid #00ffcc; }
+        .btn {
+            width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: 600; font-size: 16px;
+            cursor: pointer; transition: 0.3s; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .btn-primary { background: #00ffcc; color: #000; }
+        .btn-primary:hover { background: #00cca3; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 255, 204, 0.4); }
+        .btn-secondary { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+        .loader { display: none; margin-top: 10px; color: #00ffcc; font-size: 12px; }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h2>NetGamer MX</h2>
-        <input type="email" id="email" placeholder="Correo">
-        <input type="password" id="password" placeholder="Contraseña">
-        <button onclick="handleAuth('signup')">Registrarse</button>
-        <button onclick="handleAuth('login')" style="background:#555;">Iniciar Sesión</button>
+
+    <div class="login-container">
+        <h1>NetGamer MX</h1>
+        <p>Tu portal de recompensas</p>
+
+        <div class="input-group">
+            <label>Correo Electrónico</label>
+            <input type="email" id="email" placeholder="jugador@email.com" required>
+        </div>
+        <div class="input-group">
+            <label>Contraseña</label>
+            <input type="password" id="password" placeholder="••••••••" required>
+        </div>
+
+        <button class="btn btn-primary" onclick="handleAuth('login')">Entrar a ganar</button>
+        <button class="btn btn-secondary" onclick="handleAuth('signup')">Crear cuenta nueva</button>
+        <div id="loading" class="loader">Procesando...</div>
     </div>
 
     <script>
@@ -29,11 +77,14 @@
         async function handleAuth(type) {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            const loader = document.getElementById('loading');
 
             if(!email || !password) {
                 alert("Por favor, llena ambos campos.");
                 return;
             }
+
+            loader.style.display = 'block';
 
             try {
                 let result;
@@ -45,13 +96,12 @@
 
                 if (result.error) throw result.error;
                 
-                // Como quitamos la confirmación por correo, Supabase inicia sesión automáticamente al registrarse.
-                // Así que, sea login o registro, los enviamos directo a las ofertas.
+                // Redirección exitosa
                 window.location.href = 'ofertas.html';
 
             } catch (err) {
                 alert("Error: " + err.message);
-                console.error("Detalle del error:", err);
+                loader.style.display = 'none';
             }
         }
     </script>
