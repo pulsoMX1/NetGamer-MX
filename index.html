@@ -37,7 +37,7 @@
                     <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 font-bold py-3 rounded-xl shadow-lg shadow-purple-600/30 transition duration-200">Entrar a la Plataforma</button>
                 </form>
                 <p class="text-center text-sm text-slate-400 mt-6">
-                    ¿No tienes cuenta? <button onclick="toggleAuthViews(false)" class="text-purple-400 hover:underline font-semibold focus:outline-none">Regístrate aquí</button>
+                    ¿No tienes cuenta? <button type="button" onclick="toggleAuthViews(false)" class="text-purple-400 hover:underline font-semibold focus:outline-none">Regístrate aquí</button>
                 </p>
             </div>
 
@@ -59,7 +59,7 @@
                     <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 font-bold py-3 rounded-xl shadow-lg shadow-emerald-600/30 transition duration-200">Registrarme</button>
                 </form>
                 <p class="text-center text-sm text-slate-400 mt-6">
-                    ¿Ya tienes cuenta? <button onclick="toggleAuthViews(true)" class="text-purple-400 hover:underline font-semibold focus:outline-none">Inicia Sesión</button>
+                    ¿Ya tienes cuenta? <button type="button" onclick="toggleAuthViews(true)" class="text-purple-400 hover:underline font-semibold focus:outline-none">Inicia Sesión</button>
                 </p>
             </div>
         </div>
@@ -236,7 +236,7 @@
     <script>
         // Configuración de las variables Maestras
         const SUPABASE_URL = "https://meiwuluwrdjszxeyoqtt.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_gZgGIamNJqf8ir8vvt1OTw_bJ-rosi4"; // Pon tu clave anon key aquí
+        const SUPABASE_KEY = "TU_ANON_KEY_AQUÍ"; // Pon tu clave anon key public aquí
         const adgemAppId = "32676"; // Tu ID de AdGem asignado
         
         // Conversión comercial recomendada: 100 NetCoins = 1 Peso Mexicano
@@ -284,7 +284,7 @@
 
                 if (error) alert("Error de registro: " + error.message);
                 else {
-                    alert("¡Cuenta registrada! Si configuraste confirmación por correo, revísalo. Si no, ya puedes iniciar sesión.");
+                    alert("¡Cuenta registrada! Ya puedes iniciar sesión.");
                     toggleAuthViews(true);
                 }
             });
@@ -308,8 +308,9 @@
                 // Mostrar nombre de perfil
                 document.getElementById("user-display-name").innerText = user.user_metadata.username || user.email;
                 
-                // Cargar datos financieros y el muro
+                // Cargar datos financieros, Realtime y el muro
                 cargarDatosPerfil(user);
+                suscribirseCambiosEnVivo(user); // Función Realtime activada
                 inyectarIframeAdGem(user);
             } else {
                 document.getElementById("auth-container").classList.remove("hidden");
@@ -327,14 +328,45 @@
 
             if (!error && data) {
                 const monedas = data.netcoins || 0;
-                // Actualizar interfaz
                 document.getElementById("user-balance").innerText = monedas;
                 document.querySelectorAll(".balance-placeholder").forEach(el => el.innerText = monedas);
-                
-                // Calcular equivalencia real en MXN
                 const pesos = (monedas / CONVERSION_RATE).toFixed(2);
                 document.getElementById("mxn-equivalence").innerText = `$${pesos} MXN`;
             }
+        }
+
+        // Escuchar cambios en la base de datos EN TIEMPO REAL
+        function suscribirseCambiosEnVivo(user) {
+            _supabase
+                .channel('cambios-saldo')
+                .on(
+                    'postgres_changes',
+                    {
+                        event: 'UPDATE',
+                        schema: 'public',
+                        table: 'perfiles',
+                        filter: `id=eq.${user.id}`
+                    },
+                    (payload) => {
+                        const nuevasMonedas = payload.new.netcoins || 0;
+                        
+                        // 1. Actualizamos el texto en pantalla al instante
+                        document.getElementById("user-balance").innerText = nuevasMonedas;
+                        document.querySelectorAll(".balance-placeholder").forEach(el => el.innerText = nuevasMonedas);
+                        
+                        // 2. Recalculamos la equivalencia en Pesos MXN
+                        const pesos = (nuevasMonedas / CONVERSION_RATE).toFixed(2);
+                        document.getElementById("mxn-equivalence").innerText = `$${pesos} MXN`;
+                        
+                        // 3. Efecto visual premium (el número brilla en verde)
+                        const balanceElement = document.getElementById("user-balance");
+                        balanceElement.classList.add("text-emerald-400", "scale-125", "transition", "duration-300");
+                        setTimeout(() => {
+                            balanceElement.classList.remove("text-emerald-400", "scale-125");
+                        }, 800);
+                    }
+                )
+                .subscribe();
         }
 
         // Inyección técnica limpia del Iframe de AdGem
@@ -351,17 +383,13 @@
 
         // Sistema de navegación por pestañas (SPA)
         function switchTab(tabId) {
-            // Desactivar contenidos anteriores
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            // Activar nuevo contenido
             document.getElementById(tabId).classList.add('active');
 
-            // Actualizar estilos visuales del menú lateral (Sidebar)
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('bg-purple-600', 'text-white');
                 btn.classList.add('text-slate-400', 'hover:bg-slate-700');
             });
-            // Resaltar botón activo
             event.currentTarget.classList.add('bg-purple-600', 'text-white');
             event.currentTarget.classList.remove('text-slate-400', 'hover:bg-slate-700');
         }
@@ -370,7 +398,6 @@
         function abrirFormularioRetiro(tipo) {
             document.getElementById("tipo-recompensa-txt").innerText = tipo;
             document.getElementById("container-formulario-retiro").classList.remove("hidden");
-            // Scroll automático al formulario
             document.getElementById("container-formulario-retiro").scrollIntoView({ behavior: 'smooth' });
         }
 
@@ -391,16 +418,15 @@
             const destino = document.getElementById("retiro-destino").value.trim();
             const tipoPremo = document.getElementById("tipo-recompensa-txt").innerText;
 
-            // Calcular costo en NetCoins
             const costoNetCoins = montoMXN * CONVERSION_RATE;
 
-            // 1. Validaciones financieras estrictas en Front-End
+            // 1. Validaciones financieras estrictas
             if (montoMXN < 100 || montoMXN > 3000) {
                 alert("Error: El monto de retiro debe estar entre 100 MXN y 3000 MXN.");
                 return;
             }
 
-            // 2. Validación de campos obligatorios requeridos por administración
+            // 2. Validación de campos obligatorios
             if (!banco || !beneficiario) {
                 alert("Error crítico: El nombre del Banco y el Beneficiario son campos estrictamente obligatorios para poder procesar la revisión manual.");
                 return;
@@ -413,9 +439,9 @@
                 return;
             }
 
-            // 4. Enviar la transacción a la tabla de Supabase para auditoría del administrador
+            // 4. Enviar la transacción a la tabla de Supabase para auditoría
             const { error: errorInsert } = await _supabase
-                .from('retiros_pendientes') // Asegúrate de crear esta tabla en tu Supabase
+                .from('retiros_pendientes')
                 .insert([{
                     user_id: user.id,
                     monto_mxn: montoMXN,
@@ -438,9 +464,8 @@
                 .update({ netcoins: perfil.netcoins - costoNetCoins })
                 .eq('id', user.id);
 
-            alert("¡Solicitud enviada con éxito! La administración validará tus datos bancarios y procesará tu pago en un lapso de 5 minutos a 24 horas hábiles.");
+            alert("¡Solicitud enviada con éxito! La administración validará tus datos bancarios y procesará tu pago.");
             cerrarFormularioRetiro();
-            cargarDatosPerfil(user); // Actualizar interfaz de saldo
         }
 
         // Cierre de sesión seguro
