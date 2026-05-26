@@ -8,17 +8,97 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Rajdhani', sans-serif; }
+
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         iframe { width: 100%; height: calc(100vh - 160px); border: none; }
+
+        /* Floating Canjear Button */
+        #fab-canjear {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 999;
+            animation: fab-pulse 2.5s ease-in-out infinite;
+        }
+        @keyframes fab-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(139,92,246,0.5); }
+            50% { box-shadow: 0 0 0 14px rgba(139,92,246,0); }
+        }
+
+        /* Coin shimmer */
+        @keyframes coin-shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+        .coin-shimmer {
+            background: linear-gradient(90deg, #f59e0b 0%, #fde68a 40%, #f59e0b 60%, #d97706 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: coin-shimmer 2.5s linear infinite;
+        }
+
+        /* Prize card hover */
+        .prize-card {
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .prize-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(139,92,246,0.25);
+        }
+
+        /* Modal backdrop */
+        #modal-overlay {
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
+        /* Glow ring on selected card */
+        .prize-card.selected {
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 2px #7c3aed, 0 12px 40px rgba(139,92,246,0.3);
+        }
+
+        /* Nav active */
+        .tab-btn.active-tab {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(109,40,217,0.4);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+        /* Balance pop animation */
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.35); }
+            100% { transform: scale(1); }
+        }
+        .balance-pop { animation: pop 0.4s ease; }
+
+        /* Quick redeem strip */
+        .redeem-strip {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%);
+            border: 1px solid rgba(139,92,246,0.3);
+        }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans min-h-screen">
+<body class="bg-slate-900 text-slate-100 min-h-screen">
 
+    <!-- ─── AUTH ─────────────────────────────────────────────────────── -->
     <div id="auth-container" class="flex items-center justify-center min-h-screen px-4">
         <div class="bg-slate-800 p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-700">
             <div class="text-center mb-8">
-                <h1 class="text-3xl font-extrabold text-purple-500 tracking-wide">NetGamer <span class="text-white">MX</span></h1>
+                <h1 class="font-display text-4xl text-purple-400 tracking-widest">NetGamer <span class="text-white">MX</span></h1>
                 <p class="text-slate-400 text-sm mt-2">Gana recompensas completando ofertas y tareas</p>
             </div>
 
@@ -33,7 +113,7 @@
                         <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Contraseña</label>
                         <input type="password" id="login-password" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 transition" required>
                     </div>
-                    <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 font-bold py-3 rounded-xl shadow-lg shadow-purple-600/30 transition duration-200">Ingresar</button>
+                    <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 font-bold py-3 rounded-xl shadow-lg shadow-purple-600/30 transition">Ingresar</button>
                 </form>
                 <p class="text-center text-sm text-slate-400 mt-6">
                     ¿No tienes cuenta? <button type="button" onclick="toggleAuthViews(false)" class="text-purple-400 hover:underline font-semibold focus:outline-none">Regístrate</button>
@@ -55,7 +135,7 @@
                         <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Contraseña</label>
                         <input type="password" id="register-password" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 transition" required>
                     </div>
-                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 font-bold py-3 rounded-xl shadow-lg shadow-emerald-600/30 transition duration-200">Registrarse</button>
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 font-bold py-3 rounded-xl shadow-lg shadow-emerald-600/30 transition">Registrarse</button>
                 </form>
                 <p class="text-center text-sm text-slate-400 mt-6">
                     ¿Ya tienes cuenta? <button type="button" onclick="toggleAuthViews(true)" class="text-purple-400 hover:underline font-semibold focus:outline-none">Inicia Sesión</button>
@@ -64,22 +144,48 @@
         </div>
     </div>
 
+    <!-- ─── APP ──────────────────────────────────────────────────────── -->
     <div id="app-container" class="hidden flex min-h-screen">
-        
-        <aside class="w-64 bg-slate-800 border-r border-slate-700 flex flex-col justify-between hidden md:flex">
+
+        <!-- Sidebar -->
+        <aside class="w-64 bg-slate-800 border-r border-slate-700 flex-col justify-between hidden md:flex">
             <div class="p-6">
-                <div class="text-2xl font-extrabold text-purple-500 tracking-wide mb-8">NetGamer <span class="text-white">MX</span></div>
+                <div class="font-display text-3xl text-purple-400 tracking-widest mb-8">NetGamer <span class="text-white">MX</span></div>
                 <nav class="space-y-2">
-                    <button onclick="switchTab('tab-inicio')" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl bg-purple-600 text-white font-semibold transition text-left">
-                        <i class="fa-solid fa-house"></i> <span>Inicio</span>
+                    <button onclick="switchTab('tab-inicio', this)" class="tab-btn active-tab w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-semibold transition text-left">
+                        <i class="fa-solid fa-house w-5 text-center"></i><span>Inicio</span>
                     </button>
-                    <button onclick="switchTab('tab-ofertas')" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-700 hover:text-white transition text-left">
-                        <i class="fa-solid fa-gamepad"></i> <span>Muro de Ofertas</span>
+                    <button onclick="switchTab('tab-ofertas', this)" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-700 hover:text-white transition text-left">
+                        <i class="fa-solid fa-gamepad w-5 text-center"></i><span>Muro de Ofertas</span>
                     </button>
-                    <button onclick="switchTab('tab-canjear')" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-700 hover:text-white transition text-left">
-                        <i class="fa-solid fa-gift"></i> <span>Canjear Premios</span>
+                    <button onclick="switchTab('tab-canjear', this)" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-700 hover:text-white transition text-left">
+                        <i class="fa-solid fa-gift w-5 text-center"></i><span>Canjear Premios</span>
                     </button>
                 </nav>
+
+                <!-- Quick Redeem Strip (sidebar) -->
+                <div class="mt-8 redeem-strip rounded-2xl p-4">
+                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-bolt text-amber-400"></i> Canjeo Rápido
+                    </p>
+                    <div class="space-y-2">
+                        <button onclick="abrirModal('Roblox')" class="w-full flex items-center gap-3 bg-slate-900/60 hover:bg-red-950/60 border border-slate-700 hover:border-red-500/50 rounded-xl px-3 py-2.5 text-sm font-semibold transition group">
+                            <span class="text-lg">🎮</span>
+                            <span class="group-hover:text-red-400 transition">Robux</span>
+                            <i class="fa-solid fa-arrow-right ml-auto text-xs text-slate-500 group-hover:text-red-400 transition"></i>
+                        </button>
+                        <button onclick="abrirModal('PayPal')" class="w-full flex items-center gap-3 bg-slate-900/60 hover:bg-blue-950/60 border border-slate-700 hover:border-blue-500/50 rounded-xl px-3 py-2.5 text-sm font-semibold transition group">
+                            <span class="text-lg">💳</span>
+                            <span class="group-hover:text-blue-400 transition">PayPal</span>
+                            <i class="fa-solid fa-arrow-right ml-auto text-xs text-slate-500 group-hover:text-blue-400 transition"></i>
+                        </button>
+                        <button onclick="abrirModal('SPEI / Banco')" class="w-full flex items-center gap-3 bg-slate-900/60 hover:bg-emerald-950/60 border border-slate-700 hover:border-emerald-500/50 rounded-xl px-3 py-2.5 text-sm font-semibold transition group">
+                            <span class="text-lg">🏦</span>
+                            <span class="group-hover:text-emerald-400 transition">Transferencia</span>
+                            <i class="fa-solid fa-arrow-right ml-auto text-xs text-slate-500 group-hover:text-emerald-400 transition"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="p-6 border-t border-slate-700">
                 <button onclick="cerrarSesion()" class="w-full bg-slate-900 hover:bg-rose-950 text-rose-400 font-semibold py-2 px-4 rounded-xl transition text-sm">
@@ -89,40 +195,59 @@
         </aside>
 
         <div class="flex-1 flex flex-col overflow-x-hidden">
-            
-            <header class="h-16 bg-slate-800 border-b border-slate-700 flex items-center justify-between px-6 z-10">
+
+            <!-- Header -->
+            <header class="h-16 bg-slate-800 border-b border-slate-700 flex items-center justify-between px-6 z-10 sticky top-0">
                 <div class="flex items-center space-x-4">
                     <span class="text-sm text-slate-400">Bienvenido, <strong id="user-display-name" class="text-white">...</strong></span>
                 </div>
-                <div class="bg-slate-950 px-4 py-1.5 rounded-full border border-purple-500/50 flex items-center space-x-2 shadow-inner">
-                    <i class="fa-solid fa-coins text-amber-400 animate-pulse"></i>
-                    <span id="user-balance" class="font-extrabold text-amber-300 transition-all duration-300">0</span>
-                    <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">NetCoins</span>
+                <div class="flex items-center gap-3">
+                    <!-- Header Canjear Button -->
+                    <button onclick="abrirModal(null)" class="hidden sm:flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-900 font-extrabold text-xs px-4 py-2 rounded-full shadow-lg shadow-amber-500/30 transition">
+                        <i class="fa-solid fa-gift"></i> CANJEAR
+                    </button>
+                    <div class="bg-slate-950 px-4 py-1.5 rounded-full border border-purple-500/50 flex items-center space-x-2 shadow-inner">
+                        <i class="fa-solid fa-coins text-amber-400 animate-pulse"></i>
+                        <span id="user-balance" class="font-extrabold text-amber-300 transition-all duration-300">0</span>
+                        <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">NC</span>
+                    </div>
                 </div>
             </header>
 
-            <main class="flex-1 p-6 overflow-y-auto">
+            <main class="flex-1 p-6 overflow-y-auto pb-24">
 
+                <!-- ── TAB INICIO ─────────────────────────────────────── -->
                 <div id="tab-inicio" class="tab-content active space-y-6">
-                    <div class="bg-gradient-to-r from-purple-800 to-indigo-900 rounded-3xl p-8 relative overflow-hidden shadow-xl">
+
+                    <!-- Hero Banner -->
+                    <div class="bg-gradient-to-r from-purple-800 via-indigo-900 to-purple-900 rounded-3xl p-8 relative overflow-hidden shadow-xl border border-purple-700/30">
+                        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 80% 50%, #a78bfa 0%, transparent 60%)"></div>
                         <div class="relative z-10 max-w-lg">
-                            <h2 class="text-3xl font-black mb-2">¡Consigue Dinero Real Jugando!</h2>
-                            <p class="text-purple-200 text-sm mb-6">Completa tareas en el muro de ofertas, acumula NetCoins al instante y canjéalos directamente por increíbles premios digitales o transferencias bancarias.</p>
-                            <button onclick="switchTab('tab-ofertas')" class="bg-white text-indigo-900 font-extrabold px-6 py-3 rounded-xl shadow-lg hover:scale-105 transition duration-200">Ir al Muro de Ofertas</button>
+                            <h2 class="font-display text-4xl font-bold tracking-wide mb-2">¡Consigue Dinero Real Jugando!</h2>
+                            <p class="text-purple-200 text-sm mb-6">Completa tareas en el muro de ofertas, acumula NetCoins al instante y canjéalos por premios digitales o transferencias bancarias.</p>
+                            <div class="flex gap-3 flex-wrap">
+                                <button onclick="switchTabByName('tab-ofertas')" class="bg-white text-indigo-900 font-extrabold px-6 py-3 rounded-xl shadow-lg hover:scale-105 transition">
+                                    <i class="fa-solid fa-gamepad mr-2"></i>Muro de Ofertas
+                                </button>
+                                <button onclick="abrirModal(null)" class="bg-amber-500 hover:bg-amber-400 text-slate-900 font-extrabold px-6 py-3 rounded-xl shadow-lg shadow-amber-500/30 hover:scale-105 transition">
+                                    <i class="fa-solid fa-gift mr-2"></i>Canjear Ahora
+                                </button>
+                            </div>
                         </div>
                     </div>
 
+                    <!-- Stats Row -->
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl flex items-center justify-between">
                             <div>
                                 <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Balance Actual</span>
-                                <h3 class="text-2xl font-black text-amber-300 mt-1"><span class="balance-placeholder">0</span> NC</h3>
+                                <h3 class="text-2xl font-black text-amber-300 mt-1 coin-shimmer"><span class="balance-placeholder">0</span> NC</h3>
                             </div>
                             <div class="p-3 bg-amber-500/10 text-amber-400 rounded-xl text-xl"><i class="fa-solid fa-wallet"></i></div>
                         </div>
                         <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl flex items-center justify-between">
                             <div>
-                                <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Equivalencia Estimada</span>
+                                <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Equivalencia MXN</span>
                                 <h3 class="text-2xl font-black text-emerald-400 mt-1" id="mxn-equivalence">$0.00 MXN</h3>
                             </div>
                             <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl text-xl"><i class="fa-solid fa-money-bill-wave"></i></div>
@@ -135,8 +260,62 @@
                             <div class="p-3 bg-purple-500/10 text-purple-400 rounded-xl text-xl"><i class="fa-solid fa-bolt"></i></div>
                         </div>
                     </div>
+
+                    <!-- ── QUICK REDEEM CARDS (on home) ───────────────── -->
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-lg font-extrabold">Canjear NetCoins</h3>
+                                <p class="text-xs text-slate-400 mt-0.5">Elige cómo quieres recibir tus ganancias · 100 NC = $1.00 MXN</p>
+                            </div>
+                            <button onclick="switchTabByName('tab-canjear')" class="text-xs text-purple-400 hover:underline font-semibold">Ver todos →</button>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+                            <!-- Robux -->
+                            <div class="prize-card bg-slate-800 border border-slate-700 rounded-2xl p-5 cursor-pointer" onclick="abrirModal('Roblox')">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div class="w-12 h-12 rounded-xl bg-red-600/20 flex items-center justify-center text-2xl">🎮</div>
+                                    <span class="bg-red-600/20 text-red-400 text-xs font-bold px-2.5 py-1 rounded-md">Código Digital</span>
+                                </div>
+                                <h4 class="font-extrabold text-base">Robux (Roblox)</h4>
+                                <p class="text-slate-400 text-xs mt-1 mb-4">Pin oficial para tu cuenta de Roblox al instante.</p>
+                                <button class="w-full bg-red-600/20 hover:bg-red-600/40 border border-red-500/30 text-red-300 font-bold text-sm py-2.5 rounded-xl transition flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-gift"></i> Canjear Robux
+                                </button>
+                            </div>
+
+                            <!-- PayPal -->
+                            <div class="prize-card bg-slate-800 border border-slate-700 rounded-2xl p-5 cursor-pointer" onclick="abrirModal('PayPal')">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div class="w-12 h-12 rounded-xl bg-blue-600/20 flex items-center justify-center text-2xl">💳</div>
+                                    <span class="bg-blue-600/20 text-blue-400 text-xs font-bold px-2.5 py-1 rounded-md">Saldo Electrónico</span>
+                                </div>
+                                <h4 class="font-extrabold text-base">PayPal (USD)</h4>
+                                <p class="text-slate-400 text-xs mt-1 mb-4">Fondos directos en tu cuenta de PayPal, globalmente.</p>
+                                <button class="w-full bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/30 text-blue-300 font-bold text-sm py-2.5 rounded-xl transition flex items-center justify-center gap-2">
+                                    <i class="fa-brands fa-paypal"></i> Canjear PayPal
+                                </button>
+                            </div>
+
+                            <!-- SPEI -->
+                            <div class="prize-card bg-slate-800 border border-slate-700 rounded-2xl p-5 cursor-pointer" onclick="abrirModal('SPEI / Banco')">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div class="w-12 h-12 rounded-xl bg-emerald-600/20 flex items-center justify-center text-2xl">🏦</div>
+                                    <span class="bg-emerald-600/20 text-emerald-400 text-xs font-bold px-2.5 py-1 rounded-md">Transferencia</span>
+                                </div>
+                                <h4 class="font-extrabold text-base">SPEI / Banco MX</h4>
+                                <p class="text-slate-400 text-xs mt-1 mb-4">Directo a tu CLABE interbancaria o tarjeta de débito.</p>
+                                <button class="w-full bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/30 text-emerald-300 font-bold text-sm py-2.5 rounded-xl transition flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-building-columns"></i> Canjear SPEI
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
 
+                <!-- ── TAB OFERTAS ─────────────────────────────────────── -->
                 <div id="tab-ofertas" class="tab-content">
                     <div class="bg-slate-800 rounded-2xl p-4 border border-slate-700 shadow-xl overflow-hidden">
                         <div id="iframe-wrapper" class="flex flex-col items-center justify-center p-12 text-center text-slate-400">
@@ -146,167 +325,243 @@
                     </div>
                 </div>
 
+                <!-- ── TAB CANJEAR ─────────────────────────────────────── -->
                 <div id="tab-canjear" class="tab-content space-y-6">
                     <div class="border-b border-slate-700 pb-4">
                         <h2 class="text-2xl font-extrabold">Módulo de Retiros y Canjes</h2>
-                        <p class="text-slate-400 text-sm">Cambia tus NetCoins acumuladas por recompensas reales de forma segura.</p>
+                        <p class="text-slate-400 text-sm">Cambia tus NetCoins por recompensas reales de forma segura · 100 NC = $1.00 MXN</p>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 flex flex-col justify-between hover:border-purple-500 transition duration-300">
-                            <div>
-                                <span class="bg-red-600/20 text-red-400 text-xs font-bold px-2.5 py-1 rounded-md inline-block mb-3">Código Digital</span>
-                                <h3 class="text-lg font-bold">Robux (Roblox Pin)</h3>
-                                <p class="text-slate-400 text-xs mt-1">Reclama un código digital para canjear de forma directa en tu cuenta oficial de Roblox.</p>
-                            </div>
-                            <div class="mt-6 pt-4 border-t border-slate-700/50 flex items-center justify-between">
-                                <span class="text-amber-400 font-extrabold text-sm"><i class="fa-solid fa-coins mr-1"></i> 100 NC = $1 MXN</span>
-                                <button onclick="abrirFormularioRetiro('Roblox')" class="bg-purple-600 hover:bg-purple-700 text-xs font-bold px-4 py-2 rounded-xl transition">Canjear</button>
-                            </div>
-                        </div>
 
-                        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 flex flex-col justify-between hover:border-purple-500 transition duration-300">
+                        <div class="prize-card bg-slate-800 border border-slate-700 rounded-2xl p-5 flex flex-col justify-between cursor-pointer" onclick="abrirModal('Roblox')">
                             <div>
-                                <span class="bg-blue-600/20 text-blue-400 text-xs font-bold px-2.5 py-1 rounded-md inline-block mb-3">Saldo Electrónico</span>
-                                <h3 class="text-lg font-bold">PayPal Balance (USD)</h3>
-                                <p class="text-slate-400 text-xs mt-1">Recibe los fondos directamente en tu cuenta de PayPal para utilizarlos globalmente.</p>
-                            </div>
-                            <div class="mt-6 pt-4 border-t border-slate-700/50 flex items-center justify-between">
-                                <span class="text-amber-400 font-extrabold text-sm"><i class="fa-solid fa-coins mr-1"></i> 100 NC = $1 MXN</span>
-                                <button onclick="abrirFormularioRetiro('PayPal')" class="bg-purple-600 hover:bg-purple-700 text-xs font-bold px-4 py-2 rounded-xl transition">Canjear</button>
-                            </div>
-                        </div>
-
-                        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 flex flex-col justify-between hover:border-purple-500 transition duration-300">
-                            <div>
-                                <span class="bg-emerald-600/20 text-emerald-400 text-xs font-bold px-2.5 py-1 rounded-md inline-block mb-3">Transferencia Directa</span>
-                                <h3 class="text-lg font-bold">Transferencia Bancaria (SPEI)</h3>
-                                <p class="text-slate-400 text-xs mt-1">Recibe el dinero directamente en tu cuenta de banco o tarjeta de débito mexicana.</p>
-                            </div>
-                            <div class="mt-6 pt-4 border-t border-slate-700/50 flex items-center justify-between">
-                                <span class="text-amber-400 font-extrabold text-sm"><i class="fa-solid fa-coins mr-1"></i> 100 NC = $1 MXN</span>
-                                <button onclick="abrirFormularioRetiro('SPEI / Banco')" class="bg-purple-600 hover:bg-purple-700 text-xs font-bold px-4 py-2 rounded-xl transition">Canjear</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="container-formulario-retiro" class="hidden bg-slate-800 border border-slate-700 p-6 rounded-2xl max-w-xl mx-auto mt-12 shadow-2xl">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-bold text-purple-400">Canjear Premio: <span id="tipo-recompensa-txt" class="text-white"></span></h3>
-                            <button onclick="cerrarFormularioRetiro()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-                        </div>
-                        
-                        <div class="bg-slate-900 border border-purple-500/30 p-3 rounded-xl text-xs text-purple-300 mb-4 flex items-center space-x-2">
-                            <i class="fa-solid fa-shield-halved text-amber-400 text-sm"></i>
-                            <span><strong>Políticas de Auditoría Técnica:</strong> Retiro mínimo de <strong>100 MXN</strong> y máximo de <strong>3000 MXN</strong> por operación. Los nombres del banco y del beneficiario son obligatorios para la revisión manual administrativa.</span>
-                        </div>
-
-                        <form id="form-solicitud-retiro" class="space-y-4">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Monto a Retirar (en Pesos MXN)</label>
-                                <input type="number" id="retiro-monto" min="100" max="3000" placeholder="Min 100 MXN - Max 3000 MXN" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required>
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Nombre del Banco / Plataforma</label>
-                                    <input type="text" id="retiro-banco" placeholder="Ej: BBVA, Santander, PayPal" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="w-14 h-14 rounded-xl bg-red-600/20 flex items-center justify-center text-3xl">🎮</div>
+                                    <div>
+                                        <span class="bg-red-600/20 text-red-400 text-xs font-bold px-2 py-0.5 rounded-md block mb-1">Código Digital</span>
+                                        <h3 class="font-extrabold text-base leading-tight">Robux (Roblox Pin)</h3>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Nombre Completo del Beneficiario</label>
-                                    <input type="text" id="retiro-beneficiario" placeholder="Titular de la cuenta destino" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required>
-                                </div>
+                                <p class="text-slate-400 text-xs">Reclama un código digital para canjear de forma directa en tu cuenta oficial de Roblox.</p>
                             </div>
+                            <div class="mt-5 pt-4 border-t border-slate-700/50 flex items-center justify-between">
+                                <span class="text-amber-400 font-extrabold text-xs"><i class="fa-solid fa-coins mr-1"></i>100 NC = $1 MXN</span>
+                                <button class="bg-purple-600 hover:bg-purple-700 text-xs font-bold px-5 py-2.5 rounded-xl transition flex items-center gap-2">
+                                    <i class="fa-solid fa-gift"></i> Canjear
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="prize-card bg-slate-800 border border-slate-700 rounded-2xl p-5 flex flex-col justify-between cursor-pointer" onclick="abrirModal('PayPal')">
                             <div>
-                                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">CLABE Interbancaria / Correo Electrónico de Destino</label>
-                                <input type="text" id="retiro-destino" placeholder="Cuenta CLABE de 18 dígitos o Email según el premio" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="w-14 h-14 rounded-xl bg-blue-600/20 flex items-center justify-center text-3xl">💳</div>
+                                    <div>
+                                        <span class="bg-blue-600/20 text-blue-400 text-xs font-bold px-2 py-0.5 rounded-md block mb-1">Saldo Electrónico</span>
+                                        <h3 class="font-extrabold text-base leading-tight">PayPal Balance (USD)</h3>
+                                    </div>
+                                </div>
+                                <p class="text-slate-400 text-xs">Recibe los fondos directamente en tu cuenta de PayPal para utilizarlos globalmente.</p>
                             </div>
-                            <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-purple-600/30">Enviar Solicitud a Revisión</button>
-                        </form>
+                            <div class="mt-5 pt-4 border-t border-slate-700/50 flex items-center justify-between">
+                                <span class="text-amber-400 font-extrabold text-xs"><i class="fa-solid fa-coins mr-1"></i>100 NC = $1 MXN</span>
+                                <button class="bg-purple-600 hover:bg-purple-700 text-xs font-bold px-5 py-2.5 rounded-xl transition flex items-center gap-2">
+                                    <i class="fa-brands fa-paypal"></i> Canjear
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="prize-card bg-slate-800 border border-slate-700 rounded-2xl p-5 flex flex-col justify-between cursor-pointer" onclick="abrirModal('SPEI / Banco')">
+                            <div>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="w-14 h-14 rounded-xl bg-emerald-600/20 flex items-center justify-center text-3xl">🏦</div>
+                                    <div>
+                                        <span class="bg-emerald-600/20 text-emerald-400 text-xs font-bold px-2 py-0.5 rounded-md block mb-1">Transferencia</span>
+                                        <h3 class="font-extrabold text-base leading-tight">Transferencia SPEI</h3>
+                                    </div>
+                                </div>
+                                <p class="text-slate-400 text-xs">Recibe el dinero directamente en tu cuenta de banco o tarjeta de débito mexicana.</p>
+                            </div>
+                            <div class="mt-5 pt-4 border-t border-slate-700/50 flex items-center justify-between">
+                                <span class="text-amber-400 font-extrabold text-xs"><i class="fa-solid fa-coins mr-1"></i>100 NC = $1 MXN</span>
+                                <button class="bg-purple-600 hover:bg-purple-700 text-xs font-bold px-5 py-2.5 rounded-xl transition flex items-center gap-2">
+                                    <i class="fa-solid fa-building-columns"></i> Canjear
+                                </button>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
+
             </main>
         </div>
     </div>
 
+    <!-- ─── FLOATING ACTION BUTTON ────────────────────────────────────── -->
+    <button id="fab-canjear" onclick="abrirModal(null)"
+        class="md:hidden bg-gradient-to-br from-amber-400 to-orange-500 text-slate-900 w-16 h-16 rounded-full font-extrabold text-xs flex flex-col items-center justify-center shadow-2xl shadow-amber-500/40 active:scale-95 transition">
+        <i class="fa-solid fa-gift text-xl mb-0.5"></i>
+        <span class="text-[9px] font-black tracking-wider">CANJEAR</span>
+    </button>
+
+    <!-- ─── REDEEM MODAL ───────────────────────────────────────────────── -->
+    <div id="modal-overlay" class="hidden fixed inset-0 bg-black/70 z-50 flex items-center justify-center px-4">
+        <div class="bg-slate-800 border border-slate-600 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden">
+
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-purple-900 to-indigo-900 px-6 py-5 flex items-center justify-between border-b border-slate-700">
+                <div>
+                    <h3 class="font-extrabold text-lg text-white">Canjear NetCoins</h3>
+                    <p class="text-purple-300 text-xs mt-0.5">Selecciona el método de retiro y completa los datos</p>
+                </div>
+                <button onclick="cerrarModal()" class="w-9 h-9 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white transition flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
+
+                <!-- Method Selector -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Método de Canje</label>
+                    <div class="grid grid-cols-3 gap-3" id="modal-method-selector">
+                        <button type="button" data-method="Roblox" onclick="seleccionarMetodo('Roblox')"
+                            class="method-btn flex flex-col items-center gap-2 bg-slate-900 border-2 border-slate-700 hover:border-red-500/60 rounded-xl py-3 px-2 transition text-center">
+                            <span class="text-2xl">🎮</span>
+                            <span class="text-xs font-bold text-slate-300">Robux</span>
+                        </button>
+                        <button type="button" data-method="PayPal" onclick="seleccionarMetodo('PayPal')"
+                            class="method-btn flex flex-col items-center gap-2 bg-slate-900 border-2 border-slate-700 hover:border-blue-500/60 rounded-xl py-3 px-2 transition text-center">
+                            <span class="text-2xl">💳</span>
+                            <span class="text-xs font-bold text-slate-300">PayPal</span>
+                        </button>
+                        <button type="button" data-method="SPEI / Banco" onclick="seleccionarMetodo('SPEI / Banco')"
+                            class="method-btn flex flex-col items-center gap-2 bg-slate-900 border-2 border-slate-700 hover:border-emerald-500/60 rounded-xl py-3 px-2 transition text-center">
+                            <span class="text-2xl">🏦</span>
+                            <span class="text-xs font-bold text-slate-300">SPEI</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Policy notice -->
+                <div class="bg-slate-900 border border-purple-500/25 p-3.5 rounded-xl flex gap-3 items-start">
+                    <i class="fa-solid fa-shield-halved text-amber-400 mt-0.5 flex-shrink-0"></i>
+                    <p class="text-xs text-purple-200 leading-relaxed">
+                        <strong class="text-white">Políticas de Auditoría:</strong> Retiro mínimo <strong>$100 MXN</strong>, máximo <strong>$3,000 MXN</strong> por operación. Los datos del beneficiario son obligatorios para revisión administrativa.
+                    </p>
+                </div>
+
+                <!-- Form -->
+                <form id="form-modal-retiro" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Monto a Retirar (MXN)</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">$</span>
+                            <input type="number" id="modal-monto" min="100" max="3000" placeholder="100 – 3000 MXN"
+                                class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-9 pr-4 py-3 text-sm focus:outline-none focus:border-purple-500 transition" required>
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs font-semibold">MXN</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1.5">= <span id="modal-nc-costo" class="text-amber-400 font-bold">0</span> NetCoins requeridos</p>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Banco / Plataforma</label>
+                            <input type="text" id="modal-banco" placeholder="BBVA, Santander, PayPal…"
+                                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 transition" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nombre del Beneficiario</label>
+                            <input type="text" id="modal-beneficiario" placeholder="Titular de la cuenta"
+                                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 transition" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">CLABE / Correo de Destino</label>
+                        <input type="text" id="modal-destino" placeholder="CLABE de 18 dígitos o email según el método"
+                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 transition" required>
+                    </div>
+                    <button type="submit"
+                        class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-extrabold py-3.5 rounded-xl transition shadow-lg shadow-purple-600/30 flex items-center justify-center gap-2 text-sm">
+                        <i class="fa-solid fa-paper-plane"></i> Enviar Solicitud de Retiro
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Configuración Maestra del Proyecto
+        // ─── CONFIG ──────────────────────────────────────────────────────
         const SUPABASE_URL = "https://meiwuluwrdjszxeyoqtt.supabase.co";
-        
-        // ¡RECUERDA PEGAR AQUÍ TU LLAVE ANON PUBLIC REAL (La que empieza con eyJ...)!
-        const SUPABASE_KEY = "sb_publishable_gZgGIamNJqf8ir8vvt1OTw_bJ-rosi4"; 
-        
-        const adgemAppId = "32676";
-        const CONVERSION_RATE = 100; // 100 NetCoins = $1.00 MXN
+        const SUPABASE_KEY = "sb_publishable_gZgGIamNJqf8ir8vvt1OTw_bJ-rosi4";
+        const adgemAppId  = "32676";
+        const CONVERSION_RATE = 100; // 100 NC = $1 MXN
 
-        // Instanciar el Cliente Oficial de Supabase
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        let metodoSeleccionado = null;
 
-        // Disparador Inicial al cargar el documento
+        // ─── INIT ────────────────────────────────────────────────────────
         document.addEventListener("DOMContentLoaded", () => {
             configurarEventosAuth();
             verificarSesionActiva();
+
+            // Live NC cost preview
+            document.getElementById("modal-monto").addEventListener("input", (e) => {
+                const mxn = parseInt(e.target.value) || 0;
+                document.getElementById("modal-nc-costo").textContent = (mxn * CONVERSION_RATE).toLocaleString();
+            });
+
+            // Modal form submit
+            document.getElementById("form-modal-retiro").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                await procesarSolicitudRetiro();
+            });
+
+            // Close modal on overlay click
+            document.getElementById("modal-overlay").addEventListener("click", (e) => {
+                if (e.target === document.getElementById("modal-overlay")) cerrarModal();
+            });
         });
 
-        // Alternar Formularios de Ingreso / Registro
+        // ─── AUTH ────────────────────────────────────────────────────────
         function toggleAuthViews(showLogin) {
             document.getElementById("login-view").classList.toggle("hidden", !showLogin);
             document.getElementById("register-view").classList.toggle("hidden", showLogin);
         }
 
-        // Configuración y Envío de Formularios de Acceso
         function configurarEventosAuth() {
-            // Login Handler
             document.getElementById("login-form").addEventListener("submit", async (e) => {
                 e.preventDefault();
-                const email = document.getElementById("login-email").value;
-                const password = document.getElementById("login-password").value;
-                
-                const { error } = await _supabase.auth.signInWithPassword({ email, password });
+                const { error } = await _supabase.auth.signInWithPassword({
+                    email: document.getElementById("login-email").value,
+                    password: document.getElementById("login-password").value
+                });
                 if (error) alert("Error al entrar: " + error.message);
                 else verificarSesionActiva();
             });
 
-            // Registro Handler
             document.getElementById("register-form").addEventListener("submit", async (e) => {
                 e.preventDefault();
-                const username = document.getElementById("register-username").value;
-                const email = document.getElementById("register-email").value;
-                const password = document.getElementById("register-password").value;
-
                 const { error } = await _supabase.auth.signUp({
-                    email, password,
-                    options: { data: { username: username } }
+                    email: document.getElementById("register-email").value,
+                    password: document.getElementById("register-password").value,
+                    options: { data: { username: document.getElementById("register-username").value } }
                 });
-
                 if (error) alert("Error al registrarse: " + error.message);
-                else {
-                    alert("¡Cuenta configurada! Ya puedes iniciar sesión con tus credenciales.");
-                    toggleAuthViews(true);
-                }
-            });
-
-            // Solicitud de Retiro Handler
-            document.getElementById("form-solicitud-retiro").addEventListener("submit", (e) => {
-                e.preventDefault();
-                procesarSolicitudRetiro();
+                else { alert("¡Cuenta creada! Ya puedes iniciar sesión."); toggleAuthViews(true); }
             });
         }
 
-        // Comprobación de Estado de Sesión Persistente
         async function verificarSesionActiva() {
             const { data: { session } } = await _supabase.auth.getSession();
-            
             if (session) {
                 const user = session.user;
                 document.getElementById("auth-container").classList.add("hidden");
                 document.getElementById("app-container").classList.remove("hidden");
-                
-                // Cargar Nombre del Perfil
                 document.getElementById("user-display-name").innerText = user.user_metadata.username || user.email;
-                
-                // Desplegar Funciones Maestras
                 cargarDatosPerfil(user);
-                suscribirseCambiosEnVivo(user); // Activación de WebSockets Realtime
+                suscribirseCambiosEnVivo(user);
                 inyectarIframeAdGem(user);
             } else {
                 document.getElementById("auth-container").classList.remove("hidden");
@@ -314,156 +569,150 @@
             }
         }
 
-        // Consulta inicial de información financiera
         async function cargarDatosPerfil(user) {
-            const { data, error } = await _supabase
-                .from('perfiles')
-                .select('netcoins')
-                .eq('id', user.id)
-                .single();
+            const { data, error } = await _supabase.from('perfiles').select('netcoins').eq('id', user.id).single();
+            if (!error && data) actualizarTextosInterfaz(data.netcoins || 0);
+        }
 
-            if (!error && data) {
-                const monedas = data.netcoins || 0;
-                actualizarTextosInterfaz(monedas);
+        function suscribirseCambiosEnVivo(user) {
+            _supabase.channel('cambios-saldo')
+                .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'perfiles', filter: `id=eq.${user.id}` },
+                    (payload) => {
+                        const nc = payload.new.netcoins || 0;
+                        actualizarTextosInterfaz(nc);
+                        const el = document.getElementById("user-balance");
+                        el.classList.add("balance-pop");
+                        setTimeout(() => el.classList.remove("balance-pop"), 450);
+                    }
+                ).subscribe();
+        }
+
+        function actualizarTextosInterfaz(monedas) {
+            document.getElementById("user-balance").innerText = monedas.toLocaleString();
+            document.querySelectorAll(".balance-placeholder").forEach(el => el.innerText = monedas.toLocaleString());
+            document.getElementById("mxn-equivalence").innerText = `$${(monedas / CONVERSION_RATE).toFixed(2)} MXN`;
+        }
+
+        function inyectarIframeAdGem(user) {
+            document.getElementById('iframe-wrapper').innerHTML = `
+                <iframe src="https://api.adgem.com/v1/wall?appid=${adgemAppId}&playerid=${user.id}"
+                    frameborder="0" class="w-full rounded-xl shadow-inner"></iframe>`;
+        }
+
+        // ─── TAB NAVIGATION ──────────────────────────────────────────────
+        function switchTab(tabId, btnEl) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('active-tab', 'text-white');
+                b.classList.add('text-slate-400');
+            });
+            if (btnEl) {
+                btnEl.classList.add('active-tab', 'text-white');
+                btnEl.classList.remove('text-slate-400');
             }
         }
 
-        // SUSCRIPCIÓN EN TIEMPO REAL (REALTIME) PARA ESCUCHAR CAMBIOS DEL SALDO
-        function suscribirseCambiosEnVivo(user) {
-            _supabase
-                .channel('cambios-saldo')
-                .on(
-                    'postgres_changes',
-                    {
-                        event: 'UPDATE',
-                        schema: 'public',
-                        table: 'perfiles',
-                        filter: `id=eq.${user.id}`
-                    },
-                    (payload) => {
-                        const nuevasMonedas = payload.new.netcoins || 0;
-                        actualizarTextosInterfaz(nuevasMonedas);
-                        
-                        // Efecto premium visual para alertar al usuario del cambio en vivo
-                        const balanceElement = document.getElementById("user-balance");
-                        balanceElement.classList.add("text-emerald-400", "scale-125");
-                        setTimeout(() => {
-                            balanceElement.classList.remove("text-emerald-400", "scale-125");
-                        }, 1000);
-                    }
-                )
-                .subscribe();
+        function switchTabByName(tabId) {
+            const btns = document.querySelectorAll('.tab-btn');
+            let target = null;
+            btns.forEach(b => { if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(tabId)) target = b; });
+            switchTab(tabId, target);
         }
 
-        // Centralizador de actualización de textos del DOM
-        function actualizarTextosInterfaz(monedas) {
-            document.getElementById("user-balance").innerText = monedas;
-            document.querySelectorAll(".balance-placeholder").forEach(el => el.innerText = monedas);
-            
-            const pesos = (monedas / CONVERSION_RATE).toFixed(2);
-            document.getElementById("mxn-equivalence").innerText = `$${pesos} MXN`;
+        // ─── MODAL ───────────────────────────────────────────────────────
+        function abrirModal(metodo) {
+            document.getElementById("modal-overlay").classList.remove("hidden");
+            document.getElementById("form-modal-retiro").reset();
+            document.getElementById("modal-nc-costo").textContent = "0";
+            document.body.style.overflow = "hidden";
+            if (metodo) seleccionarMetodo(metodo);
+            else { metodoSeleccionado = null; resetMethodBtns(); }
         }
 
-        // Inyección Segura del Iframe Enlazado al ID del Jugador
-        function inyectarIframeAdGem(user) {
-            const wrapper = document.getElementById('iframe-wrapper');
-            wrapper.innerHTML = `
-                <iframe 
-                    src="https://api.adgem.com/v1/wall?appid=${adgemAppId}&playerid=${user.id}" 
-                    frameborder="0"
-                    class="w-full rounded-xl shadow-inner">
-                </iframe>
-            `;
+        function cerrarModal() {
+            document.getElementById("modal-overlay").classList.add("hidden");
+            document.body.style.overflow = "";
+            metodoSeleccionado = null;
+            resetMethodBtns();
         }
 
-        // Navegación por pestañas (Single Page Application Model)
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('bg-purple-600', 'text-white');
-                btn.classList.add('text-slate-400', 'hover:bg-slate-700');
+        function resetMethodBtns() {
+            document.querySelectorAll('.method-btn').forEach(b => {
+                b.classList.remove('border-purple-500', 'bg-purple-900/30');
+                b.classList.add('border-slate-700');
             });
-            event.currentTarget.classList.add('bg-purple-600', 'text-white');
-            event.currentTarget.classList.remove('text-slate-400', 'hover:bg-slate-700');
         }
 
-        // Operaciones del Formulario de Canje
-        function abrirFormularioRetiro(tipo) {
-            document.getElementById("tipo-recompensa-txt").innerText = tipo;
-            document.getElementById("container-formulario-retiro").classList.remove("hidden");
-            document.getElementById("container-formulario-retiro").scrollIntoView({ behavior: 'smooth' });
+        function seleccionarMetodo(metodo) {
+            metodoSeleccionado = metodo;
+            resetMethodBtns();
+            document.querySelectorAll('.method-btn').forEach(b => {
+                if (b.dataset.method === metodo) {
+                    b.classList.add('border-purple-500', 'bg-purple-900/30');
+                    b.classList.remove('border-slate-700');
+                }
+            });
+            // Adjust placeholder for each method
+            const destinoInput = document.getElementById("modal-destino");
+            const bancoInput = document.getElementById("modal-banco");
+            if (metodo === 'Roblox') {
+                destinoInput.placeholder = "Nombre de usuario de Roblox";
+                bancoInput.placeholder = "Roblox";
+            } else if (metodo === 'PayPal') {
+                destinoInput.placeholder = "Correo electrónico de PayPal";
+                bancoInput.placeholder = "PayPal";
+            } else {
+                destinoInput.placeholder = "CLABE interbancaria de 18 dígitos";
+                bancoInput.placeholder = "BBVA, Santander, Banamex…";
+            }
         }
 
-        function cerrarFormularioRetiro() {
-            document.getElementById("container-formulario-retiro").classList.add("hidden");
-            document.getElementById("form-solicitud-retiro").reset();
-        }
-
-        // LÓGICA DE VALIDACIÓN Y CONTROL FINANCIERO DE RETIROS
+        // ─── RETIRO ──────────────────────────────────────────────────────
         async function procesarSolicitudRetiro() {
+            if (!metodoSeleccionado) { alert("Por favor selecciona un método de canje."); return; }
+
             const { data: { session } } = await _supabase.auth.getSession();
             if (!session) return;
 
-            const user = session.user;
-            const montoMXN = parseInt(document.getElementById("retiro-monto").value);
-            const banco = document.getElementById("retiro-banco").value.trim();
-            const beneficiario = document.getElementById("retiro-beneficiario").value.trim();
-            const destino = document.getElementById("retiro-destino").value.trim();
-            const tipoPremio = document.getElementById("tipo-recompensa-txt").innerText;
+            const user      = session.user;
+            const montoMXN  = parseInt(document.getElementById("modal-monto").value);
+            const banco     = document.getElementById("modal-banco").value.trim();
+            const beneficiario = document.getElementById("modal-beneficiario").value.trim();
+            const destino   = document.getElementById("modal-destino").value.trim();
+            const costoNC   = montoMXN * CONVERSION_RATE;
 
-            const costoNetCoins = montoMXN * CONVERSION_RATE;
-
-            // 1. Reglas Financieras de Negocio Obligatorias
             if (montoMXN < 100 || montoMXN > 3000) {
-                alert("Error de límites: La plataforma exige transacciones de mínimo 100 MXN y máximo 3000 MXN.");
-                return;
+                alert("Monto fuera de rango: mínimo $100 MXN, máximo $3,000 MXN."); return;
             }
-
-            // 2. Validación de Información Administrativa Requerida
             if (!banco || !beneficiario || !destino) {
-                alert("Campos incompletos: El nombre del banco y el nombre completo del beneficiario son obligatorios para la revisión manual.");
-                return;
+                alert("Completa todos los campos requeridos."); return;
             }
 
-            // 3. Comprobación Antifraude del Saldo en Tiempo Real
             const { data: perfil } = await _supabase.from('perfiles').select('netcoins').eq('id', user.id).single();
-            if (!perfil || perfil.netcoins < costoNetCoins) {
-                alert(`Fondos insuficientes: Requieres ${costoNetCoins} NetCoins para procesar el canje por $${montoMXN} MXN. Saldo actual: ${perfil ? perfil.netcoins : 0} NC.`);
-                return;
+            if (!perfil || perfil.netcoins < costoNC) {
+                alert(`Fondos insuficientes: necesitas ${costoNC.toLocaleString()} NC. Tienes ${(perfil?.netcoins || 0).toLocaleString()} NC.`); return;
             }
 
-            // 4. Inserción de Auditoría en Tabla de Retiros Pendientes
-            const { error: errorInsert } = await _supabase
-                .from('retiros_pendientes')
-                .insert([{
-                    user_id: user.id,
-                    monto_mxn: montoMXN,
-                    netcoins_deducidos: costoNetCoins,
-                    banco_plataforma: banco,
-                    nombre_beneficiario: beneficiario,
-                    cuenta_destino: destino,
-                    tipo_premio: tipoPremio,
-                    estatus: 'Pendiente de Validación'
-                }]);
+            const { error: errInsert } = await _supabase.from('retiros_pendientes').insert([{
+                user_id: user.id,
+                monto_mxn: montoMXN,
+                netcoins_deducidos: costoNC,
+                banco_plataforma: banco,
+                nombre_beneficiario: beneficiario,
+                cuenta_destino: destino,
+                tipo_premio: metodoSeleccionado,
+                estatus: 'Pendiente de Validación'
+            }]);
 
-            if (errorInsert) {
-                alert("Error de base de datos al registrar retiro: " + errorInsert.message);
-                return;
-            }
+            if (errInsert) { alert("Error al registrar retiro: " + errInsert.message); return; }
 
-            // 5. Ajuste del Balance del Perfil
-            await _supabase
-                .from('perfiles')
-                .update({ netcoins: perfil.netcoins - costoNetCoins })
-                .eq('id', user.id);
+            await _supabase.from('perfiles').update({ netcoins: perfil.netcoins - costoNC }).eq('id', user.id);
 
-            alert("¡Solicitud enviada de forma exitosa! El equipo de administración revisará los datos proporcionados y liberará tu pago.");
-            cerrarFormularioRetiro();
+            cerrarModal();
+            alert(`✅ ¡Solicitud enviada! Se procesará tu canje de $${montoMXN} MXN vía ${metodoSeleccionado}.`);
         }
 
-        // Cierre Seguro de Sesiones Activas
         async function cerrarSesion() {
             await _supabase.auth.signOut();
             verificarSesionActiva();
