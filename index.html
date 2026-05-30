@@ -68,21 +68,42 @@
                 </p>
             </div>
 
-            <!-- Pantalla de verificación de email -->
-            <div id="verify-email-view" class="hidden text-center space-y-4">
-                <div class="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto">
-                    <i class="fa-solid fa-envelope-circle-check text-emerald-400 text-3xl"></i>
+            <!-- Pantalla de código OTP -->
+            <div id="verify-email-view" class="hidden text-center space-y-5">
+                <div class="w-16 h-16 bg-purple-500/10 rounded-full flex items-center justify-center mx-auto">
+                    <i class="fa-solid fa-shield-halved text-purple-400 text-3xl"></i>
                 </div>
-                <h2 class="text-xl font-bold">¡Revisa tu correo!</h2>
-                <p class="text-slate-400 text-sm">Te enviamos un enlace de confirmación a:</p>
-                <p id="verify-email-address" class="text-white font-bold text-sm bg-slate-900 px-4 py-2 rounded-xl border border-slate-700"></p>
-                <p class="text-slate-400 text-xs">Haz clic en el enlace del correo para activar tu cuenta. Revisa también tu carpeta de <strong class="text-slate-300">spam</strong>.</p>
-                <div class="bg-amber-900/20 border border-amber-500/30 rounded-xl p-3 text-xs text-amber-300 flex items-start gap-2">
-                    <i class="fa-solid fa-triangle-exclamation mt-0.5"></i>
-                    <span>Tu cuenta <strong>no estará activa</strong> hasta que confirmes tu correo. Esto evita el uso de correos falsos.</span>
+                <div>
+                    <h2 class="text-xl font-bold">Verifica tu correo</h2>
+                    <p class="text-slate-400 text-sm mt-1">Enviamos un código de 6 dígitos a:</p>
+                    <p id="verify-email-address" class="text-purple-400 font-bold text-sm mt-1"></p>
                 </div>
-                <button onclick="toggleAuthViews(true)" class="w-full bg-slate-700 hover:bg-slate-600 font-semibold py-3 rounded-xl transition text-sm mt-2">
-                    Volver al Login
+
+                <!-- Inputs OTP -->
+                <div class="flex justify-center gap-2" id="otp-inputs">
+                    <input type="text" maxlength="1" class="otp-input w-11 h-14 text-center text-xl font-black bg-slate-900 border-2 border-slate-600 rounded-xl focus:outline-none focus:border-purple-500 transition" inputmode="numeric">
+                    <input type="text" maxlength="1" class="otp-input w-11 h-14 text-center text-xl font-black bg-slate-900 border-2 border-slate-600 rounded-xl focus:outline-none focus:border-purple-500 transition" inputmode="numeric">
+                    <input type="text" maxlength="1" class="otp-input w-11 h-14 text-center text-xl font-black bg-slate-900 border-2 border-slate-600 rounded-xl focus:outline-none focus:border-purple-500 transition" inputmode="numeric">
+                    <input type="text" maxlength="1" class="otp-input w-11 h-14 text-center text-xl font-black bg-slate-900 border-2 border-slate-600 rounded-xl focus:outline-none focus:border-purple-500 transition" inputmode="numeric">
+                    <input type="text" maxlength="1" class="otp-input w-11 h-14 text-center text-xl font-black bg-slate-900 border-2 border-slate-600 rounded-xl focus:outline-none focus:border-purple-500 transition" inputmode="numeric">
+                    <input type="text" maxlength="1" class="otp-input w-11 h-14 text-center text-xl font-black bg-slate-900 border-2 border-slate-600 rounded-xl focus:outline-none focus:border-purple-500 transition" inputmode="numeric">
+                </div>
+
+                <div id="otp-error" class="hidden bg-rose-900/30 border border-rose-500/40 rounded-xl px-4 py-2 text-xs text-rose-400">
+                    <i class="fa-solid fa-circle-xmark mr-1"></i> Código incorrecto o expirado. Intenta de nuevo.
+                </div>
+
+                <button onclick="verificarOTP()" id="btn-verificar-otp"
+                    class="w-full bg-purple-600 hover:bg-purple-700 font-bold py-3 rounded-xl shadow-lg shadow-purple-600/30 transition duration-200">
+                    Verificar Código
+                </button>
+
+                <p class="text-xs text-slate-400">¿No recibiste el código? Revisa tu spam o
+                    <button onclick="reenviarCodigo()" class="text-purple-400 hover:underline font-semibold">reenviar</button>
+                </p>
+
+                <button onclick="toggleAuthViews(false)" class="text-xs text-slate-500 hover:text-slate-300 transition">
+                    ← Volver al registro
                 </button>
             </div>
         </div>
@@ -367,7 +388,7 @@
 
     <script>
         const SUPABASE_URL = "https://meiwuluwrdjszxeyoqtt.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_gZgGIamNJqf8ir8vvt1OTw_bJ-rosi4";
+        const SUPABASE_KEY = "PEGAR_AQUI_TU_CLAVE_ANON_DE_SUPABASE";
         const CONVERSION_RATE = 100;
         const NC_POR_REFERIDO = 500;
         const BASE_URL = "https://daniel00998888.github.io/NetGamer-MX/";
@@ -409,6 +430,90 @@
             document.getElementById("register-view").classList.add("hidden");
             document.getElementById("verify-email-view").classList.remove("hidden");
             document.getElementById("verify-email-address").innerText = email;
+            document.getElementById("otp-error").classList.add("hidden");
+            // Limpiar inputs
+            document.querySelectorAll('.otp-input').forEach(i => i.value = '');
+            // Focus al primero
+            setTimeout(() => document.querySelectorAll('.otp-input')[0].focus(), 100);
+            configurarOTPInputs();
+        }
+
+        function configurarOTPInputs() {
+            const inputs = document.querySelectorAll('.otp-input');
+            inputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => {
+                    // Solo números
+                    input.value = input.value.replace(/\D/g, '');
+                    if (input.value && index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    }
+                    // Auto verificar cuando se llenen los 6
+                    const codigo = Array.from(inputs).map(i => i.value).join('');
+                    if (codigo.length === 6) verificarOTP();
+                });
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && !input.value && index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                });
+                // Pegar código completo
+                input.addEventListener('paste', (e) => {
+                    e.preventDefault();
+                    const paste = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+                    inputs.forEach((inp, i) => inp.value = paste[i] || '');
+                    if (paste.length === 6) verificarOTP();
+                });
+            });
+        }
+
+        async function verificarOTP() {
+            const inputs = document.querySelectorAll('.otp-input');
+            const codigo = Array.from(inputs).map(i => i.value).join('');
+            if (codigo.length < 6) { alert("Ingresa los 6 dígitos del código."); return; }
+
+            const email = document.getElementById("verify-email-address").innerText;
+            const btn = document.getElementById("btn-verificar-otp");
+            btn.disabled = true;
+            btn.innerText = "Verificando...";
+
+            const { data, error } = await _supabase.auth.verifyOtp({
+                email,
+                token: codigo,
+                type: 'signup'
+            });
+
+            btn.disabled = false;
+            btn.innerText = "Verificar Código";
+
+            if (error) {
+                document.getElementById("otp-error").classList.remove("hidden");
+                inputs.forEach(i => {
+                    i.value = '';
+                    i.classList.add('border-rose-500');
+                    setTimeout(() => i.classList.remove('border-rose-500'), 2000);
+                });
+                inputs[0].focus();
+                return;
+            }
+
+            // Código correcto — procesar referido si existe
+            if (data.user) {
+                const refCode = sessionStorage.getItem('ref_code');
+                if (refCode) {
+                    await procesarBonoReferido(data.user.id, refCode);
+                    sessionStorage.removeItem('ref_code');
+                    sessionStorage.removeItem('ref_pending_user');
+                }
+            }
+
+            verificarSesionActiva();
+        }
+
+        async function reenviarCodigo() {
+            const email = document.getElementById("verify-email-address").innerText;
+            const { error } = await _supabase.auth.resend({ type: 'signup', email });
+            if (error) alert("Error al reenviar: " + error.message);
+            else alert("¡Código reenviado! Revisa tu correo.");
         }
 
         function configurarEventosAuth() {
