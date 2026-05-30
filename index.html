@@ -10,7 +10,7 @@
     <style>
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        iframe { width: 100%; height: calc(100vh - 220px); border: none; } /* Ajuste de altura para los botones de muros */
+        iframe { width: 100%; height: calc(100vh - 220px); border: none; }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-100 font-sans min-h-screen">
@@ -82,6 +82,11 @@
                 </nav>
             </div>
             <div class="p-6 border-t border-slate-700">
+                
+                <div class="w-full flex justify-center mb-4 bg-slate-900/50 border border-slate-700 rounded-xl overflow-hidden min-h-[250px] items-center">
+                    <span class="text-slate-600 text-[10px] text-center font-bold uppercase tracking-widest px-2">Espacio<br>Publicitario</span>
+                </div>
+
                 <button onclick="cerrarSesion()" class="w-full bg-slate-900 hover:bg-rose-950 text-rose-400 font-semibold py-2 px-4 rounded-xl transition text-sm">
                     <i class="fa-solid fa-right-from-bracket mr-2"></i> Cerrar Sesión
                 </button>
@@ -102,6 +107,10 @@
             </header>
 
             <main class="flex-1 p-6 overflow-y-auto">
+
+                <div class="w-full flex justify-center mb-6 bg-slate-900/50 border border-slate-700 rounded-xl overflow-hidden min-h-[90px] items-center">
+                    <span class="text-slate-600 text-xs font-bold uppercase tracking-widest">Espacio Publicitario Top</span>
+                </div>
 
                 <div id="tab-inicio" class="tab-content active space-y-6">
                     <div class="bg-gradient-to-r from-purple-800 to-indigo-900 rounded-3xl p-8 relative overflow-hidden shadow-xl">
@@ -236,34 +245,29 @@
     </div>
 
     <script>
-        // Configuración Maestra del Proyecto
         const SUPABASE_URL = "https://meiwuluwrdjszxeyoqtt.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_gZgGIamNJqf8ir8vvt1OTw_bJ-rosi4"; 
-        const CONVERSION_RATE = 100; // 100 NetCoins = $1.00 MXN
+        const SUPABASE_KEY = "PEGAR_AQUI_TU_CLAVE_ANON_DE_SUPABASE"; 
+        
+        const CONVERSION_RATE = 100; 
 
-        // VARIABLES DE LOS MUROS DE OFERTAS (Reemplaza con tus IDs reales cuando te registres)
         const adgemAppId = "32676";
         const toroxAppId = "TU_APP_ID_TOROX"; 
-        const toroxSecretKey = "TU_SECRET_KEY_TOROX"; // Torox la pide en la URL a veces, checa su panel
+        const toroxSecretKey = "TU_SECRET_KEY_TOROX";
         const monlixAppId = "TU_APP_ID_MONLIX";
 
-        // Instanciar el Cliente Oficial de Supabase
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        let currentUser = null; // Guardamos el usuario globalmente para el Muro de Ofertas
+        let currentUser = null; 
 
-        // Disparador Inicial
         document.addEventListener("DOMContentLoaded", () => {
             configurarEventosAuth();
             verificarSesionActiva();
         });
 
-        // Alternar Formularios de Ingreso / Registro
         function toggleAuthViews(showLogin) {
             document.getElementById("login-view").classList.toggle("hidden", !showLogin);
             document.getElementById("register-view").classList.toggle("hidden", showLogin);
         }
 
-        // Configuración y Envío de Formularios de Acceso
         function configurarEventosAuth() {
             document.getElementById("login-form").addEventListener("submit", async (e) => {
                 e.preventDefault();
@@ -296,7 +300,6 @@
             });
         }
 
-        // Comprobación de Estado de Sesión
         async function verificarSesionActiva() {
             const { data: { session } } = await _supabase.auth.getSession();
             if (session) {
@@ -307,20 +310,18 @@
                 
                 cargarDatosPerfil(currentUser);
                 suscribirseCambiosEnVivo(currentUser);
-                cambiarMuro('adgem'); // Carga AdGem por defecto al entrar
+                cambiarMuro('adgem'); 
             } else {
                 document.getElementById("auth-container").classList.remove("hidden");
                 document.getElementById("app-container").classList.add("hidden");
             }
         }
 
-        // Consulta inicial financiera
         async function cargarDatosPerfil(user) {
             const { data, error } = await _supabase.from('perfiles').select('netcoins').eq('id', user.id).single();
             if (!error && data) actualizarTextosInterfaz(data.netcoins || 0);
         }
 
-        // Suscripción Realtime
         function suscribirseCambiosEnVivo(user) {
             _supabase.channel('cambios-saldo')
                 .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'perfiles', filter: `id=eq.${user.id}` },
@@ -333,18 +334,15 @@
                 ).subscribe();
         }
 
-        // Actualización de textos DOM
         function actualizarTextosInterfaz(monedas) {
             document.getElementById("user-balance").innerText = monedas;
             document.querySelectorAll(".balance-placeholder").forEach(el => el.innerText = monedas);
             document.getElementById("mxn-equivalence").innerText = `$${(monedas / CONVERSION_RATE).toFixed(2)} MXN`;
         }
 
-        // LÓGICA DEL MULTI-MURO DE OFERTAS
         function cambiarMuro(proveedor) {
             if (!currentUser) return;
             
-            // Actualizar diseño de botones
             document.querySelectorAll('.muro-btn').forEach(btn => {
                 btn.classList.remove('bg-purple-600', 'text-white');
                 btn.classList.add('bg-slate-700', 'text-slate-300');
@@ -352,24 +350,19 @@
             document.getElementById(`btn-${proveedor}`).classList.remove('bg-slate-700', 'text-slate-300');
             document.getElementById(`btn-${proveedor}`).classList.add('bg-purple-600', 'text-white');
 
-            // Determinar la URL del iframe según el proveedor seleccionado
             let urlIframe = "";
             if (proveedor === 'adgem') {
                 urlIframe = `https://api.adgem.com/v1/wall?appid=${adgemAppId}&playerid=${currentUser.id}`;
             } else if (proveedor === 'torox') {
-                // Estructura oficial de OfferToro/Torox (Ajusta los IDs cuando crees la cuenta)
                 urlIframe = `https://www.offertoro.com/ifr/show/${toroxAppId}/${currentUser.id}/${toroxSecretKey}`;
             } else if (proveedor === 'monlix') {
-                // Estructura oficial de Monlix
                 urlIframe = `https://wall.monlix.com/?appid=${monlixAppId}&userid=${currentUser.id}`;
             }
 
-            // Inyectar el Iframe
             const wrapper = document.getElementById('iframe-wrapper');
             wrapper.innerHTML = `<iframe src="${urlIframe}" frameborder="0" class="w-full rounded-xl shadow-inner bg-white"></iframe>`;
         }
 
-        // Navegación de Pestañas
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
@@ -381,7 +374,6 @@
             event.currentTarget.classList.remove('text-slate-400', 'hover:bg-slate-700');
         }
 
-        // Formularios de Canje
         function abrirFormularioRetiro(tipo) {
             document.getElementById("tipo-recompensa-txt").innerText = tipo;
             document.getElementById("container-formulario-retiro").classList.remove("hidden");
@@ -393,7 +385,6 @@
             document.getElementById("form-solicitud-retiro").reset();
         }
 
-        // Validaciones y Retiro de Saldo
         async function procesarSolicitudRetiro() {
             if (!currentUser) return;
             const montoMXN = parseInt(document.getElementById("retiro-monto").value);
