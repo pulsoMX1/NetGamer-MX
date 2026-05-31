@@ -226,10 +226,12 @@
 
             <main id="main-content" class="flex-1 p-3 sm:p-6 overflow-y-auto">
 
-                <!-- BANNER DE ADSTERRA (CORREGIDO Y PROTEGIDO CONTRA REDIRECCIONES) -->
-             <div class="w-full flex justify-center mb-5 overflow-x-auto py-1">
-               <div class="inline-block min-w-[728px] bg-slate-900 rounded-lg overflow-hidden border border-slate-700">
-              <iframe 
+             <!-- ZONA DE ANUNCIOS RESPONSIVA (PROTEGIDA CON SANDBOX) -->
+<div class="w-full flex flex-col items-center justify-center mb-5 py-1">
+    
+    <!-- 1. ANUNCIO PARA COMPUTADORAS Y TABLETS (Banner 728x90) -->
+    <div class="hidden sm:inline-block min-w-[728px] bg-slate-900 rounded-lg overflow-hidden border border-slate-700">
+        <iframe 
             sandbox="allow-scripts allow-popups allow-same-origin"
             srcdoc="<!DOCTYPE html><html><body style='margin:0;padding:0;background:#0f172a;text-align:center;'><script>atOptions={'key':'7f7f7c1f4dcc288bb79ea8e84f8e3cfa','format':'iframe','height':90,'width':728,'params':{}};</script><script src='https://alarmpenguinmelt.com/7f7f7c1f4dcc288bb79ea8e84f8e3cfa/invoke.js'></script></body></html>"
             width="728" 
@@ -238,6 +240,19 @@
             scrolling="no">
         </iframe>
     </div>
+
+    <!-- 2. ANUNCIO PARA CELULARES (Banner 320x50) -->
+    <div class="block sm:hidden min-w-[320px] bg-slate-900 rounded-lg overflow-hidden border border-slate-700">
+        <iframe 
+            sandbox="allow-scripts allow-popups allow-same-origin"
+            srcdoc="<!DOCTYPE html><html><body style='margin:0;padding:0;background:#0f172a;text-align:center;'><script>atOptions={'key':'d4763e5f8fb679f246c0f6db1eebe973','format':'iframe','height':50,'width':320,'params':{}};</script><script src='https://alarmpenguinmelt.com/d4763e5f8fb679f246c0f6db1eebe973/invoke.js'></script></body></html>"
+            width="320" 
+            height="50" 
+            frameborder="0" 
+            scrolling="no">
+        </iframe>
+    </div>
+
 </div>
 
                 <div id="tab-inicio" class="tab-content active space-y-4 sm:space-y-6">
