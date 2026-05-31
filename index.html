@@ -109,44 +109,45 @@
 
     <!-- Script de detección temprana (antes del splash) -->
     <script>
-        // ══ DETECCIÓN DE ADBLOCK ══
-        // Trampa: elemento que los adblockers ocultan automáticamente
         window._adBlockDetectado = false;
         window._vpnDetectado = false;
+        window._bloqueoPermanente = false;
 
+        // ══════════════════════════════════════════
+        // MOSTRAR / OCULTAR BLOQUEO
+        // ══════════════════════════════════════════
         function mostrarBloqueo(tipo) {
             const overlay = document.getElementById('bloqueo-overlay');
-            const titulo = document.getElementById('bloqueo-titulo');
+            const titulo  = document.getElementById('bloqueo-titulo');
             const mensaje = document.getElementById('bloqueo-mensaje');
             const instrucciones = document.getElementById('bloqueo-instrucciones');
-            const icono = document.getElementById('bloqueo-icono');
+            const icono   = document.getElementById('bloqueo-icono');
 
             if (tipo === 'adblock') {
                 icono.innerText = '🚫';
                 titulo.innerText = 'Bloqueador de Anuncios Detectado';
-                mensaje.innerText = 'NetGamer MX se financia mediante anuncios para poder pagarte tus recompensas. Con un bloqueador de anuncios activo no podemos continuar.';
+                mensaje.innerText = 'NetGamer MX se financia con anuncios para poder pagarte. Con un bloqueador activo no podemos operar.';
                 instrucciones.innerHTML = `
-                    <strong class="text-white block mb-2">Para continuar, desactiva tu bloqueador:</strong>
-                    • uBlock Origin / AdBlock: clic en el ícono → desactivar para este sitio<br>
-                    • Brave Browser: clic en el escudo 🦁 → desactivar Shields<br>
-                    • Firefox: clic en el escudo 🛡️ → desactivar protección<br>
-                    • Opera: desactivar Ad Blocker en ajustes
+                    <strong class="text-white block mb-2">Desactiva tu bloqueador para este sitio:</strong>
+                    • <b>uBlock / AdBlock:</b> clic en el ícono → desactivar para este sitio<br>
+                    • <b>Brave Shields:</b> clic en el escudo 🦁 → bajar a "Sin bloqueo"<br>
+                    • <b>Firefox:</b> clic en el escudo 🛡️ → desactivar protección mejorada<br>
+                    • <b>Opera:</b> Ajustes → Ad Blocker → desactivar<br>
+                    • <b>Extensiones:</b> revisa todas las extensiones instaladas
                 `;
-            } else if (tipo === 'vpn') {
+            } else {
                 icono.innerText = '🔒';
-                titulo.innerText = 'VPN / Proxy Detectado';
-                mensaje.innerText = 'El uso de VPN, proxies o redes de anonimización está estrictamente prohibido en NetGamer MX para prevenir fraudes y garantizar la integridad del sistema de recompensas.';
+                titulo.innerText = 'VPN / Proxy / Tor Detectado';
+                mensaje.innerText = 'El uso de VPN, proxies o redes de anonimización está prohibido para prevenir fraudes en el sistema de recompensas.';
                 instrucciones.innerHTML = `
-                    <strong class="text-white block mb-2">Para continuar, desactiva tu VPN:</strong>
+                    <strong class="text-white block mb-2">Desactiva tu VPN/Proxy:</strong>
                     • Desconéctate de cualquier VPN activa<br>
-                    • Desactiva extensiones de proxy en tu navegador<br>
-                    • Desactiva Tor Browser o cualquier red de anonimización<br>
-                    • Conecta directamente a tu red de internet
+                    • Desactiva extensiones proxy en tu navegador<br>
+                    • Cierra Tor Browser o cualquier anonimizador<br>
+                    • Conecta directo a tu red doméstica o datos móviles
                 `;
             }
-
             overlay.classList.add('activo');
-            // Bloquear scroll del body
             document.body.style.overflow = 'hidden';
         }
 
@@ -156,104 +157,198 @@
         }
 
         async function reintentarAcceso() {
-            // Re-verificar adblock
-            await verificarAdBlock();
-            if (window._adBlockDetectado) { mostrarBloqueo('adblock'); return; }
-            // Re-verificar VPN
-            await verificarVPN();
-            if (window._vpnDetectado) { mostrarBloqueo('vpn'); return; }
-            ocultarBloqueo();
+            document.getElementById('bloqueo-titulo').innerText = 'Verificando...';
+            document.getElementById('bloqueo-mensaje').innerText = 'Por favor espera unos segundos.';
+            document.getElementById('bloqueo-instrucciones').innerHTML = '';
+            document.querySelector('#bloqueo-overlay button').disabled = true;
+
+            window._adBlockDetectado = false;
+            window._vpnDetectado = false;
+
+            await ejecutarVerificaciones();
+
+            document.querySelector('#bloqueo-overlay button').disabled = false;
+            if (!window._adBlockDetectado && !window._vpnDetectado) ocultarBloqueo();
         }
 
-        // ── Detección AdBlock ──
+        // ══════════════════════════════════════════
+        // DETECCIÓN ADBLOCK — 6 MÉTODOS
+        // ══════════════════════════════════════════
         async function verificarAdBlock() {
             return new Promise((resolve) => {
-                // Método 1: crear elemento señuelo con clase que adblockers ocultan
-                const cebo = document.createElement('div');
-                cebo.className = 'ad-banner ads adsbox ad-placement advertisement';
-                cebo.style.cssText = 'width:1px;height:1px;position:absolute;left:-9999px;top:-9999px;';
-                cebo.innerHTML = '&nbsp;';
-                document.body.appendChild(cebo);
+                let detectado = false;
+
+                // MÉTODO 1: Elemento señuelo con clases de filtros EasyList
+                const cebo1 = document.createElement('div');
+                cebo1.id = 'AdSense';
+                cebo1.className = 'ad-banner ads adsbox ad-placement advertisement adsbygoogle pub_300x250 pub_300x250m pub_728x90 text-ad textAd text_ad text_ads';
+                cebo1.style.cssText = 'width:1px!important;height:1px!important;position:absolute!important;left:-9999px!important;top:-9999px!important;opacity:1!important;';
+                cebo1.innerHTML = '&nbsp;';
+                document.body.appendChild(cebo1);
+
+                // MÉTODO 2: Imagen señuelo con nombre de banner
+                const img = document.createElement('img');
+                img.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
+                img.style.cssText = 'position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;';
+                img.onerror = () => { detectado = true; };
+                document.body.appendChild(img);
 
                 setTimeout(() => {
-                    const bloqueado = (
-                        cebo.offsetHeight === 0 ||
-                        cebo.offsetWidth === 0 ||
-                        window.getComputedStyle(cebo).display === 'none' ||
-                        window.getComputedStyle(cebo).visibility === 'hidden' ||
-                        window.getComputedStyle(cebo).opacity === '0'
-                    );
-                    document.body.removeChild(cebo);
+                    // Verificar cebo1
+                    const estilo = window.getComputedStyle(cebo1);
+                    if (
+                        cebo1.offsetHeight === 0 ||
+                        cebo1.offsetWidth  === 0 ||
+                        estilo.display      === 'none' ||
+                        estilo.visibility   === 'hidden' ||
+                        estilo.opacity      === '0' ||
+                        !document.body.contains(cebo1)
+                    ) detectado = true;
 
-                    // Método 2: verificar si baitads script fue bloqueado
-                    if (bloqueado || typeof window.canRunAds === 'undefined') {
-                        window._adBlockDetectado = true;
-                    } else {
-                        window._adBlockDetectado = false;
-                    }
+                    // MÉTODO 3: window.google_jobrunner
+                    if (typeof window.google_jobrunner === 'undefined') detectado = true;
+
+                    // MÉTODO 4: canRunAds flag
+                    if (typeof window.canRunAds === 'undefined' || window.canRunAds === false) detectado = true;
+
+                    // MÉTODO 5: adsbygoogle array
+                    if (typeof window.adsbygoogle === 'undefined') detectado = true;
+
+                    // MÉTODO 6: Script señuelo con nombre de ad network
+                    const scriptCebo = document.getElementById('_adScript_check_');
+                    if (!scriptCebo || scriptCebo.getAttribute('data-loaded') !== 'true') detectado = true;
+
+                    try { document.body.removeChild(cebo1); } catch(e) {}
+                    try { document.body.removeChild(img); } catch(e) {}
+
+                    window._adBlockDetectado = detectado;
                     resolve();
-                }, 150);
+                }, 300);
             });
         }
 
-        // ── Detección VPN ──
+        // ══════════════════════════════════════════
+        // DETECCIÓN VPN — 4 APIS EN PARALELO
+        // ══════════════════════════════════════════
         async function verificarVPN() {
-            try {
-                const controller = new AbortController();
-                const timeout = setTimeout(() => controller.abort(), 5000);
-
-                const res = await fetch('https://vpnapi.io/api/?key=free', {
-                    signal: controller.signal
-                });
-                clearTimeout(timeout);
-
-                if (res.ok) {
-                    const data = await res.json();
-                    if (
-                        data.security &&
-                        (data.security.vpn === true ||
-                         data.security.proxy === true ||
-                         data.security.tor === true ||
-                         data.security.relay === true)
-                    ) {
-                        window._vpnDetectado = true;
-                    } else {
-                        window._vpnDetectado = false;
-                    }
+            const apis = [
+                // API 1: ipapi.co
+                async () => {
+                    const r = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(5000) });
+                    const d = await r.json();
+                    // Si la IP no coincide con México y tiene señales de proxy
+                    return (d.proxy || d.hosting) === true;
+                },
+                // API 2: ip-api.com
+                async () => {
+                    const r = await fetch('http://ip-api.com/json/?fields=status,proxy,hosting,mobile', { signal: AbortSignal.timeout(5000) });
+                    const d = await r.json();
+                    return d.proxy === true || d.hosting === true;
+                },
+                // API 3: vpnapi.io (free tier)
+                async () => {
+                    const r = await fetch('https://vpnapi.io/api/', { signal: AbortSignal.timeout(5000) });
+                    const d = await r.json();
+                    return d.security && (d.security.vpn || d.security.proxy || d.security.tor || d.security.relay);
+                },
+                // API 4: Detección por WebRTC leak
+                async () => {
+                    return new Promise((res) => {
+                        const ips = new Set();
+                        try {
+                            const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+                            pc.createDataChannel('');
+                            pc.createOffer().then(o => pc.setLocalDescription(o));
+                            pc.onicecandidate = (e) => {
+                                if (!e || !e.candidate) return;
+                                const ipMatch = /([0-9]{1,3}\.){3}[0-9]{1,3}/.exec(e.candidate.candidate);
+                                if (ipMatch) ips.add(ipMatch[0]);
+                            };
+                            setTimeout(() => {
+                                pc.close();
+                                // Si hay múltiples IPs distintas puede indicar VPN/proxy
+                                const publicIPs = [...ips].filter(ip => !ip.startsWith('10.') && !ip.startsWith('192.168.') && !ip.startsWith('172.'));
+                                res(publicIPs.length > 1);
+                            }, 2000);
+                        } catch(e) { res(false); }
+                    });
                 }
-            } catch (e) {
-                // Si la API falla, no bloqueamos (beneficio de la duda)
-                window._vpnDetectado = false;
-            }
+            ];
+
+            // Ejecutar las primeras 3 APIs en paralelo (WebRTC toma más tiempo)
+            const resultados = await Promise.allSettled(apis.slice(0, 3).map(fn => fn().catch(() => false)));
+            const vpnDetectadoPorAPI = resultados.some(r => r.status === 'fulfilled' && r.value === true);
+
+            // WebRTC aparte
+            let vpnWebRTC = false;
+            try { vpnWebRTC = await apis[3](); } catch(e) {}
+
+            window._vpnDetectado = vpnDetectadoPorAPI || vpnWebRTC;
         }
 
-        // ── Ejecutar verificaciones al cargar ──
+        // ══════════════════════════════════════════
+        // DETECTOR DE BRAVE SHIELDS
+        // ══════════════════════════════════════════
+        async function detectarBraveShields() {
+            try {
+                // Brave expone navigator.brave
+                if (navigator.brave && await navigator.brave.isBrave()) {
+                    // Intentar cargar un recurso de ad network
+                    const test = await fetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', {
+                        signal: AbortSignal.timeout(3000)
+                    });
+                    if (!test.ok) return true; // Bloqueado por Shields
+                }
+            } catch(e) {
+                if (navigator.brave) return true; // Shields activo
+            }
+            return false;
+        }
+
+        // ══════════════════════════════════════════
+        // EJECUTAR TODO
+        // ══════════════════════════════════════════
         async function ejecutarVerificaciones() {
-            await verificarAdBlock();
+            // Correr AdBlock + Brave en paralelo
+            const [_, braveBlocked] = await Promise.all([
+                verificarAdBlock(),
+                detectarBraveShields()
+            ]);
+
+            if (braveBlocked) window._adBlockDetectado = true;
+
             if (window._adBlockDetectado) {
                 mostrarBloqueo('adblock');
                 return;
             }
+
+            // VPN (después del adblock para no retrasar la UI si hay adblock)
             await verificarVPN();
             if (window._vpnDetectado) {
                 mostrarBloqueo('vpn');
-                return;
             }
         }
 
-        // Ejecutar cuando el DOM esté listo
-        document.addEventListener('DOMContentLoaded', ejecutarVerificaciones);
+        // Arrancar cuando el DOM esté listo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', ejecutarVerificaciones);
+        } else {
+            ejecutarVerificaciones();
+        }
 
-        // Re-verificar cada 30 segundos (por si activan el bloqueador después)
+        // Re-verificar AdBlock cada 20 segundos (detección continua)
         setInterval(async () => {
+            if (window._bloqueoPermanente) return;
             await verificarAdBlock();
-            if (window._adBlockDetectado) { mostrarBloqueo('adblock'); return; }
-        }, 30000);
+            const braveBlocked = await detectarBraveShields();
+            if (window._adBlockDetectado || braveBlocked) mostrarBloqueo('adblock');
+        }, 20000);
     </script>
 
-    <!-- Señuelo para adblock (script con nombre de anuncio) -->
-    <script>window.canRunAds = true;</script>
-    <script src="ads.js" onerror="window.canRunAds = false;"></script>
+    <!-- Señuelo Script 1: nombre de ad -->
+    <script id="_adScript_check_" data-loaded="true" src="data:text/javascript,void(0)"></script>
+    <!-- Señuelo Script 2: simula adsbygoogle -->
+    <script>window.adsbygoogle = window.adsbygoogle || []; window.google_jobrunner = true; window.canRunAds = true;</script>
 
     <div id="splash-screen" class="fixed inset-0 bg-slate-900 flex flex-col items-center justify-center z-[999]">
         <h1 class="text-3xl font-extrabold text-purple-500 tracking-wide mb-3">NetGamer <span class="text-white">MX</span></h1>
