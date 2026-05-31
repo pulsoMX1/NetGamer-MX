@@ -11,28 +11,14 @@
         * { box-sizing: border-box; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-
-        /* Sidebar desktop */
         #sidebar { width: 256px; min-width: 256px; }
-
-        /* Offerwall iframe */
         #iframe-wrapper iframe { width: 100%; height: calc(100vh - 260px); min-height: 400px; border: none; }
-
-        /* Bottom nav mobile */
         #bottom-nav { display: none; }
-
-        /* Scrollbar personalizado */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #1e293b; }
         ::-webkit-scrollbar-thumb { background: #7c3aed; border-radius: 3px; }
-
-        /* OTP inputs responsive */
         .otp-input { width: 44px; height: 56px; }
-        @media (max-width: 400px) {
-            .otp-input { width: 36px; height: 48px; font-size: 1rem; }
-        }
-
-        /* Mobile: ocultar sidebar, mostrar bottom nav */
+        @media (max-width: 400px) { .otp-input { width: 36px; height: 48px; font-size: 1rem; } }
         @media (max-width: 767px) {
             #sidebar { display: none !important; }
             #bottom-nav { display: flex; }
@@ -40,8 +26,6 @@
             #app-container { flex-direction: column; }
             #iframe-wrapper iframe { height: calc(100vh - 220px); }
         }
-
-        /* Tablet */
         @media (min-width: 768px) and (max-width: 1023px) {
             #sidebar { width: 72px; min-width: 72px; }
             #sidebar .sidebar-label { display: none; }
@@ -49,27 +33,19 @@
             #sidebar nav button { justify-content: center; padding: 12px; }
             #sidebar nav button i { margin: 0; }
         }
-
-        /* Animación balance */
         .balance-bump { animation: bump 0.4s ease; }
-        @keyframes bump {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.3); color: #34d399; }
-            100% { transform: scale(1); }
-        }
-
-        /* Cards hover */
+        @keyframes bump { 0% { transform: scale(1); } 50% { transform: scale(1.3); color: #34d399; } 100% { transform: scale(1); } }
         .stat-card { transition: transform 0.2s, border-color 0.2s; }
         .stat-card:hover { transform: translateY(-2px); border-color: #7c3aed; }
-
-        /* Safe area para notch en iPhone */
-        @supports (padding-bottom: env(safe-area-inset-bottom)) {
-            #bottom-nav { padding-bottom: env(safe-area-inset-bottom); }
-        }
+        @supports (padding-bottom: env(safe-area-inset-bottom)) { #bottom-nav { padding-bottom: env(safe-area-inset-bottom); } }
+        /* Modal */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; padding: 16px; }
+        .modal-overlay.active { display: flex; }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-100 font-sans min-h-screen">
 
+    <!-- SPLASH -->
     <div id="splash-screen" class="fixed inset-0 bg-slate-900 flex flex-col items-center justify-center z-[999]">
         <h1 class="text-3xl font-extrabold text-purple-500 tracking-wide mb-3">NetGamer <span class="text-white">MX</span></h1>
         <div class="flex gap-1.5 mt-4">
@@ -79,6 +55,63 @@
         </div>
     </div>
 
+    <!-- MODAL PRIVACIDAD -->
+    <div id="modal-privacidad" class="modal-overlay">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-lg max-h-[80vh] flex flex-col">
+            <div class="flex items-center justify-between p-5 border-b border-slate-700">
+                <h2 class="text-lg font-extrabold text-purple-400"><i class="fa-solid fa-shield-halved mr-2"></i>Política de Privacidad</h2>
+                <button onclick="cerrarModal('modal-privacidad')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="overflow-y-auto p-5 text-sm text-slate-300 space-y-4">
+                <p class="text-xs text-slate-400">Última actualización: Mayo 2025</p>
+                <h3 class="font-bold text-white">1. Información que recopilamos</h3>
+                <p>NetGamer MX recopila información de registro (nombre de usuario, correo electrónico), datos de actividad en la plataforma (tareas completadas, NetCoins ganadas) e información de retiro (datos bancarios o de pago proporcionados voluntariamente por el usuario).</p>
+                <h3 class="font-bold text-white">2. Uso de la información</h3>
+                <p>Utilizamos tu información para operar la plataforma, procesar recompensas, prevenir fraudes, mejorar nuestros servicios y comunicarnos contigo sobre tu cuenta.</p>
+                <h3 class="font-bold text-white">3. Compartir información con terceros</h3>
+                <p>Trabajamos con redes de ofertas de terceros (AdGem, Torox, Monlix) para proporcionarte tareas remuneradas. Tu identificador único de usuario puede ser compartido con estas redes para el correcto seguimiento de recompensas. No vendemos tu información personal.</p>
+                <h3 class="font-bold text-white">4. Cookies y tecnologías similares</h3>
+                <p>Usamos cookies de sesión para mantener tu inicio de sesión activo. Los muros de ofertas de terceros pueden usar sus propias cookies sujetas a sus políticas.</p>
+                <h3 class="font-bold text-white">5. Seguridad</h3>
+                <p>Utilizamos Supabase con cifrado SSL para proteger tus datos. Sin embargo, ningún sistema es 100% seguro.</p>
+                <h3 class="font-bold text-white">6. Tus derechos</h3>
+                <p>Puedes solicitar la eliminación de tu cuenta y datos en cualquier momento contactándonos. Los datos bancarios solo se usan para procesar retiros aprobados.</p>
+                <h3 class="font-bold text-white">7. Contacto</h3>
+                <p>Para preguntas sobre privacidad: <span class="text-purple-400">soporte@netgamermx.com</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL TÉRMINOS -->
+    <div id="modal-terminos" class="modal-overlay">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-lg max-h-[80vh] flex flex-col">
+            <div class="flex items-center justify-between p-5 border-b border-slate-700">
+                <h2 class="text-lg font-extrabold text-purple-400"><i class="fa-solid fa-file-contract mr-2"></i>Términos de Uso</h2>
+                <button onclick="cerrarModal('modal-terminos')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="overflow-y-auto p-5 text-sm text-slate-300 space-y-4">
+                <p class="text-xs text-slate-400">Última actualización: Mayo 2025</p>
+                <h3 class="font-bold text-white">1. Aceptación de términos</h3>
+                <p>Al registrarte en NetGamer MX, aceptas estos Términos de Uso. Si no estás de acuerdo, no uses la plataforma.</p>
+                <h3 class="font-bold text-white">2. Elegibilidad</h3>
+                <p>Debes tener al menos 18 años para usar NetGamer MX. Al registrarte confirmas que cumples este requisito.</p>
+                <h3 class="font-bold text-white">3. Cuenta de usuario</h3>
+                <p>Eres responsable de mantener la confidencialidad de tu contraseña. Cada persona puede tener una sola cuenta. Las cuentas duplicadas serán eliminadas.</p>
+                <h3 class="font-bold text-white">4. NetCoins y recompensas</h3>
+                <p>Las NetCoins no tienen valor monetario hasta ser canjeadas. NetGamer MX se reserva el derecho de ajustar las tasas de conversión. Los retiros están sujetos a revisión y aprobación.</p>
+                <h3 class="font-bold text-white">5. Conducta prohibida</h3>
+                <p>Está prohibido: usar bots o automatización, crear múltiples cuentas, completar ofertas de forma fraudulenta, abusar del sistema de referidos. Las cuentas que violen estas reglas serán suspendidas sin previo aviso.</p>
+                <h3 class="font-bold text-white">6. Programa de referidos</h3>
+                <p>El bono de referido (500 NC por cada parte) se otorga una sola vez por par de usuarios. El abuso del sistema de referidos resultará en la cancelación del bono y posible suspensión.</p>
+                <h3 class="font-bold text-white">7. Limitación de responsabilidad</h3>
+                <p>NetGamer MX no garantiza disponibilidad ininterrumpida del servicio. No somos responsables por pérdidas derivadas del uso de la plataforma.</p>
+                <h3 class="font-bold text-white">8. Contacto</h3>
+                <p>Para soporte: <span class="text-purple-400">soporte@netgamermx.com</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- AUTH -->
     <div id="auth-container" class="hidden flex items-center justify-center min-h-screen px-4 py-8">
         <div class="bg-slate-800 p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-700">
             <div class="text-center mb-6 sm:mb-8">
@@ -86,60 +119,60 @@
                 <p class="text-slate-400 text-xs sm:text-sm mt-2">Gana recompensas completando ofertas y tareas</p>
             </div>
 
+            <!-- Login -->
             <div id="login-view">
                 <h2 class="text-lg sm:text-xl font-bold mb-4 text-center">Iniciar Sesión</h2>
                 <form id="login-form" class="space-y-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Correo Electrónico</label>
-                        <input type="email" id="login-email" autocomplete="email"
-                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 transition" required>
+                        <input type="email" id="login-email" autocomplete="email" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 transition" required>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Contraseña</label>
-                        <input type="password" id="login-password" autocomplete="current-password"
-                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 transition" required>
+                        <input type="password" id="login-password" autocomplete="current-password" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 transition" required>
                     </div>
-                    <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 active:bg-purple-800 font-bold py-3 rounded-xl shadow-lg shadow-purple-600/30 transition duration-200 text-sm sm:text-base">
-                        Ingresar
-                    </button>
+                    <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 active:bg-purple-800 font-bold py-3 rounded-xl shadow-lg shadow-purple-600/30 transition duration-200 text-sm sm:text-base">Ingresar</button>
                 </form>
                 <p class="text-center text-xs sm:text-sm text-slate-400 mt-5">
                     ¿No tienes cuenta? <button type="button" onclick="toggleAuthViews(false)" class="text-purple-400 hover:underline font-semibold">Regístrate</button>
                 </p>
             </div>
 
+            <!-- Registro -->
             <div id="register-view" class="hidden">
                 <h2 class="text-lg sm:text-xl font-bold mb-4 text-center">Crear Cuenta</h2>
                 <form id="register-form" class="space-y-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Nombre de Usuario</label>
-                        <input type="text" id="register-username" autocomplete="username"
-                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 transition" required>
+                        <input type="text" id="register-username" autocomplete="username" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 transition" required>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Correo Electrónico</label>
-                        <input type="email" id="register-email" autocomplete="email"
-                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 transition" required>
+                        <input type="email" id="register-email" autocomplete="email" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 transition" required>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Contraseña</label>
-                        <input type="password" id="register-password" autocomplete="new-password"
-                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 transition" required>
+                        <input type="password" id="register-password" autocomplete="new-password" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 transition" required>
                     </div>
                     <div id="referido-detectado" class="hidden bg-purple-900/30 border border-purple-500/40 rounded-xl px-4 py-2.5 text-xs text-purple-300 flex items-center gap-2">
                         <i class="fa-solid fa-user-plus text-purple-400 shrink-0"></i>
                         <span>¡Fuiste invitado! Ambos recibirán <strong>500 NetCoins</strong> al registrarte.</span>
                     </div>
-                    <button type="submit" id="btn-registrarse"
-                        class="w-full bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 font-bold py-3 rounded-xl shadow-lg shadow-emerald-600/30 transition duration-200 text-sm sm:text-base">
-                        Registrarse
-                    </button>
+                    <!-- Aceptar términos -->
+                    <div class="flex items-start gap-2">
+                        <input type="checkbox" id="acepta-terminos" class="mt-1 accent-purple-500 shrink-0" required>
+                        <label for="acepta-terminos" class="text-xs text-slate-400">
+                            Acepto los <button type="button" onclick="abrirModal('modal-terminos')" class="text-purple-400 hover:underline font-semibold">Términos de Uso</button> y la <button type="button" onclick="abrirModal('modal-privacidad')" class="text-purple-400 hover:underline font-semibold">Política de Privacidad</button>. Confirmo que tengo 18 años o más.
+                        </label>
+                    </div>
+                    <button type="submit" id="btn-registrarse" class="w-full bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 font-bold py-3 rounded-xl shadow-lg shadow-emerald-600/30 transition duration-200 text-sm sm:text-base">Registrarse</button>
                 </form>
                 <p class="text-center text-xs sm:text-sm text-slate-400 mt-5">
                     ¿Ya tienes cuenta? <button type="button" onclick="toggleAuthViews(true)" class="text-purple-400 hover:underline font-semibold">Inicia Sesión</button>
                 </p>
             </div>
 
+            <!-- OTP -->
             <div id="verify-email-view" class="hidden text-center space-y-5">
                 <div class="w-14 h-14 sm:w-16 sm:h-16 bg-purple-500/10 rounded-full flex items-center justify-center mx-auto">
                     <i class="fa-solid fa-shield-halved text-purple-400 text-2xl sm:text-3xl"></i>
@@ -160,31 +193,27 @@
                 <div id="otp-error" class="hidden bg-rose-900/30 border border-rose-500/40 rounded-xl px-4 py-2 text-xs text-rose-400">
                     <i class="fa-solid fa-circle-xmark mr-1"></i> Código incorrecto o expirado.
                 </div>
-                <button onclick="verificarOTP()" id="btn-verificar-otp"
-                    class="w-full bg-purple-600 hover:bg-purple-700 active:bg-purple-800 font-bold py-3 rounded-xl transition text-sm sm:text-base">
-                    Verificar Código
-                </button>
-                <p class="text-xs text-slate-400">¿No llegó? Revisa spam o
-                    <button onclick="reenviarCodigo()" class="text-purple-400 hover:underline font-semibold">reenviar</button>
-                </p>
+                <button onclick="verificarOTP()" id="btn-verificar-otp" class="w-full bg-purple-600 hover:bg-purple-700 active:bg-purple-800 font-bold py-3 rounded-xl transition text-sm sm:text-base">Verificar Código</button>
+                <p class="text-xs text-slate-400">¿No llegó? Revisa spam o <button onclick="reenviarCodigo()" class="text-purple-400 hover:underline font-semibold">reenviar</button></p>
                 <button onclick="toggleAuthViews(false)" class="text-xs text-slate-500 hover:text-slate-300 transition">← Volver al registro</button>
             </div>
+        </div>
 
-            <div class="mt-8 pt-5 border-t border-slate-700/50 flex justify-center gap-4 text-xs text-slate-500">
-                <button type="button" onclick="abrirPrivacidad()" class="hover:text-purple-400 transition">Política de Privacidad</button>
-                <span>&bull;</span>
-                <button type="button" onclick="abrirTerminos()" class="hover:text-purple-400 transition">Términos de Uso</button>
-            </div>
+        <!-- Links legales en login -->
+        <div class="absolute bottom-4 left-0 right-0 flex justify-center gap-4 text-xs text-slate-600">
+            <button onclick="abrirModal('modal-privacidad')" class="hover:text-slate-400 transition">Política de Privacidad</button>
+            <span>·</span>
+            <button onclick="abrirModal('modal-terminos')" class="hover:text-slate-400 transition">Términos de Uso</button>
         </div>
     </div>
 
+    <!-- APP -->
     <div id="app-container" class="hidden flex min-h-screen">
 
+        <!-- Sidebar -->
         <aside id="sidebar" class="bg-slate-800 border-r border-slate-700 flex flex-col justify-between flex-shrink-0">
             <div class="p-4 sm:p-6">
-                <div class="sidebar-logo text-xl sm:text-2xl font-extrabold text-purple-500 tracking-wide mb-6 sm:mb-8 truncate">
-                    NetGamer <span class="text-white">MX</span>
-                </div>
+                <div class="sidebar-logo text-xl sm:text-2xl font-extrabold text-purple-500 tracking-wide mb-6 sm:mb-8 truncate">NetGamer <span class="text-white">MX</span></div>
                 <nav class="space-y-1 sm:space-y-2">
                     <button onclick="switchTab('tab-inicio', event)" class="tab-btn w-full flex items-center gap-3 px-3 sm:px-4 py-3 rounded-xl bg-purple-600 text-white font-semibold transition text-left text-sm">
                         <i class="fa-solid fa-house shrink-0"></i> <span class="sidebar-label">Inicio</span>
@@ -200,11 +229,12 @@
                     </button>
                 </nav>
             </div>
-            <div class="p-4 sm:p-6 border-t border-slate-700 space-y-3">
-                <div class="flex justify-center gap-3 text-[11px] text-slate-400 sidebar-label">
-                    <button onclick="abrirPrivacidad()" class="hover:text-purple-400 transition">Privacidad</button>
-                    <span>&bull;</span>
-                    <button onclick="abrirTerminos()" class="hover:text-purple-400 transition">Términos</button>
+            <div class="p-4 sm:p-6 border-t border-slate-700 space-y-2">
+                <!-- Links legales sidebar -->
+                <div class="flex gap-2 justify-center mb-2">
+                    <button onclick="abrirModal('modal-privacidad')" class="text-xs text-slate-600 hover:text-slate-400 transition">Privacidad</button>
+                    <span class="text-slate-700">·</span>
+                    <button onclick="abrirModal('modal-terminos')" class="text-xs text-slate-600 hover:text-slate-400 transition">Términos</button>
                 </div>
                 <button onclick="cerrarSesion()" class="w-full bg-slate-900 hover:bg-rose-950 active:bg-rose-900 text-rose-400 font-semibold py-2 px-3 rounded-xl transition text-xs sm:text-sm flex items-center justify-center gap-2">
                     <i class="fa-solid fa-right-from-bracket shrink-0"></i> <span class="sidebar-label">Cerrar Sesión</span>
@@ -212,8 +242,8 @@
             </div>
         </aside>
 
+        <!-- Main -->
         <div class="flex-1 flex flex-col overflow-x-hidden min-w-0">
-
             <header class="h-14 sm:h-16 bg-slate-800 border-b border-slate-700 flex items-center justify-between px-3 sm:px-6 z-10 gap-2">
                 <span class="text-xs sm:text-sm text-slate-400 truncate">Bienvenido, <strong id="user-display-name" class="text-white">...</strong></span>
                 <div class="bg-slate-950 px-3 sm:px-4 py-1.5 rounded-full border border-purple-500/50 flex items-center gap-1.5 sm:gap-2 shadow-inner shrink-0">
@@ -226,52 +256,37 @@
 
             <main id="main-content" class="flex-1 p-3 sm:p-6 overflow-y-auto">
 
+                <!-- TAB INICIO -->
                 <div id="tab-inicio" class="tab-content active space-y-4 sm:space-y-6">
                     <div class="bg-gradient-to-r from-purple-800 to-indigo-900 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-xl">
                         <h2 class="text-xl sm:text-3xl font-black mb-2">¡Consigue Dinero Real Jugando!</h2>
                         <p class="text-purple-200 text-xs sm:text-sm mb-4 sm:mb-6">Completa tareas, acumula NetCoins y canjéalos por premios digitales o transferencias bancarias.</p>
-                        <button onclick="switchTab('tab-ofertas', event)"
-                            class="bg-white text-indigo-900 font-extrabold px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl shadow-lg hover:scale-105 active:scale-95 transition duration-200 text-sm sm:text-base">
-                            Ir a los Muros de Ofertas
-                        </button>
+                        <button onclick="switchTab('tab-ofertas', event)" class="bg-white text-indigo-900 font-extrabold px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl shadow-lg hover:scale-105 active:scale-95 transition duration-200 text-sm sm:text-base">Ir a los Muros de Ofertas</button>
                     </div>
-
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                         <div class="stat-card bg-slate-800 border border-slate-700 p-4 sm:p-6 rounded-2xl flex items-center justify-between">
-                            <div>
-                                <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Balance Actual</span>
-                                <h3 class="text-xl sm:text-2xl font-black text-amber-300 mt-1"><span class="balance-placeholder">0</span> NC</h3>
-                            </div>
+                            <div><span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Balance Actual</span><h3 class="text-xl sm:text-2xl font-black text-amber-300 mt-1"><span class="balance-placeholder">0</span> NC</h3></div>
                             <div class="p-2.5 sm:p-3 bg-amber-500/10 text-amber-400 rounded-xl text-lg sm:text-xl"><i class="fa-solid fa-wallet"></i></div>
                         </div>
                         <div class="stat-card bg-slate-800 border border-slate-700 p-4 sm:p-6 rounded-2xl flex items-center justify-between">
-                            <div>
-                                <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Equivalencia</span>
-                                <h3 class="text-xl sm:text-2xl font-black text-emerald-400 mt-1" id="mxn-equivalence">$0.00 MXN</h3>
-                            </div>
+                            <div><span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Equivalencia</span><h3 class="text-xl sm:text-2xl font-black text-emerald-400 mt-1" id="mxn-equivalence">$0.00 MXN</h3></div>
                             <div class="p-2.5 sm:p-3 bg-emerald-500/10 text-emerald-400 rounded-xl text-lg sm:text-xl"><i class="fa-solid fa-money-bill-wave"></i></div>
                         </div>
                         <div class="stat-card bg-slate-800 border border-slate-700 p-4 sm:p-6 rounded-2xl flex items-center justify-between">
-                            <div>
-                                <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Mis Referidos</span>
-                                <h3 class="text-xl sm:text-2xl font-black text-purple-400 mt-1"><span id="total-referidos-header">0</span> amigos</h3>
-                            </div>
+                            <div><span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Mis Referidos</span><h3 class="text-xl sm:text-2xl font-black text-purple-400 mt-1"><span id="total-referidos-header">0</span> amigos</h3></div>
                             <div class="p-2.5 sm:p-3 bg-purple-500/10 text-purple-400 rounded-xl text-lg sm:text-xl"><i class="fa-solid fa-users"></i></div>
                         </div>
                     </div>
-
                     <div class="bg-gradient-to-r from-emerald-900/50 to-teal-900/50 border border-emerald-500/30 rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
                         <div>
                             <h3 class="text-base sm:text-lg font-extrabold text-emerald-400 mb-1"><i class="fa-solid fa-user-plus mr-2"></i>¡Invita amigos y gana!</h3>
-                            <p class="text-slate-300 text-xs sm:text-sm">Por cada amigo que se registre, <strong class="text-white">tú y tu amigo ganan 500 NC</strong>.</p>
+                            <p class="text-slate-300 text-xs sm:text-sm">Por cada amigo registrado, <strong class="text-white">tú y tu amigo ganan 500 NC</strong>.</p>
                         </div>
-                        <button onclick="switchTab('tab-referidos', event)"
-                            class="bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 font-bold px-5 py-2.5 rounded-xl text-xs sm:text-sm whitespace-nowrap transition w-full sm:w-auto text-center">
-                            Ver mi enlace
-                        </button>
+                        <button onclick="switchTab('tab-referidos', event)" class="bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 font-bold px-5 py-2.5 rounded-xl text-xs sm:text-sm whitespace-nowrap transition w-full sm:w-auto text-center">Ver mi enlace</button>
                     </div>
                 </div>
 
+                <!-- TAB OFERTAS -->
                 <div id="tab-ofertas" class="tab-content">
                     <div class="flex flex-wrap gap-2 mb-3 sm:mb-4">
                         <button onclick="cambiarMuro('adgem')" id="btn-adgem" class="muro-btn bg-purple-600 text-white font-bold py-2 px-4 sm:px-5 rounded-lg text-xs sm:text-sm transition">AdGem</button>
@@ -286,87 +301,58 @@
                     </div>
                 </div>
 
+                <!-- TAB REFERIDOS -->
                 <div id="tab-referidos" class="tab-content space-y-4 sm:space-y-6">
                     <div class="border-b border-slate-700 pb-3 sm:pb-4">
                         <h2 class="text-xl sm:text-2xl font-extrabold">Programa de Referidos</h2>
                         <p class="text-slate-400 text-xs sm:text-sm mt-1">Invita amigos y ganen NetCoins juntos.</p>
                     </div>
-
                     <div class="grid grid-cols-3 gap-2 sm:gap-4">
                         <div class="bg-slate-800 border border-slate-700 rounded-xl sm:rounded-2xl p-3 sm:p-5 text-center">
-                            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-600/20 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3">
-                                <i class="fa-solid fa-link text-purple-400 text-base sm:text-xl"></i>
-                            </div>
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-600/20 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3"><i class="fa-solid fa-link text-purple-400 text-base sm:text-xl"></i></div>
                             <h4 class="font-bold text-xs sm:text-sm mb-1">1. Copia tu enlace</h4>
                             <p class="text-slate-400 text-xs hidden sm:block">Cada usuario tiene un enlace único</p>
                         </div>
                         <div class="bg-slate-800 border border-slate-700 rounded-xl sm:rounded-2xl p-3 sm:p-5 text-center">
-                            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-600/20 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3">
-                                <i class="fa-solid fa-share-nodes text-emerald-400 text-base sm:text-xl"></i>
-                            </div>
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-600/20 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3"><i class="fa-solid fa-share-nodes text-emerald-400 text-base sm:text-xl"></i></div>
                             <h4 class="font-bold text-xs sm:text-sm mb-1">2. Compártelo</h4>
                             <p class="text-slate-400 text-xs hidden sm:block">WhatsApp, TikTok, Instagram</p>
                         </div>
                         <div class="bg-slate-800 border border-slate-700 rounded-xl sm:rounded-2xl p-3 sm:p-5 text-center">
-                            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-amber-600/20 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3">
-                                <i class="fa-solid fa-coins text-amber-400 text-base sm:text-xl"></i>
-                            </div>
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-amber-600/20 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3"><i class="fa-solid fa-coins text-amber-400 text-base sm:text-xl"></i></div>
                             <h4 class="font-bold text-xs sm:text-sm mb-1">3. Ganen juntos</h4>
                             <p class="text-slate-400 text-xs hidden sm:block">500 NC para cada uno</p>
                         </div>
                     </div>
-
                     <div class="bg-slate-800 border border-purple-500/40 rounded-2xl p-4 sm:p-6 space-y-3 sm:space-y-4">
                         <h3 class="font-extrabold text-base sm:text-lg text-purple-400"><i class="fa-solid fa-link mr-2"></i>Tu Enlace de Referido</h3>
                         <div class="flex gap-2">
-                            <input type="text" id="referral-link-input" readonly
-                                class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-slate-300 focus:outline-none cursor-pointer min-w-0"
-                                placeholder="Cargando enlace...">
-                            <button onclick="copiarEnlace()" id="btn-copiar"
-                                class="bg-purple-600 hover:bg-purple-700 active:bg-purple-800 font-bold px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl transition text-xs sm:text-sm flex items-center gap-1.5 shrink-0">
+                            <input type="text" id="referral-link-input" readonly class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-slate-300 focus:outline-none cursor-pointer min-w-0" placeholder="Cargando enlace...">
+                            <button onclick="copiarEnlace()" id="btn-copiar" class="bg-purple-600 hover:bg-purple-700 active:bg-purple-800 font-bold px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl transition text-xs sm:text-sm flex items-center gap-1.5 shrink-0">
                                 <i class="fa-solid fa-copy"></i> <span class="hidden sm:inline">Copiar</span>
                             </button>
                         </div>
                         <div class="flex flex-wrap gap-2 pt-1">
-                            <button onclick="compartirWhatsApp()" class="bg-green-700 hover:bg-green-600 active:bg-green-800 text-white font-bold py-2 px-3 sm:px-4 rounded-xl text-xs flex items-center gap-1.5 transition">
-                                <i class="fa-brands fa-whatsapp"></i> <span>WhatsApp</span>
-                            </button>
-                            <button onclick="compartirTelegram()" class="bg-sky-700 hover:bg-sky-600 active:bg-sky-800 text-white font-bold py-2 px-3 sm:px-4 rounded-xl text-xs flex items-center gap-1.5 transition">
-                                <i class="fa-brands fa-telegram"></i> <span>Telegram</span>
-                            </button>
-                            <button onclick="compartirFacebook()" class="bg-blue-700 hover:bg-blue-600 active:bg-blue-800 text-white font-bold py-2 px-3 sm:px-4 rounded-xl text-xs flex items-center gap-1.5 transition">
-                                <i class="fa-brands fa-facebook"></i> <span>Facebook</span>
-                            </button>
-                            <button onclick="compartirTwitter()" class="bg-slate-700 hover:bg-slate-600 active:bg-slate-500 text-white font-bold py-2 px-3 sm:px-4 rounded-xl text-xs flex items-center gap-1.5 transition">
-                                <i class="fa-brands fa-x-twitter"></i> <span>X</span>
-                            </button>
+                            <button onclick="compartirWhatsApp()" class="bg-green-700 hover:bg-green-600 active:bg-green-800 text-white font-bold py-2 px-3 sm:px-4 rounded-xl text-xs flex items-center gap-1.5 transition"><i class="fa-brands fa-whatsapp"></i> <span>WhatsApp</span></button>
+                            <button onclick="compartirTelegram()" class="bg-sky-700 hover:bg-sky-600 active:bg-sky-800 text-white font-bold py-2 px-3 sm:px-4 rounded-xl text-xs flex items-center gap-1.5 transition"><i class="fa-brands fa-telegram"></i> <span>Telegram</span></button>
+                            <button onclick="compartirFacebook()" class="bg-blue-700 hover:bg-blue-600 active:bg-blue-800 text-white font-bold py-2 px-3 sm:px-4 rounded-xl text-xs flex items-center gap-1.5 transition"><i class="fa-brands fa-facebook"></i> <span>Facebook</span></button>
+                            <button onclick="compartirTwitter()" class="bg-slate-700 hover:bg-slate-600 active:bg-slate-500 text-white font-bold py-2 px-3 sm:px-4 rounded-xl text-xs flex items-center gap-1.5 transition"><i class="fa-brands fa-x-twitter"></i> <span>X</span></button>
                         </div>
                     </div>
-
                     <div class="grid grid-cols-3 gap-2 sm:gap-4">
                         <div class="stat-card bg-slate-800 border border-slate-700 p-3 sm:p-5 rounded-xl sm:rounded-2xl flex items-center justify-between">
-                            <div>
-                                <span class="text-xs text-slate-400 font-bold uppercase tracking-wider leading-tight block">Total</span>
-                                <h3 class="text-lg sm:text-2xl font-black text-white mt-1"><span id="stat-total-referidos">0</span></h3>
-                            </div>
+                            <div><span class="text-xs text-slate-400 font-bold uppercase tracking-wider leading-tight block">Total</span><h3 class="text-lg sm:text-2xl font-black text-white mt-1"><span id="stat-total-referidos">0</span></h3></div>
                             <div class="p-2 sm:p-3 bg-purple-500/10 text-purple-400 rounded-lg sm:rounded-xl text-base sm:text-xl"><i class="fa-solid fa-users"></i></div>
                         </div>
                         <div class="stat-card bg-slate-800 border border-slate-700 p-3 sm:p-5 rounded-xl sm:rounded-2xl flex items-center justify-between">
-                            <div>
-                                <span class="text-xs text-slate-400 font-bold uppercase tracking-wider leading-tight block">NC Ganadas</span>
-                                <h3 class="text-lg sm:text-2xl font-black text-amber-300 mt-1"><span id="stat-nc-referidos">0</span></h3>
-                            </div>
+                            <div><span class="text-xs text-slate-400 font-bold uppercase tracking-wider leading-tight block">NC Ganadas</span><h3 class="text-lg sm:text-2xl font-black text-amber-300 mt-1"><span id="stat-nc-referidos">0</span></h3></div>
                             <div class="p-2 sm:p-3 bg-amber-500/10 text-amber-400 rounded-lg sm:rounded-xl text-base sm:text-xl"><i class="fa-solid fa-coins"></i></div>
                         </div>
                         <div class="stat-card bg-slate-800 border border-slate-700 p-3 sm:p-5 rounded-xl sm:rounded-2xl flex items-center justify-between">
-                            <div>
-                                <span class="text-xs text-slate-400 font-bold uppercase tracking-wider leading-tight block">Por Referido</span>
-                                <h3 class="text-lg sm:text-2xl font-black text-emerald-400 mt-1">500</h3>
-                            </div>
+                            <div><span class="text-xs text-slate-400 font-bold uppercase tracking-wider leading-tight block">Por Referido</span><h3 class="text-lg sm:text-2xl font-black text-emerald-400 mt-1">500</h3></div>
                             <div class="p-2 sm:p-3 bg-emerald-500/10 text-emerald-400 rounded-lg sm:rounded-xl text-base sm:text-xl"><i class="fa-solid fa-gift"></i></div>
                         </div>
                     </div>
-
                     <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 sm:p-6">
                         <h3 class="font-extrabold text-base sm:text-lg mb-3 sm:mb-4"><i class="fa-solid fa-list mr-2 text-purple-400"></i>Amigos que invitaste</h3>
                         <div id="lista-referidos" class="space-y-2">
@@ -375,48 +361,35 @@
                     </div>
                 </div>
 
+                <!-- TAB CANJEAR -->
                 <div id="tab-canjear" class="tab-content space-y-4 sm:space-y-6">
                     <div class="border-b border-slate-700 pb-3 sm:pb-4">
                         <h2 class="text-xl sm:text-2xl font-extrabold">Módulo de Retiros y Canjes</h2>
                         <p class="text-slate-400 text-xs sm:text-sm mt-1">Cambia tus NetCoins por recompensas reales.</p>
                     </div>
-
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6">
                         <div class="stat-card bg-slate-800 border border-slate-700 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-purple-500 transition duration-300">
-                            <div>
-                                <span class="bg-red-600/20 text-red-400 text-xs font-bold px-2.5 py-1 rounded-md inline-block mb-3">Código Digital</span>
-                                <h3 class="text-base sm:text-lg font-bold">Robux (Roblox Pin)</h3>
-                                <p class="text-slate-400 text-xs mt-1">Canjea directamente en tu cuenta de Roblox.</p>
-                            </div>
+                            <div><span class="bg-red-600/20 text-red-400 text-xs font-bold px-2.5 py-1 rounded-md inline-block mb-3">Código Digital</span><h3 class="text-base sm:text-lg font-bold">Robux (Roblox Pin)</h3><p class="text-slate-400 text-xs mt-1">Canjea directamente en tu cuenta de Roblox.</p></div>
                             <div class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-slate-700/50 flex items-center justify-between">
                                 <span class="text-amber-400 font-extrabold text-xs sm:text-sm"><i class="fa-solid fa-coins mr-1"></i> 100 NC = $1 MXN</span>
                                 <button onclick="abrirFormularioRetiro('Roblox')" class="bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-xs font-bold px-3 sm:px-4 py-2 rounded-xl transition">Canjear</button>
                             </div>
                         </div>
                         <div class="stat-card bg-slate-800 border border-slate-700 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-purple-500 transition duration-300">
-                            <div>
-                                <span class="bg-blue-600/20 text-blue-400 text-xs font-bold px-2.5 py-1 rounded-md inline-block mb-3">Saldo Electrónico</span>
-                                <h3 class="text-base sm:text-lg font-bold">PayPal Balance (USD)</h3>
-                                <p class="text-slate-400 text-xs mt-1">Recibe fondos directamente en tu cuenta PayPal.</p>
-                            </div>
+                            <div><span class="bg-blue-600/20 text-blue-400 text-xs font-bold px-2.5 py-1 rounded-md inline-block mb-3">Saldo Electrónico</span><h3 class="text-base sm:text-lg font-bold">PayPal Balance (USD)</h3><p class="text-slate-400 text-xs mt-1">Recibe fondos directamente en tu cuenta PayPal.</p></div>
                             <div class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-slate-700/50 flex items-center justify-between">
                                 <span class="text-amber-400 font-extrabold text-xs sm:text-sm"><i class="fa-solid fa-coins mr-1"></i> 100 NC = $1 MXN</span>
                                 <button onclick="abrirFormularioRetiro('PayPal')" class="bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-xs font-bold px-3 sm:px-4 py-2 rounded-xl transition">Canjear</button>
                             </div>
                         </div>
                         <div class="stat-card bg-slate-800 border border-slate-700 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-purple-500 transition duration-300">
-                            <div>
-                                <span class="bg-emerald-600/20 text-emerald-400 text-xs font-bold px-2.5 py-1 rounded-md inline-block mb-3">Transferencia Directa</span>
-                                <h3 class="text-base sm:text-lg font-bold">Transferencia Bancaria (SPEI)</h3>
-                                <p class="text-slate-400 text-xs mt-1">Recibe dinero en tu cuenta bancaria mexicana.</p>
-                            </div>
+                            <div><span class="bg-emerald-600/20 text-emerald-400 text-xs font-bold px-2.5 py-1 rounded-md inline-block mb-3">Transferencia Directa</span><h3 class="text-base sm:text-lg font-bold">Transferencia Bancaria (SPEI)</h3><p class="text-slate-400 text-xs mt-1">Recibe dinero en tu cuenta bancaria mexicana.</p></div>
                             <div class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-slate-700/50 flex items-center justify-between">
                                 <span class="text-amber-400 font-extrabold text-xs sm:text-sm"><i class="fa-solid fa-coins mr-1"></i> 100 NC = $1 MXN</span>
                                 <button onclick="abrirFormularioRetiro('SPEI / Banco')" class="bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-xs font-bold px-3 sm:px-4 py-2 rounded-xl transition">Canjear</button>
                             </div>
                         </div>
                     </div>
-
                     <div id="container-formulario-retiro" class="hidden bg-slate-800 border border-slate-700 p-4 sm:p-6 rounded-2xl max-w-xl mx-auto shadow-2xl">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-base sm:text-lg font-bold text-purple-400">Canjear: <span id="tipo-recompensa-txt" class="text-white"></span></h3>
@@ -427,31 +400,13 @@
                             <span>Retiro mínimo <strong>100 MXN</strong> y máximo <strong>3000 MXN</strong> por operación.</span>
                         </div>
                         <form id="form-solicitud-retiro" class="space-y-3 sm:space-y-4">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Monto a Retirar (MXN)</label>
-                                <input type="number" id="retiro-monto" min="100" max="3000" placeholder="Min 100 - Max 3000 MXN"
-                                    class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required>
-                            </div>
+                            <div><label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Monto a Retirar (MXN)</label><input type="number" id="retiro-monto" min="100" max="3000" placeholder="Min 100 - Max 3000 MXN" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required></div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Banco / Plataforma</label>
-                                    <input type="text" id="retiro-banco" placeholder="BBVA, Santander, PayPal..."
-                                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Nombre del Beneficiario</label>
-                                    <input type="text" id="retiro-beneficiario" placeholder="Titular de la cuenta"
-                                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required>
-                                </div>
+                                <div><label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Banco / Plataforma</label><input type="text" id="retiro-banco" placeholder="BBVA, Santander, PayPal..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required></div>
+                                <div><label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Nombre del Beneficiario</label><input type="text" id="retiro-beneficiario" placeholder="Titular de la cuenta" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required></div>
                             </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">CLABE / Email de Destino</label>
-                                <input type="text" id="retiro-destino" placeholder="CLABE 18 dígitos o Email"
-                                    class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required>
-                            </div>
-                            <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-purple-600/30 text-sm sm:text-base">
-                                Enviar Solicitud
-                            </button>
+                            <div><label class="block text-xs font-semibold text-slate-400 uppercase mb-1">CLABE / Email de Destino</label><input type="text" id="retiro-destino" placeholder="CLABE 18 dígitos o Email" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required></div>
+                            <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-purple-600/30 text-sm sm:text-base">Enviar Solicitud</button>
                         </form>
                     </div>
                 </div>
@@ -459,42 +414,14 @@
             </main>
         </div>
 
+        <!-- Bottom Nav Mobile -->
         <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 bg-slate-800 border-t border-slate-700 z-50 justify-around items-center px-2 py-2">
-            <button onclick="switchTab('tab-inicio', event)" class="tab-btn-mobile flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-purple-400 transition min-w-0">
-                <i class="fa-solid fa-house text-lg"></i>
-                <span class="text-xs font-semibold">Inicio</span>
-            </button>
-            <button onclick="switchTab('tab-ofertas', event)" class="tab-btn-mobile flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-slate-400 transition min-w-0">
-                <i class="fa-solid fa-gamepad text-lg"></i>
-                <span class="text-xs font-semibold">Ofertas</span>
-            </button>
-            <button onclick="switchTab('tab-referidos', event)" class="tab-btn-mobile flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-slate-400 transition min-w-0">
-                <i class="fa-solid fa-user-plus text-lg"></i>
-                <span class="text-xs font-semibold">Referidos</span>
-            </button>
-            <button onclick="switchTab('tab-canjear', event)" class="tab-btn-mobile flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-slate-400 transition min-w-0">
-                <i class="fa-solid fa-gift text-lg"></i>
-                <span class="text-xs font-semibold">Canjear</span>
-            </button>
-            <button onclick="cerrarSesion()" class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-rose-400 transition min-w-0">
-                <i class="fa-solid fa-right-from-bracket text-lg"></i>
-                <span class="text-xs font-semibold">Salir</span>
-            </button>
+            <button onclick="switchTab('tab-inicio', event)" class="tab-btn-mobile flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-purple-400 transition min-w-0"><i class="fa-solid fa-house text-lg"></i><span class="text-xs font-semibold">Inicio</span></button>
+            <button onclick="switchTab('tab-ofertas', event)" class="tab-btn-mobile flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-slate-400 transition min-w-0"><i class="fa-solid fa-gamepad text-lg"></i><span class="text-xs font-semibold">Ofertas</span></button>
+            <button onclick="switchTab('tab-referidos', event)" class="tab-btn-mobile flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-slate-400 transition min-w-0"><i class="fa-solid fa-user-plus text-lg"></i><span class="text-xs font-semibold">Referidos</span></button>
+            <button onclick="switchTab('tab-canjear', event)" class="tab-btn-mobile flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-slate-400 transition min-w-0"><i class="fa-solid fa-gift text-lg"></i><span class="text-xs font-semibold">Canjear</span></button>
+            <button onclick="cerrarSesion()" class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-rose-400 transition min-w-0"><i class="fa-solid fa-right-from-bracket text-lg"></i><span class="text-xs font-semibold">Salir</span></button>
         </nav>
-    </div>
-
-    <div id="modal-legal" class="hidden fixed inset-0 bg-slate-900/90 flex items-center justify-center z-[1000] p-4">
-        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 sm:p-8 max-w-2xl w-full max-h-[80vh] flex flex-col shadow-2xl">
-            <div class="flex justify-between items-center mb-4">
-                <h2 id="modal-legal-title" class="text-xl sm:text-2xl font-extrabold text-purple-400">Título</h2>
-                <button onclick="cerrarModalLegal()" class="text-slate-400 hover:text-white p-1 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
-            </div>
-            <div id="modal-legal-content" class="flex-1 overflow-y-auto text-sm text-slate-300 space-y-4 pr-2">
-                </div>
-            <div class="mt-6 pt-4 border-t border-slate-700 text-right">
-                <button onclick="cerrarModalLegal()" class="bg-purple-600 hover:bg-purple-700 active:bg-purple-800 font-bold py-2 px-6 rounded-xl transition text-white">Entendido</button>
-            </div>
-        </div>
     </div>
 
     <script>
@@ -512,6 +439,11 @@
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         let currentUser = null;
 
+        // Convertir UUID a playerid válido para AdGem (solo minúsculas alfanumérico)
+        function toPlayerId(uuid) {
+            return uuid ? uuid.toLowerCase().replace(/[^a-z0-9-]/g, '') : '';
+        }
+
         const urlParams = new URLSearchParams(window.location.search);
         const refCode = urlParams.get('ref');
         if (refCode) sessionStorage.setItem('ref_code', refCode);
@@ -523,6 +455,16 @@
                 document.getElementById('referido-detectado').classList.remove('hidden');
                 toggleAuthViews(false);
             }
+        });
+
+        // ── Modales ──
+        function abrirModal(id) { document.getElementById(id).classList.add('active'); }
+        function cerrarModal(id) { document.getElementById(id).classList.remove('active'); }
+        document.addEventListener('click', (e) => {
+            ['modal-privacidad', 'modal-terminos'].forEach(id => {
+                const modal = document.getElementById(id);
+                if (e.target === modal) cerrarModal(id);
+            });
         });
 
         function toggleAuthViews(showLogin) {
@@ -551,9 +493,7 @@
                     const codigo = Array.from(inputs).map(i => i.value).join('');
                     if (codigo.length === 6) verificarOTP();
                 };
-                input.onkeydown = (e) => {
-                    if (e.key === 'Backspace' && !input.value && index > 0) inputs[index - 1].focus();
-                };
+                input.onkeydown = (e) => { if (e.key === 'Backspace' && !input.value && index > 0) inputs[index - 1].focus(); };
                 input.onpaste = (e) => {
                     e.preventDefault();
                     const paste = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
@@ -569,22 +509,17 @@
             if (codigo.length < 6) return;
             const email = document.getElementById("verify-email-address").innerText;
             const btn = document.getElementById("btn-verificar-otp");
-            btn.disabled = true;
-            btn.innerText = "Verificando...";
+            btn.disabled = true; btn.innerText = "Verificando...";
             const { data, error } = await _supabase.auth.verifyOtp({ email, token: codigo, type: 'signup' });
-            btn.disabled = false;
-            btn.innerText = "Verificar Código";
+            btn.disabled = false; btn.innerText = "Verificar Código";
             if (error) {
                 document.getElementById("otp-error").classList.remove("hidden");
                 inputs.forEach(i => { i.value = ''; i.classList.add('border-rose-500'); setTimeout(() => i.classList.remove('border-rose-500'), 2000); });
-                inputs[0].focus();
-                return;
+                inputs[0].focus(); return;
             }
             if (data.user) {
                 const refCode = sessionStorage.getItem('ref_code');
-                if (refCode) {
-                    await procesarBonoReferido(data.user.id, refCode);
-                }
+                if (refCode) await procesarBonoReferido(data.user.id, refCode);
             }
             verificarSesionActiva();
         }
@@ -628,8 +563,7 @@
             });
 
             document.getElementById("form-solicitud-retiro").addEventListener("submit", (e) => {
-                e.preventDefault();
-                procesarSolicitudRetiro();
+                e.preventDefault(); procesarSolicitudRetiro();
             });
         }
 
@@ -638,26 +572,17 @@
                 if (nuevoUserId === referidorId) { sessionStorage.removeItem('ref_code'); return; }
                 const { data: perfilNuevo } = await _supabase.from('perfiles').select('netcoins, referido_procesado').eq('id', nuevoUserId).single();
                 if (!perfilNuevo || perfilNuevo.referido_procesado === true) {
-                    sessionStorage.removeItem('ref_code');
-                    sessionStorage.removeItem('ref_pending_user');
-                    return;
+                    sessionStorage.removeItem('ref_code'); sessionStorage.removeItem('ref_pending_user'); return;
                 }
                 await _supabase.from('perfiles').update({ referido_procesado: true }).eq('id', nuevoUserId);
                 await _supabase.from('perfiles').update({ netcoins: (perfilNuevo.netcoins || 0) + NC_POR_REFERIDO }).eq('id', nuevoUserId);
                 const { data: perfilRef } = await _supabase.from('perfiles').select('netcoins, total_referidos').eq('id', referidorId).single();
-                if (perfilRef) {
-                    await _supabase.from('perfiles').update({
-                        netcoins: (perfilRef.netcoins || 0) + NC_POR_REFERIDO,
-                        total_referidos: (perfilRef.total_referidos || 0) + 1
-                    }).eq('id', referidorId);
-                }
+                if (perfilRef) await _supabase.from('perfiles').update({ netcoins: (perfilRef.netcoins || 0) + NC_POR_REFERIDO, total_referidos: (perfilRef.total_referidos || 0) + 1 }).eq('id', referidorId);
                 await _supabase.from('referidos').insert([{ referidor_id: referidorId, referido_id: nuevoUserId, nc_otorgados: NC_POR_REFERIDO }]);
-                sessionStorage.removeItem('ref_code');
-                sessionStorage.removeItem('ref_pending_user');
+                sessionStorage.removeItem('ref_code'); sessionStorage.removeItem('ref_pending_user');
             } catch(err) {
                 console.error("Error procesando bono referido:", err);
-                sessionStorage.removeItem('ref_code');
-                sessionStorage.removeItem('ref_pending_user');
+                sessionStorage.removeItem('ref_code'); sessionStorage.removeItem('ref_pending_user');
             }
         }
 
@@ -666,12 +591,8 @@
             if (session) {
                 currentUser = session.user;
                 const refCode = sessionStorage.getItem('ref_code');
-                if (refCode && refCode !== currentUser.id) {
-                    await procesarBonoReferido(currentUser.id, refCode);
-                } else {
-                    sessionStorage.removeItem('ref_code');
-                    sessionStorage.removeItem('ref_pending_user');
-                }
+                if (refCode && refCode !== currentUser.id) await procesarBonoReferido(currentUser.id, refCode);
+                else { sessionStorage.removeItem('ref_code'); sessionStorage.removeItem('ref_pending_user'); }
                 document.getElementById("auth-container").classList.add("hidden");
                 document.getElementById("app-container").classList.remove("hidden");
                 document.getElementById("user-display-name").innerText = currentUser.user_metadata.username || currentUser.email;
@@ -684,8 +605,6 @@
                 document.getElementById("auth-container").classList.remove("hidden");
                 document.getElementById("app-container").classList.add("hidden");
             }
-
-            // Ocultar splash con fade suave
             const splash = document.getElementById("splash-screen");
             splash.style.transition = "opacity 0.4s ease";
             splash.style.opacity = "0";
@@ -711,21 +630,16 @@
             const { data, error } = await _supabase.from('referidos').select('referido_id, created_at').eq('referidor_id', user.id).order('created_at', { ascending: false });
             const lista = document.getElementById("lista-referidos");
             if (error || !data || data.length === 0) {
-                lista.innerHTML = '<p class="text-slate-500 text-xs sm:text-sm text-center py-6">Aún no has referido a nadie. ¡Comparte tu enlace!</p>';
-                return;
+                lista.innerHTML = '<p class="text-slate-500 text-xs sm:text-sm text-center py-6">Aún no has referido a nadie. ¡Comparte tu enlace!</p>'; return;
             }
             lista.innerHTML = data.map((ref, i) => `
                 <div class="flex items-center justify-between bg-slate-900/60 border border-slate-700/50 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3">
                     <div class="flex items-center gap-2 sm:gap-3">
                         <div class="w-7 h-7 sm:w-8 sm:h-8 bg-purple-600/30 rounded-full flex items-center justify-center text-purple-400 font-bold text-xs sm:text-sm shrink-0">${i + 1}</div>
-                        <div>
-                            <p class="text-xs sm:text-sm font-semibold text-white">Amigo referido</p>
-                            <p class="text-xs text-slate-400">${new Date(ref.created_at).toLocaleDateString('es-MX')}</p>
-                        </div>
+                        <div><p class="text-xs sm:text-sm font-semibold text-white">Amigo referido</p><p class="text-xs text-slate-400">${new Date(ref.created_at).toLocaleDateString('es-MX')}</p></div>
                     </div>
                     <span class="text-amber-400 font-bold text-xs sm:text-sm">+${NC_POR_REFERIDO} NC</span>
-                </div>
-            `).join('');
+                </div>`).join('');
         }
 
         function copiarEnlace() {
@@ -734,18 +648,13 @@
                 const btn = document.getElementById("btn-copiar");
                 btn.innerHTML = '<i class="fa-solid fa-check"></i> <span class="hidden sm:inline">¡Copiado!</span>';
                 btn.classList.replace('bg-purple-600', 'bg-emerald-600');
-                setTimeout(() => {
-                    btn.innerHTML = '<i class="fa-solid fa-copy"></i> <span class="hidden sm:inline">Copiar</span>';
-                    btn.classList.replace('bg-emerald-600', 'bg-purple-600');
-                }, 2000);
+                setTimeout(() => { btn.innerHTML = '<i class="fa-solid fa-copy"></i> <span class="hidden sm:inline">Copiar</span>'; btn.classList.replace('bg-emerald-600', 'bg-purple-600'); }, 2000);
             });
         }
 
         function obtenerMensajeCompartir() {
-            const enlace = document.getElementById("referral-link-input").value;
-            return `¡Únete a NetGamer MX y gana dinero real completando tareas! Usa mi enlace y ambos recibimos 500 NetCoins de regalo 🎮💰 ${enlace}`;
+            return `¡Únete a NetGamer MX y gana dinero real completando tareas! Usa mi enlace y ambos recibimos 500 NetCoins 🎮💰 ${document.getElementById("referral-link-input").value}`;
         }
-
         function compartirWhatsApp() { window.open(`https://wa.me/?text=${encodeURIComponent(obtenerMensajeCompartir())}`, '_blank'); }
         function compartirTelegram() { window.open(`https://t.me/share/url?url=${encodeURIComponent(document.getElementById("referral-link-input").value)}&text=${encodeURIComponent("¡Únete a NetGamer MX y gana dinero real! 🎮💰")}`, '_blank'); }
         function compartirFacebook() { window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(document.getElementById("referral-link-input").value)}`, '_blank'); }
@@ -753,14 +662,12 @@
 
         function suscribirseCambiosEnVivo(user) {
             _supabase.channel('cambios-saldo')
-                .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'perfiles', filter: `id=eq.${user.id}` },
-                    (payload) => {
-                        actualizarTextosInterfaz(payload.new.netcoins || 0);
-                        const el = document.getElementById("user-balance");
-                        el.classList.add("balance-bump");
-                        setTimeout(() => el.classList.remove("balance-bump"), 400);
-                    }
-                ).subscribe();
+                .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'perfiles', filter: `id=eq.${user.id}` }, (payload) => {
+                    actualizarTextosInterfaz(payload.new.netcoins || 0);
+                    const el = document.getElementById("user-balance");
+                    el.classList.add("balance-bump");
+                    setTimeout(() => el.classList.remove("balance-bump"), 400);
+                }).subscribe();
         }
 
         function actualizarTextosInterfaz(monedas) {
@@ -771,35 +678,26 @@
 
         function cambiarMuro(proveedor) {
             if (!currentUser) return;
+            const playerId = toPlayerId(currentUser.id); // ← minúsculas para AdGem
             document.querySelectorAll('.muro-btn').forEach(btn => { btn.classList.remove('bg-purple-600', 'text-white'); btn.classList.add('bg-slate-700', 'text-slate-300'); });
             document.getElementById(`btn-${proveedor}`).classList.remove('bg-slate-700', 'text-slate-300');
             document.getElementById(`btn-${proveedor}`).classList.add('bg-purple-600', 'text-white');
             let url = "";
-            
-            // CORRECCIÓN AQUÍ: Se añade .toLowerCase() al ID de usuario para AdGem
-            if (proveedor === 'adgem') url = `https://api.adgem.com/v1/wall?appid=${adgemAppId}&playerid=${currentUser.id.toLowerCase()}`;
-            else if (proveedor === 'torox') url = `https://www.offertoro.com/ifr/show/${toroxAppId}/${currentUser.id}/${toroxSecretKey}`;
-            else if (proveedor === 'monlix') url = `https://wall.monlix.com/?appid=${monlixAppId}&userid=${currentUser.id}`;
-            
+            if (proveedor === 'adgem') url = `https://api.adgem.com/v1/wall?appid=${adgemAppId}&playerid=${playerId}`;
+            else if (proveedor === 'torox') url = `https://www.offertoro.com/ifr/show/${toroxAppId}/${playerId}/${toroxSecretKey}`;
+            else if (proveedor === 'monlix') url = `https://wall.monlix.com/?appid=${monlixAppId}&userid=${playerId}`;
             document.getElementById('iframe-wrapper').innerHTML = `<iframe src="${url}" frameborder="0" class="w-full rounded-xl shadow-inner bg-white"></iframe>`;
         }
 
         function switchTab(tabId, e) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
-            // Desktop sidebar
             document.querySelectorAll('.tab-btn').forEach(btn => { btn.classList.remove('bg-purple-600', 'text-white'); btn.classList.add('text-slate-400'); });
-            // Mobile bottom nav
             document.querySelectorAll('.tab-btn-mobile').forEach(btn => { btn.classList.remove('text-purple-400'); btn.classList.add('text-slate-400'); });
             if (e && e.currentTarget) {
                 const target = e.currentTarget;
-                if (target.classList.contains('tab-btn')) {
-                    target.classList.add('bg-purple-600', 'text-white');
-                    target.classList.remove('text-slate-400');
-                } else if (target.classList.contains('tab-btn-mobile')) {
-                    target.classList.add('text-purple-400');
-                    target.classList.remove('text-slate-400');
-                }
+                if (target.classList.contains('tab-btn')) { target.classList.add('bg-purple-600', 'text-white'); target.classList.remove('text-slate-400'); }
+                else if (target.classList.contains('tab-btn-mobile')) { target.classList.add('text-purple-400'); target.classList.remove('text-slate-400'); }
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -827,11 +725,7 @@
             if (!banco || !beneficiario || !destino) { alert("Completa todos los campos."); return; }
             const { data: perfil } = await _supabase.from('perfiles').select('netcoins').eq('id', currentUser.id).single();
             if (!perfil || perfil.netcoins < costoNetCoins) { alert(`Fondos insuficientes. Requieres ${costoNetCoins} NetCoins.`); return; }
-            const { error: errorInsert } = await _supabase.from('retiros_pendientes').insert([{
-                user_id: currentUser.id, monto_mxn: montoMXN, netcoins_deducidos: costoNetCoins,
-                banco_plataforma: banco, nombre_beneficiario: beneficiario, cuenta_destino: destino,
-                tipo_premio: tipoPremio, estatus: 'Pendiente'
-            }]);
+            const { error: errorInsert } = await _supabase.from('retiros_pendientes').insert([{ user_id: currentUser.id, monto_mxn: montoMXN, netcoins_deducidos: costoNetCoins, banco_plataforma: banco, nombre_beneficiario: beneficiario, cuenta_destino: destino, tipo_premio: tipoPremio, estatus: 'Pendiente' }]);
             if (errorInsert) { alert("Error al registrar retiro: " + errorInsert.message); return; }
             await _supabase.from('perfiles').update({ netcoins: perfil.netcoins - costoNetCoins }).eq('id', currentUser.id);
             alert("¡Solicitud enviada para revisión!");
@@ -841,41 +735,6 @@
         async function cerrarSesion() {
             await _supabase.auth.signOut();
             verificarSesionActiva();
-        }
-
-        /* ==================== LÓGICA MODAL LEGAL ==================== */
-        const textoPrivacidad = `
-            <h3 class="font-bold text-white mb-2">1. Información que recopilamos</h3>
-            <p>Recopilamos de forma segura tu dirección de correo electrónico, nombre de usuario y datos analíticos de interacción dentro de la plataforma (como tareas iniciadas o completadas en nuestros muros asociados).</p>
-            <h3 class="font-bold text-white mb-2 mt-4">2. Uso de la información</h3>
-            <p>Usamos tu información exclusivamente para gestionar tu cuenta, procesar la entrega de tus recompensas y otorgar soporte técnico. Además, compartimos identificadores anónimos de usuario (UUID) con nuestros proveedores de ofertas (ej. AdGem) estrictamente para verificar y otorgar créditos de manera automática.</p>
-            <h3 class="font-bold text-white mb-2 mt-4">3. Retención y Seguridad de Datos</h3>
-            <p>Empleamos estándares de seguridad de la industria a través de nuestra arquitectura en la nube (Supabase) para encriptar contraseñas y proteger el acceso a tus datos personales. Puedes solicitar la eliminación completa de tu cuenta en cualquier momento contactando a nuestro soporte.</p>
-        `;
-
-        const textoTerminos = `
-            <h3 class="font-bold text-white mb-2">1. Aceptación de los Términos</h3>
-            <p>Al acceder y utilizar NetGamer MX, aceptas cumplir en su totalidad con estos términos y condiciones. Esta plataforma está destinada a un público de 13 años o mayor.</p>
-            <h3 class="font-bold text-white mb-2 mt-4">2. Políticas Antifraude</h3>
-            <p>Queda <strong>estrictamente prohibido</strong> el uso de Redes Privadas Virtuales (VPNs), servidores Proxy, emuladores, la creación de múltiples cuentas por un mismo usuario, y el uso de software de automatización (bots). Cualquier infracción detectada resultará en el baneo permanente de la cuenta y el decomiso de los fondos ("NetCoins") almacenados.</p>
-            <h3 class="font-bold text-white mb-2 mt-4">3. Proceso de Retiro de Fondos</h3>
-            <p>NetGamer MX y sus administradores se reservan el derecho de realizar auditorías manuales o automáticas a las ofertas completadas antes de liberar fondos mediante transferencias bancarias (SPEI) u otros métodos. Las equivalencias de NetCoins a moneda real pueden estar sujetas a cambios anunciados previamente.</p>
-        `;
-
-        function abrirPrivacidad() {
-            document.getElementById('modal-legal-title').innerText = 'Política de Privacidad';
-            document.getElementById('modal-legal-content').innerHTML = textoPrivacidad;
-            document.getElementById('modal-legal').classList.remove('hidden');
-        }
-
-        function abrirTerminos() {
-            document.getElementById('modal-legal-title').innerText = 'Términos y Condiciones';
-            document.getElementById('modal-legal-content').innerHTML = textoTerminos;
-            document.getElementById('modal-legal').classList.remove('hidden');
-        }
-
-        function cerrarModalLegal() {
-            document.getElementById('modal-legal').classList.add('hidden');
         }
     </script>
 </body>
