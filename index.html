@@ -354,16 +354,34 @@
 
                 <div id="tab-ofertas" class="tab-content space-y-4 sm:space-y-6">
 
-                    <!-- Próximamente banner -->
-                    <div class="bg-gradient-to-r from-purple-900/60 to-indigo-900/60 border border-purple-500/30 rounded-2xl p-5 sm:p-6 text-center">
-                        <div class="text-4xl mb-3">🚀</div>
-                        <h2 class="text-lg sm:text-xl font-extrabold text-white mb-2">¡Muros de Ofertas Próximamente!</h2>
-                        <p class="text-slate-400 text-xs sm:text-sm">Estamos integrando las mejores redes de ofertas para que puedas ganar NetCoins. Mientras tanto, usa la <strong class="text-amber-400">Ruleta Diaria</strong> para ganar gratis cada día.</p>
-                        <div class="flex flex-wrap justify-center gap-2 mt-4">
-                            <span class="bg-purple-600/20 text-purple-300 text-xs font-bold px-3 py-1 rounded-full border border-purple-500/30">⏳ AdGem — En revisión</span>
-                            <span class="bg-purple-600/20 text-purple-300 text-xs font-bold px-3 py-1 rounded-full border border-purple-500/30">⏳ Torox — En revisión</span>
-                            <span class="bg-purple-600/20 text-purple-300 text-xs font-bold px-3 py-1 rounded-full border border-purple-500/30">⏳ Monlix — En revisión</span>
-                            <span class="bg-sky-600/20 text-sky-300 text-xs font-bold px-3 py-1 rounded-full border border-sky-500/30">⏳ BitLabs — En revisión</span>
+                    <!-- CPAlead ACTIVO -->
+                    <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
+                        <!-- Header del muro -->
+                        <div class="flex items-center justify-between px-4 py-3 border-b border-slate-700">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                                <h3 class="font-extrabold text-sm text-white">CPAlead — Muro de Ofertas</h3>
+                                <span class="bg-emerald-500/20 text-emerald-400 text-xs font-bold px-2 py-0.5 rounded-full border border-emerald-500/30">✅ Activo</span>
+                            </div>
+                        </div>
+                        <!-- iframe CPAlead -->
+                        <iframe
+                            sandbox='allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-popups-to-escape-sandbox'
+                            referrerpolicy='no-referrer'
+                            src='https://www.cdnnd.com/wall/8wJIT'
+                            style='width:100%; height:690px; border:none;'
+                            frameborder='0'>
+                        </iframe>
+                    </div>
+
+                    <!-- Próximamente otros muros -->
+                    <div class="bg-slate-900/50 border border-slate-700/50 rounded-2xl p-4 sm:p-5">
+                        <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-3">Más muros próximamente</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-slate-800 text-slate-500 text-xs font-bold px-3 py-1.5 rounded-full border border-slate-700">⏳ AdGem</span>
+                            <span class="bg-slate-800 text-slate-500 text-xs font-bold px-3 py-1.5 rounded-full border border-slate-700">⏳ Torox</span>
+                            <span class="bg-slate-800 text-slate-500 text-xs font-bold px-3 py-1.5 rounded-full border border-slate-700">⏳ Monlix</span>
+                            <span class="bg-slate-800 text-slate-500 text-xs font-bold px-3 py-1.5 rounded-full border border-slate-700">⏳ BitLabs</span>
                         </div>
                     </div>
 
@@ -380,23 +398,18 @@
                             </div>
                         </div>
 
-                        <!-- Ruleta SVG -->
                         <div class="flex flex-col items-center gap-4">
                             <div class="relative" style="width:220px;height:220px;">
-                                <!-- Indicador -->
                                 <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 z-10 text-2xl">▼</div>
                                 <canvas id="ruleta-canvas" width="220" height="220" class="rounded-full shadow-xl shadow-purple-900/50 cursor-pointer"></canvas>
                             </div>
-
                             <button id="btn-girar" onclick="girarRuleta()"
                                 class="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-900 font-extrabold px-8 py-3 rounded-2xl shadow-lg shadow-amber-500/30 transition active:scale-95 text-sm sm:text-base">
                                 🎰 ¡Girar Gratis!
                             </button>
-
                             <p id="ruleta-resultado" class="text-sm font-bold text-center min-h-[20px]"></p>
                         </div>
 
-                        <!-- Premios posibles -->
                         <div class="grid grid-cols-4 gap-2 mt-5">
                             <div class="bg-slate-900/60 rounded-xl p-2 text-center"><p class="text-amber-400 font-black text-sm">50</p><p class="text-slate-500 text-xs">NC</p></div>
                             <div class="bg-slate-900/60 rounded-xl p-2 text-center"><p class="text-amber-400 font-black text-sm">100</p><p class="text-slate-500 text-xs">NC</p></div>
