@@ -66,9 +66,82 @@
         @supports (padding-bottom: env(safe-area-inset-bottom)) {
             #bottom-nav { padding-bottom: env(safe-area-inset-bottom); }
         }
+
+        /* ── Modal Bonus Bienvenida ── */
+        #modal-bonus {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.88); z-index: 9000;
+            align-items: center; justify-content: center; padding: 20px;
+        }
+        #modal-bonus.activo { display: flex; }
+        @keyframes bounceIn {
+            0%   { transform: scale(0.4); opacity: 0; }
+            70%  { transform: scale(1.06); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        #modal-bonus-card { animation: bounceIn 0.55s cubic-bezier(.36,.07,.19,.97) forwards; }
+        @keyframes flotar {
+            0%, 100% { transform: translateY(0px); }
+            50%       { transform: translateY(-10px); }
+        }
+        #bonus-coins-icon { animation: flotar 2s ease-in-out infinite; display: inline-block; }
+        @keyframes shine {
+            0%   { left: -100%; }
+            100% { left: 200%; }
+        }
+        .btn-bonus-reclamar {
+            position: relative; overflow: hidden;
+        }
+        .btn-bonus-reclamar::after {
+            content: ''; position: absolute; top: 0; left: -100%;
+            width: 60%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+            animation: shine 2s infinite;
+        }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-100 font-sans min-h-screen">
+
+    <!-- ══ MODAL BONUS BIENVENIDA ══ -->
+    <div id="modal-bonus">
+        <div id="modal-bonus-card" class="bg-slate-800 border border-purple-500/50 rounded-3xl w-full max-w-sm text-center p-8 shadow-2xl shadow-purple-900/50 relative">
+            <!-- Destellos decorativos -->
+            <div class="absolute top-3 left-5 text-yellow-400 text-xl opacity-70">✦</div>
+            <div class="absolute top-6 right-6 text-purple-400 text-lg opacity-60">✦</div>
+            <div class="absolute bottom-20 left-4 text-amber-400 text-sm opacity-50">✦</div>
+
+            <!-- Ícono animado -->
+            <div id="bonus-coins-icon" class="text-7xl mb-4">🎁</div>
+
+            <!-- Badge -->
+            <span class="bg-amber-500/20 text-amber-400 text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-widest border border-amber-500/30">
+                ¡Bonus de Bienvenida!
+            </span>
+
+            <h2 class="text-2xl font-black text-white mt-4 mb-2">¡Bienvenido a NetGamer MX!</h2>
+            <p class="text-slate-400 text-sm mb-5">Como regalo por unirte, te hemos acreditado:</p>
+
+            <!-- Monto -->
+            <div class="bg-gradient-to-r from-amber-500/20 to-yellow-500/10 border border-amber-500/30 rounded-2xl py-5 px-4 mb-6">
+                <div class="text-5xl font-black text-amber-400 mb-1">
+                    +<span id="bonus-cantidad">250</span> NC
+                </div>
+                <p class="text-amber-300/70 text-xs font-semibold">NetCoins acreditadas a tu cuenta</p>
+            </div>
+
+            <!-- Lista de beneficios -->
+            <div class="text-left space-y-2 mb-6 bg-slate-900/50 rounded-xl p-4">
+                <p class="text-xs text-slate-300 flex items-center gap-2"><i class="fa-solid fa-circle-check text-emerald-400 shrink-0"></i> Completa ofertas y gana más NetCoins</p>
+                <p class="text-xs text-slate-300 flex items-center gap-2"><i class="fa-solid fa-circle-check text-emerald-400 shrink-0"></i> Invita amigos y ambos ganan 500 NC</p>
+                <p class="text-xs text-slate-300 flex items-center gap-2"><i class="fa-solid fa-circle-check text-emerald-400 shrink-0"></i> Canjea por PayPal, SPEI o Robux</p>
+            </div>
+
+            <button onclick="reclamarBonus()" class="btn-bonus-reclamar w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 font-extrabold py-4 rounded-2xl text-base shadow-lg shadow-purple-700/40 transition duration-200 active:scale-95">
+                🎉 ¡Reclamar mis NetCoins!
+            </button>
+            <p class="text-slate-600 text-xs mt-3">Solo se otorga una vez por cuenta</p>
+        </div>
+    </div>
 
     <div id="splash-screen" class="fixed inset-0 bg-slate-900 flex flex-col items-center justify-center z-[999]">
         <h1 class="text-3xl font-extrabold text-purple-500 tracking-wide mb-3">NetGamer <span class="text-white">MX</span></h1>
@@ -503,6 +576,7 @@
         const SUPABASE_KEY = "sb_publishable_gZgGIamNJqf8ir8vvt1OTw_bJ-rosi4";
         const CONVERSION_RATE = 100;
         const NC_POR_REFERIDO = 500;
+        const NC_BONUS_BIENVENIDA = 250;
         const BASE_URL = "https://daniel00998888.github.io/NetGamer-MX/";
 
         const adgemAppId = "32676";
@@ -694,14 +768,66 @@
         }
 
         async function cargarDatosPerfil(user) {
-            const { data, error } = await _supabase.from('perfiles').select('netcoins, total_referidos').eq('id', user.id).single();
+            const { data, error } = await _supabase.from('perfiles').select('netcoins, total_referidos, bonus_bienvenida_reclamado').eq('id', user.id).single();
             if (!error && data) {
                 actualizarTextosInterfaz(data.netcoins || 0);
                 const totalRef = data.total_referidos || 0;
                 document.getElementById("total-referidos-header").innerText = totalRef;
                 document.getElementById("stat-total-referidos").innerText = totalRef;
                 document.getElementById("stat-nc-referidos").innerText = totalRef * NC_POR_REFERIDO;
+
+                // Mostrar modal bonus si nunca lo ha reclamado
+                if (!data.bonus_bienvenida_reclamado) {
+                    setTimeout(() => mostrarModalBonus(), 800);
+                }
             }
+        }
+
+        function mostrarModalBonus() {
+            document.getElementById('bonus-cantidad').innerText = NC_BONUS_BIENVENIDA;
+            document.getElementById('modal-bonus').classList.add('activo');
+            document.body.style.overflow = 'hidden';
+        }
+
+        async function reclamarBonus() {
+            if (!currentUser) return;
+            const btn = document.querySelector('#modal-bonus .btn-bonus-reclamar');
+            btn.disabled = true;
+            btn.innerText = '⏳ Acreditando...';
+
+            const { data: perfil } = await _supabase.from('perfiles')
+                .select('netcoins, bonus_bienvenida_reclamado')
+                .eq('id', currentUser.id)
+                .single();
+
+            // Doble verificación para evitar doble claim
+            if (!perfil || perfil.bonus_bienvenida_reclamado === true) {
+                document.getElementById('modal-bonus').classList.remove('activo');
+                document.body.style.overflow = '';
+                return;
+            }
+
+            await _supabase.from('perfiles').update({
+                netcoins: (perfil.netcoins || 0) + NC_BONUS_BIENVENIDA,
+                bonus_bienvenida_reclamado: true
+            }).eq('id', currentUser.id);
+
+            // Animación de éxito
+            const card = document.getElementById('modal-bonus-card');
+            card.innerHTML = `
+                <div class="text-7xl mb-4">🎉</div>
+                <h2 class="text-2xl font-black text-white mb-2">¡NetCoins Acreditadas!</h2>
+                <p class="text-slate-400 text-sm mb-4">Se han añadido <strong class="text-amber-400">${NC_BONUS_BIENVENIDA} NetCoins</strong> a tu balance.</p>
+                <div class="text-5xl font-black text-amber-400 mb-6">+${NC_BONUS_BIENVENIDA} NC</div>
+                <button onclick="cerrarModalBonus()" class="w-full bg-purple-600 hover:bg-purple-700 font-bold py-3 rounded-2xl transition active:scale-95">
+                    ¡Empezar a ganar! 🚀
+                </button>
+            `;
+        }
+
+        function cerrarModalBonus() {
+            document.getElementById('modal-bonus').classList.remove('activo');
+            document.body.style.overflow = '';
         }
 
         function generarEnlaceReferido(user) {
