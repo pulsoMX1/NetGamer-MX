@@ -354,55 +354,56 @@
 
                 <div id="tab-ofertas" class="tab-content space-y-4 sm:space-y-6">
 
-                    <!-- MURO ADGEM -->
+                    <!-- MUROS CON PESTAÑAS -->
                     <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
-                        <div class="flex items-center justify-between px-4 py-3 border-b border-slate-700">
-                            <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-                                <h3 class="font-extrabold text-sm text-white">AdGem — Muro de Ofertas</h3>
-                                <span class="bg-emerald-500/20 text-emerald-400 text-xs font-bold px-2 py-0.5 rounded-full border border-emerald-500/30">✅ Activo</span>
-                            </div>
+                        <!-- Selector de pestañas -->
+                        <div class="flex border-b border-slate-700 bg-slate-900/50 overflow-x-auto">
+                            <button id="tab-muro-cpalead" onclick="cambiarMuroTab('cpalead')"
+                                class="muro-tab-btn flex items-center gap-2 px-4 py-3 text-sm font-bold whitespace-nowrap border-b-2 border-purple-500 text-purple-400 transition">
+                                <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shrink-0"></span>
+                                CPAlead
+                            </button>
+                            <button id="tab-muro-adgem" onclick="cambiarMuroTab('adgem')"
+                                class="muro-tab-btn flex items-center gap-2 px-4 py-3 text-sm font-bold whitespace-nowrap border-b-2 border-transparent text-slate-400 hover:text-white transition">
+                                <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shrink-0"></span>
+                                AdGem
+                            </button>
+                            <button id="tab-muro-bitlabs" onclick="cambiarMuroTab('bitlabs')"
+                                class="muro-tab-btn flex items-center gap-2 px-4 py-3 text-sm font-bold whitespace-nowrap border-b-2 border-transparent text-slate-400 hover:text-white transition">
+                                <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shrink-0"></span>
+                                BitLabs
+                            </button>
                         </div>
-                        <iframe
-                            id="iframe-adgem"
-                            src="about:blank"
-                            style="width:100%; height:690px; border:none;"
-                            frameborder="0"
-                            scrolling="yes">
-                        </iframe>
-                    </div>
-
-                    <!-- Muros próximamente -->
-                    <div class="bg-slate-900/50 border border-slate-700/50 rounded-2xl p-5">
-                        <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-3">🔜 Más muros llegando pronto</p>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-4 flex items-center gap-3">
-                                <div class="w-9 h-9 bg-purple-500/10 rounded-lg flex items-center justify-center shrink-0">
-                                    <i class="fa-solid fa-hourglass-half text-purple-400 text-sm"></i>
-                                </div>
-                                <div>
-                                    <p class="font-bold text-sm text-white">Monlix</p>
-                                    <p class="text-xs text-amber-400 font-semibold">⏳ Aprobación pendiente</p>
-                                </div>
-                            </div>
-                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-4 flex items-center gap-3">
-                                <div class="w-9 h-9 bg-purple-500/10 rounded-lg flex items-center justify-center shrink-0">
-                                    <i class="fa-solid fa-hourglass-half text-purple-400 text-sm"></i>
-                                </div>
-                                <div>
-                                    <p class="font-bold text-sm text-white">Lootably</p>
-                                    <p class="text-xs text-amber-400 font-semibold">⏳ Aprobación pendiente</p>
-                                </div>
-                            </div>
-                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-4 flex items-center gap-3">
-                                <div class="w-9 h-9 bg-purple-500/10 rounded-lg flex items-center justify-center shrink-0">
-                                    <i class="fa-solid fa-hourglass-half text-purple-400 text-sm"></i>
-                                </div>
-                                <div>
-                                    <p class="font-bold text-sm text-white">Torox</p>
-                                    <p class="text-xs text-amber-400 font-semibold">⏳ Próximamente</p>
-                                </div>
-                            </div>
+                        <!-- Panel CPAlead -->
+                        <div id="muro-cpalead" class="muro-panel">
+                            <iframe
+                                id="iframe-cpalead"
+                                sandbox='allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-popups-to-escape-sandbox'
+                                referrerpolicy='no-referrer'
+                                src='about:blank'
+                                style='width:100%; height:690px; border:none;'
+                                frameborder='0'>
+                            </iframe>
+                        </div>
+                        <!-- Panel AdGem -->
+                        <div id="muro-adgem" class="muro-panel hidden">
+                            <iframe
+                                id="iframe-adgem"
+                                src="about:blank"
+                                style="width:100%; height:690px; border:none;"
+                                frameborder="0"
+                                scrolling="yes">
+                            </iframe>
+                        </div>
+                        <!-- Panel BitLabs -->
+                        <div id="muro-bitlabs" class="muro-panel hidden">
+                            <iframe
+                                id="iframe-bitlabs"
+                                src="about:blank"
+                                style="width:100%; height:690px; border:none;"
+                                frameborder="0"
+                                scrolling="yes">
+                            </iframe>
                         </div>
                     </div>
 
@@ -412,7 +413,7 @@
                         <div class="flex flex-wrap gap-2">
                             <span class="bg-slate-800 text-slate-500 text-xs font-bold px-3 py-1.5 rounded-full border border-slate-700">⏳ Torox</span>
                             <span class="bg-slate-800 text-slate-500 text-xs font-bold px-3 py-1.5 rounded-full border border-slate-700">⏳ Monlix</span>
-                            <span class="bg-slate-800 text-slate-500 text-xs font-bold px-3 py-1.5 rounded-full border border-slate-700">⏳ BitLabs</span>
+                            <span class="bg-slate-800 text-slate-500 text-xs font-bold px-3 py-1.5 rounded-full border border-slate-700">⏳ Lootably</span>
                         </div>
                     </div>
 
@@ -846,7 +847,7 @@
                 cargarDatosReferidos(currentUser);
                 generarEnlaceReferido(currentUser);
                 setTimeout(() => inicializarRuleta(), 500);
-                inicializarAdGem();
+                inicializarCPAlead();
             } else {
                 document.getElementById("auth-container").classList.remove("hidden");
                 document.getElementById("app-container").classList.add("hidden");
@@ -1116,12 +1117,39 @@
             ctx.stroke();
         }
 
-        function inicializarAdGem() {
-            const iframe = document.getElementById('iframe-adgem');
-            if (iframe && currentUser) {
-                const playerId = currentUser.id.toLowerCase();
-                iframe.src = `https://api.adgem.com/v1/wall?appid=${adgemAppId}&playerid=${playerId}`;
+        function cambiarMuroTab(muro) {
+            document.querySelectorAll('.muro-tab-btn').forEach(btn => {
+                btn.classList.remove('border-purple-500', 'text-purple-400');
+                btn.classList.add('border-transparent', 'text-slate-400');
+            });
+            const tabActivo = document.getElementById('tab-muro-' + muro);
+            if (tabActivo) {
+                tabActivo.classList.add('border-purple-500', 'text-purple-400');
+                tabActivo.classList.remove('border-transparent', 'text-slate-400');
             }
+            document.querySelectorAll('.muro-panel').forEach(p => p.classList.add('hidden'));
+            const panelActivo = document.getElementById('muro-' + muro);
+            if (panelActivo) panelActivo.classList.remove('hidden');
+            inicializarIframeMuro(muro);
+        }
+
+        function inicializarIframeMuro(muro) {
+            if (!currentUser) return;
+            const iframes = {
+                cpalead: { id: 'iframe-cpalead', url: `https://www.cdnnd.com/wall/8wJIT?subid=${currentUser.id}` },
+                adgem:   { id: 'iframe-adgem',   url: `https://api.adgem.com/v1/wall?appid=${adgemAppId}&playerid=${currentUser.id.toLowerCase()}` },
+                bitlabs: { id: 'iframe-bitlabs',  url: `https://web.bitlabs.ai?token=${bitlabsAppToken}&uid=${currentUser.id.toLowerCase()}` }
+            };
+            const cfg = iframes[muro];
+            if (!cfg) return;
+            const iframe = document.getElementById(cfg.id);
+            if (iframe && iframe.src === 'about:blank') {
+                iframe.src = cfg.url;
+            }
+        }
+
+        function inicializarCPAlead() {
+            inicializarIframeMuro('cpalead');
         }
 
         function inicializarRuleta() {
