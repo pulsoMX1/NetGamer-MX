@@ -5,16 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>NetGamer MX - Plataforma Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://alarmpenguinmelt.com/c9/7f/52/c97f52ee91d1bd3652fce5a2f49b61c5.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { box-sizing: border-box; }
-        /* AD — desktop muestra 728, móvil muestra 320 */
-        .ad-top { text-align: center; padding: 8px; background: #0f172a; border-bottom: 1px solid #1e293b; overflow: hidden; }
-        .ad-728 { display: block; }
-        .ad-320 { display: none; }
-        @media (max-width: 767px) { .ad-728 { display: none; } .ad-320 { display: block; } }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
@@ -155,16 +149,6 @@
             <div class="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style="animation-delay:0ms"></div>
             <div class="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style="animation-delay:150ms"></div>
             <div class="w-2 h-2 bg-purple-300 rounded-full animate-bounce" style="animation-delay:300ms"></div>
-        </div>
-    </div>
-
-    <!-- AD TOP -->
-    <div class="ad-top" id="ad-top-bar" style="display:none;">
-        <div class="ad-728">
-            <iframe sandbox="allow-scripts allow-popups allow-same-origin" width="728" height="90" frameborder="0" scrolling="no" srcdoc="<html><body><script>atOptions = {'key':'7f7f7c1f4dcc288bb79ea8e84f8e3cfa','format':'iframe','height':90,'width':728,'params':{}};</script><script src='https://alarmpenguinmelt.com/7f7f7c1f4dcc288bb79ea8e84f8e3cfa/invoke.js'></script></body></html>"></iframe>
-        </div>
-        <div class="ad-320">
-            <iframe sandbox="allow-scripts allow-popups allow-same-origin" width="320" height="50" frameborder="0" scrolling="no" srcdoc="<html><body><script>atOptions = {'key':'d4763e5f8fb679f246c0f6db1eebe973','format':'iframe','height':50,'width':320,'params':{}};</script><script src='https://alarmpenguinmelt.com/d4763e5f8fb679f246c0f6db1eebe973/invoke.js'></script></body></html>"></iframe>
         </div>
     </div>
 
@@ -370,55 +354,40 @@
 
                 <div id="tab-ofertas" class="tab-content space-y-4 sm:space-y-6">
 
-                    <!-- MURO ADGEM -->
+                    <!-- MUROS CON PESTAÑAS -->
                     <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
-                        <div class="flex items-center justify-between px-4 py-3 border-b border-slate-700">
-                            <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-                                <h3 class="font-extrabold text-sm text-white">AdGem — Muro de Ofertas</h3>
-                                <span class="bg-emerald-500/20 text-emerald-400 text-xs font-bold px-2 py-0.5 rounded-full border border-emerald-500/30">✅ Activo</span>
-                            </div>
+                        <!-- Pestañas de selección -->
+                        <div class="flex border-b border-slate-700 bg-slate-900/50 overflow-x-auto">
+                            <button id="tab-muro-cpalead" onclick="cambiarMuroTab('cpalead')"
+                                class="muro-tab-btn flex items-center gap-2 px-4 py-3 text-sm font-bold whitespace-nowrap border-b-2 border-purple-500 text-purple-400 transition">
+                                <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shrink-0"></span>
+                                CPAlead
+                            </button>
+                            <button id="tab-muro-adgem" onclick="cambiarMuroTab('adgem')"
+                                class="muro-tab-btn flex items-center gap-2 px-4 py-3 text-sm font-bold whitespace-nowrap border-b-2 border-transparent text-slate-400 hover:text-white transition">
+                                <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shrink-0"></span>
+                                AdGem
+                            </button>
                         </div>
-                        <iframe
-                            id="iframe-adgem"
-                            src="about:blank"
-                            style="width:100%; height:690px; border:none;"
-                            frameborder="0"
-                            scrolling="yes">
-                        </iframe>
-                    </div>
-
-                    <!-- Muros próximamente -->
-                    <div class="bg-slate-900/50 border border-slate-700/50 rounded-2xl p-5">
-                        <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-3">🔜 Más muros llegando pronto</p>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-4 flex items-center gap-3">
-                                <div class="w-9 h-9 bg-purple-500/10 rounded-lg flex items-center justify-center shrink-0">
-                                    <i class="fa-solid fa-hourglass-half text-purple-400 text-sm"></i>
-                                </div>
-                                <div>
-                                    <p class="font-bold text-sm text-white">Monlix</p>
-                                    <p class="text-xs text-amber-400 font-semibold">⏳ Aprobación pendiente</p>
-                                </div>
-                            </div>
-                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-4 flex items-center gap-3">
-                                <div class="w-9 h-9 bg-purple-500/10 rounded-lg flex items-center justify-center shrink-0">
-                                    <i class="fa-solid fa-hourglass-half text-purple-400 text-sm"></i>
-                                </div>
-                                <div>
-                                    <p class="font-bold text-sm text-white">Lootably</p>
-                                    <p class="text-xs text-amber-400 font-semibold">⏳ Aprobación pendiente</p>
-                                </div>
-                            </div>
-                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-4 flex items-center gap-3">
-                                <div class="w-9 h-9 bg-purple-500/10 rounded-lg flex items-center justify-center shrink-0">
-                                    <i class="fa-solid fa-hourglass-half text-purple-400 text-sm"></i>
-                                </div>
-                                <div>
-                                    <p class="font-bold text-sm text-white">Torox</p>
-                                    <p class="text-xs text-amber-400 font-semibold">⏳ Próximamente</p>
-                                </div>
-                            </div>
+                        <!-- iframes (solo uno visible a la vez) -->
+                        <div id="muro-cpalead" class="muro-panel">
+                            <iframe
+                                id="iframe-cpalead"
+                                sandbox='allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-popups-to-escape-sandbox'
+                                referrerpolicy='no-referrer'
+                                src='about:blank'
+                                style='width:100%; height:690px; border:none;'
+                                frameborder='0'>
+                            </iframe>
+                        </div>
+                        <div id="muro-adgem" class="muro-panel hidden">
+                            <iframe
+                                id="iframe-adgem"
+                                src="about:blank"
+                                style="width:100%; height:690px; border:none;"
+                                frameborder="0"
+                                scrolling="yes">
+                            </iframe>
                         </div>
                     </div>
 
@@ -856,18 +825,17 @@
                 }
                 document.getElementById("auth-container").classList.add("hidden");
                 document.getElementById("app-container").classList.remove("hidden");
-                document.getElementById("ad-top-bar").style.display = "block";
                 document.getElementById("user-display-name").innerText = currentUser.user_metadata.username || currentUser.email;
                 cargarDatosPerfil(currentUser);
                 suscribirseCambiosEnVivo(currentUser);
                 cargarDatosReferidos(currentUser);
                 generarEnlaceReferido(currentUser);
                 setTimeout(() => inicializarRuleta(), 500);
+                inicializarCPAlead();
                 inicializarAdGem();
             } else {
                 document.getElementById("auth-container").classList.remove("hidden");
                 document.getElementById("app-container").classList.add("hidden");
-                document.getElementById("ad-top-bar").style.display = "none";
             }
 
             // Ocultar splash con fade suave
@@ -1132,6 +1100,30 @@
             ctx.strokeStyle = '#7c3aed';
             ctx.lineWidth = 3;
             ctx.stroke();
+        }
+
+        function inicializarCPAlead() {
+            const iframe = document.getElementById('iframe-cpalead');
+            if (iframe && currentUser) {
+                iframe.src = `https://www.cdnnd.com/wall/8wJIT?subid=${currentUser.id}`;
+            }
+        }
+
+        function cambiarMuroTab(muro) {
+            // Actualizar pestañas
+            document.querySelectorAll('.muro-tab-btn').forEach(btn => {
+                btn.classList.remove('border-purple-500', 'text-purple-400');
+                btn.classList.add('border-transparent', 'text-slate-400');
+            });
+            const tabActivo = document.getElementById('tab-muro-' + muro);
+            if (tabActivo) {
+                tabActivo.classList.add('border-purple-500', 'text-purple-400');
+                tabActivo.classList.remove('border-transparent', 'text-slate-400');
+            }
+            // Mostrar/ocultar paneles
+            document.querySelectorAll('.muro-panel').forEach(p => p.classList.add('hidden'));
+            const panelActivo = document.getElementById('muro-' + muro);
+            if (panelActivo) panelActivo.classList.remove('hidden');
         }
 
         function inicializarAdGem() {
