@@ -1088,30 +1088,27 @@
             btn.disabled = true;
             btn.innerText = '⏳ Acreditando...';
 
-            const { data: perfil } = await _supabase.from('perfiles')
-                .select('netcoins, bonus_bienvenida_reclamado')
-                .eq('id', currentUser.id)
-                .single();
+            // Llamada segura a la Edge Function
+            const { data, error } = await _supabase.functions.invoke('reclamar-bonus');
 
-            // Doble verificación para evitar doble claim
-            if (!perfil || perfil.bonus_bienvenida_reclamado === true) {
-                document.getElementById('modal-bonus').classList.remove('activo');
-                document.body.style.overflow = '';
+            // Manejo de errores desde el servidor
+            if (error || data?.error) {
+                const mensajeError = data?.error === 'ya_reclamado' 
+                    ? 'Ya reclamaste este bono anteriormente.' 
+                    : 'Error al procesar el bono. Intenta de nuevo.';
+                mostrarNotificacion(mensajeError, "error");
+                cerrarModalBonus();
                 return;
             }
 
-            await _supabase.from('perfiles').update({
-                netcoins: (perfil.netcoins || 0) + NC_BONUS_BIENVENIDA,
-                bonus_bienvenida_reclamado: true
-            }).eq('id', currentUser.id);
-
-            // Animación de éxito
+            // Animación de éxito usando la cantidad que devolvió el servidor (1000)
+            const ncAcreditadas = data.nc || NC_BONUS_BIENVENIDA;
             const card = document.getElementById('modal-bonus-card');
             card.innerHTML = `
                 <div class="text-7xl mb-4">🎉</div>
                 <h2 class="text-2xl font-black text-white mb-2">¡NetCoins Acreditadas!</h2>
-                <p class="text-slate-400 text-sm mb-4">Se han añadido <strong class="text-amber-400">${NC_BONUS_BIENVENIDA} NetCoins</strong> a tu balance.</p>
-                <div class="text-5xl font-black text-amber-400 mb-6">+${NC_BONUS_BIENVENIDA} NC</div>
+                <p class="text-slate-400 text-sm mb-4">Se han añadido <strong class="text-amber-400">${ncAcreditadas} NetCoins</strong> a tu balance.</p>
+                <div class="text-5xl font-black text-amber-400 mb-6">+${ncAcreditadas} NC</div>
                 <button onclick="cerrarModalBonus()" class="w-full bg-purple-600 hover:bg-purple-700 font-bold py-3 rounded-2xl transition active:scale-95">
                     ¡Empezar a ganar! 🚀
                 </button>
@@ -1357,31 +1354,34 @@
             const beneficiario = document.getElementById("retiro-beneficiario").value.trim();
             const destino = document.getElementById("retiro-destino").value.trim();
             const tipoPremio = document.getElementById("tipo-recompensa-txt").innerText;
-            const costoNetCoins = montoMXN * CONVERSION_RATE;
 
             if (!banco || !beneficiario || !destino) {
-                mostrarNotificacion("Por favor completa todos los campos.", "error"); return;
+                mostrarNotificacion("Por favor completa todos los campos obligatorios.", "error"); 
+                return;
             }
-            const { data: perfil } = await _supabase.from('perfiles').select('netcoins').eq('id', currentUser.id).single();
-            if (!perfil || perfil.netcoins < costoNetCoins) {
-                mostrarNotificacion(`Saldo insuficiente. Necesitas ${costoNetCoins.toLocaleString()} NC y tienes ${(perfil?.netcoins || 0).toLocaleString()} NC.`, "error"); return;
-            }
+            
             const btn = document.querySelector('#form-solicitud-retiro button[type="submit"]');
             btn.disabled = true;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Procesando...';
 
-            const { error: errorInsert } = await _supabase.from('retiros_pendientes').insert([{
-                user_id: currentUser.id, monto_mxn: montoMXN, netcoins_deducidos: costoNetCoins,
-                banco_plataforma: banco, nombre_beneficiario: beneficiario, cuenta_destino: destino,
-                tipo_premio: tipoPremio, estatus: 'Pendiente'
-            }]);
-            if (errorInsert) {
-                mostrarNotificacion("Error al registrar la solicitud. Intenta de nuevo.", "error");
+            // Llamada segura a la Edge Function mandando los datos del formulario
+            const { data, error } = await _supabase.functions.invoke('procesar-retiro', {
+                body: { montoMXN, banco, beneficiario, destino, tipoPremio }
+            });
+
+            if (error || data?.error) {
+                let msg = "Error al registrar la solicitud.";
+                if (data?.error === 'saldo_insuficiente') msg = `Saldo insuficiente. Necesitas ${data.necesitas} NC.`;
+                else if (data?.error === 'campos_incompletos') msg = "Por favor completa todos los campos.";
+                else if (data?.error === 'error_db') msg = "Error del servidor al registrar retiro.";
+                
+                mostrarNotificacion(msg, "error");
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fa-solid fa-paper-plane mr-2"></i>Enviar Solicitud de Canje';
                 return;
             }
-            await _supabase.from('perfiles').update({ netcoins: perfil.netcoins - costoNetCoins }).eq('id', currentUser.id);
+
+            // Éxito
             btn.disabled = false;
             btn.innerHTML = '<i class="fa-solid fa-paper-plane mr-2"></i>Enviar Solicitud de Canje';
             mostrarToastSesion('success', '¡Solicitud enviada!', 'Tu canje está en revisión. En 24–72 hrs hábiles recibirás tu recompensa.');
@@ -1525,37 +1525,34 @@
 
         async function girarRuleta() {
             if (ruletaGirando || !currentUser) return;
-            const hoy = new Date().toISOString().split('T')[0];
-
-            // Verificar si ya giró hoy
-            const { data: perfil } = await _supabase.from('perfiles')
-                .select('netcoins, ultimo_giro_ruleta')
-                .eq('id', currentUser.id)
-                .single();
-
-            if (perfil?.ultimo_giro_ruleta === hoy) {
-                document.getElementById('ruleta-resultado').innerText = '⚠️ Ya usaste tu giro de hoy.';
-                return;
-            }
-
+            
             ruletaGirando = true;
             const btn = document.getElementById('btn-girar');
             btn.disabled = true;
-            btn.innerText = '🎰 Girando...';
+            btn.innerText = '🎰 Conectando...';
             document.getElementById('ruleta-resultado').innerText = '';
 
-            // Premio aleatorio con pesos
-            const pesos = [30, 25, 30, 10, 30, 25, 5, 30]; // % probabilidad por segmento
-            const total = pesos.reduce((a, b) => a + b, 0);
-            let rand = Math.random() * total, idx = 0;
-            for (let i = 0; i < pesos.length; i++) {
-                rand -= pesos[i];
-                if (rand <= 0) { idx = i; break; }
+            // 1. Llamar a la Edge Function PRIMERO para obtener el premio oficial
+            const { data, error } = await _supabase.functions.invoke('girar-ruleta');
+
+            if (error || data?.error) {
+                ruletaGirando = false;
+                btn.innerText = '✅ Ya giraste hoy';
+                btn.className = btn.className.replace('from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-900', 'from-slate-700 to-slate-600 text-slate-400 cursor-not-allowed');
+                document.getElementById('ruleta-resultado').innerText = '⚠️ Ya usaste tu giro de hoy.';
+                iniciarCuentaRegresiva();
+                return;
             }
 
+            // 2. Extraer el resultado seguro enviado por el servidor
+            const idxGanador = data.idx;
+            const ncGanadas = data.nc;
+
+            btn.innerText = '🎰 Girando...';
+
+            // 3. Calcular los grados para que la animación caiga en el slice correcto
             const slice = (2 * Math.PI) / RULETA_PREMIOS.length;
-            // Ángulo final: apuntar el segmento ganador al indicador (arriba = -π/2)
-            const anguloDestino = (Math.PI * 2 * 5) - (idx * slice) - (slice / 2) + (Math.PI * 1.5);
+            const anguloDestino = (Math.PI * 2 * 5) - (idxGanador * slice) - (slice / 2) + (Math.PI * 1.5);
             const inicio = ruletaAngulo;
             const duracion = 4000;
             const startTime = performance.now();
@@ -1566,9 +1563,23 @@
                 const ease = 1 - Math.pow(1 - progress, 4);
                 ruletaAngulo = inicio + (anguloDestino - inicio) * ease;
                 dibujarRuleta(ruletaAngulo);
-                if (progress < 1) { requestAnimationFrame(animar); }
-                else { finalizarGiro(idx, perfil); }
+                
+                if (progress < 1) { 
+                    requestAnimationFrame(animar); 
+                } else { 
+                    // Cuando termina la animación visual, mostramos el éxito
+                    ruletaGirando = false;
+                    document.getElementById('ruleta-resultado').innerHTML =
+                        `🎉 <span class="text-amber-400 font-extrabold">+${ncGanadas} NetCoins</span> acreditados`;
+                    
+                    mostrarNotificacion(`¡Ganaste ${ncGanadas} NetCoins en la ruleta!`, "success");
+
+                    btn.innerText = '✅ Ya giraste hoy';
+                    btn.className = btn.className.replace('from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-900', 'from-slate-700 to-slate-600 text-slate-400 cursor-not-allowed');
+                    iniciarCuentaRegresiva();
+                }
             }
+            
             requestAnimationFrame(animar);
         }
 
