@@ -333,67 +333,51 @@
                         </div>
                     </div>
 
-                    <!-- ══ WIDGET NUEVO: ADSTERRA SMARTLINK ══ -->
-<div class="bg-slate-800 border border-emerald-500/50 rounded-2xl p-5 sm:p-6 shadow-lg shadow-emerald-900/20 text-center relative overflow-hidden">
-    <!-- Botón de Información (?) -->
-    <button onclick="abrirAvisoAnunciantes()" class="absolute top-3 left-3 w-7 h-7 bg-slate-700/80 hover:bg-slate-600 border border-slate-500/50 rounded-full flex items-center justify-center text-slate-300 text-sm font-bold transition-all active:scale-95 z-10" title="Información sobre las ofertas">
-        ?
-    </button>
-
-    <div class="text-4xl mb-2 mt-2">⚡</div>
-    <h3 class="text-lg sm:text-xl font-extrabold text-white mb-2">¡Ofertas de Anunciantes!</h3>
-    <p class="text-slate-400 text-xs sm:text-sm mb-5">Completa ofertas de Anunciantes y Gana Recompensas</p>
-    
-    <!-- ENLACE DE ADSTERRA -->
-    <a href="https://alarmpenguinmelt.com/n3ke0t3e5r?key=8eed96dd0a579d45674d3e05e3a1e3f6" target="_blank" rel="noopener noreferrer" 
-       class="inline-block w-full sm:w-auto bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold py-3 px-8 rounded-xl shadow-lg transition-all active:scale-95 text-sm">
-        🚀 Ver Ofertas Disponibles
-    </a>
-    
-</div>
-<!-- ══════════════════════════════════════ -->
-
-<!-- ══ MODAL DE AVISO (TERMINOS DE OFERTAS EXTERNAS) ══ -->
+                    <!-- ══ MODAL DE AVISO (TERMINOS DE OFERTAS EXTERNAS) OPTIMIZADO ══ -->
 <div id="modalAvisoAnunciantes" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/80 backdrop-blur-sm px-4 opacity-0 transition-opacity duration-300">
-    <div class="bg-slate-800 border border-slate-600 rounded-2xl p-6 max-w-sm w-full shadow-2xl relative transform scale-60 transition-transform duration-300" id="modalAvisoCuerpo">
+    <!-- Se agregó max-h-[90vh] y overflow-y-auto para pantallas muy pequeñas, y se redujo el padding (p-4) -->
+    <div class="bg-slate-800 border border-slate-600 rounded-2xl p-4 sm:p-5 max-w-sm w-full max-h-[90vh] overflow-y-auto shadow-2xl relative transform scale-95 transition-transform duration-300" id="modalAvisoCuerpo">
         
         <!-- Botón de cerrar (X) -->
-        <button onclick="cerrarAvisoAnunciantes()" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        <button onclick="cerrarAvisoAnunciantes()" class="absolute top-3 right-3 text-slate-400 hover:text-white transition-colors bg-slate-700/50 hover:bg-slate-600 rounded-full p-1">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
         
-        <div class="text-center mb-5">
-            <div class="text-4xl mb-3">ℹ️</div>
-            <h4 class="text-xl font-bold text-white">Aviso de Ofertas de Anunciantes</h4>
+        <!-- Encabezado compacto (Icono y texto en la misma línea) -->
+        <div class="flex items-center gap-2 mb-3 pr-6">
+            <div class="text-2xl">ℹ️</div>
+            <h4 class="text-lg font-bold text-white leading-tight">Aviso de Anunciantes</h4>
         </div>
         
-        <div class="text-slate-300 text-sm space-y-4 leading-relaxed text-left">
+        <!-- Texto con menor espaciado -->
+        <div class="text-slate-300 text-[13px] sm:text-sm space-y-2.5 leading-snug text-left">
             <p>
-                Las ofertas mostradas en esta sección son operadas por <strong>redes de anunciantes externos</strong> y no son administradas por nosotros.
+                Estas ofertas son operadas por <strong>redes externas</strong>, no son administradas por nosotros.
             </p>
             <p>
-                Cualquier recompensa que obtengas al participar en estas dinámicas será gestionada en la plataforma del anunciante. <strong class="text-emerald-400 font-bold">Nuestra plataforma NO acredita NetCoins ni modifica tu saldo interno</strong> por completar estas acciones.
+                Las recompensas se gestionan en su plataforma. <strong class="text-emerald-400 font-bold">Nosotros NO acreditamos NetCoins</strong> por estas acciones.
             </p>
             
-            <!-- CAJA DE EXPLICACIÓN CON BOTÓN DE MUESTRA -->
-            <div class="bg-slate-900/50 border border-slate-700/50 rounded-xl p-4 mt-2">
-                <p class="mb-3 text-center">Al hacer clic en el botón:</p>
+            <!-- CAJA DE EXPLICACIÓN CON BOTÓN DE MUESTRA (Más pequeña) -->
+            <div class="bg-slate-900/50 border border-slate-700/50 rounded-xl p-3 mt-2">
+                <p class="mb-2 text-center text-xs">Al hacer clic en el botón:</p>
                 
-                <div class="flex justify-center mb-3">
-                    <!-- Botón falso (no interactuable) -->
-                    <span class="inline-block bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-extrabold py-2 px-6 rounded-xl text-xs cursor-default opacity-90 select-none shadow-sm">
+                <div class="flex justify-center mb-2">
+                    <!-- Botón falso -->
+                    <span class="inline-block bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold py-1.5 px-4 rounded-lg text-xs cursor-default opacity-90 select-none shadow-sm">
                         🚀 Ver Ofertas Disponibles
                     </span>
                 </div>
                 
-                <p class="text-slate-400 text-xs text-center leading-relaxed">
-                    Serás redirigido de forma segura al portal de un Anunciante. Si dicho sitio te ofrece dinámicas o beneficios, estos serán válidos y entregados <strong>exclusivamente dentro de esa misma plataforma</strong>.
+                <p class="text-slate-400 text-[11px] text-center leading-tight">
+                    Serás redirigido a un sitio de terceros. Sus dinámicas y beneficios son válidos <strong>solo dentro de esa plataforma</strong>.
                 </p>
             </div>
             
         </div>
         
-        <button onclick="cerrarAvisoAnunciantes()" class="mt-6 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-3 px-4 rounded-xl transition-colors active:scale-95">
+        <!-- Botón final con menos margen superior -->
+        <button onclick="cerrarAvisoAnunciantes()" class="mt-4 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-2.5 px-4 rounded-xl transition-colors active:scale-95 text-sm">
             Entendido
         </button>
     </div>
