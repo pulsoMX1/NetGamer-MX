@@ -67,7 +67,13 @@
             #bottom-nav { padding-bottom: env(safe-area-inset-bottom); }
         }
 
-        /* ── Animaciones Modal Bonus ── */
+        /* ── Modal Bonus Bienvenida ── */
+        #modal-bonus {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.88); z-index: 9000;
+            align-items: center; justify-content: center; padding: 20px;
+        }
+        #modal-bonus.activo { display: flex; }
         @keyframes bounceIn {
             0%   { transform: scale(0.4); opacity: 0; }
             70%  { transform: scale(1.06); opacity: 1; }
@@ -83,7 +89,9 @@
             0%   { left: -100%; }
             100% { left: 200%; }
         }
-        .btn-bonus-reclamar { position: relative; overflow: hidden; }
+        .btn-bonus-reclamar {
+            position: relative; overflow: hidden;
+        }
         .btn-bonus-reclamar::after {
             content: ''; position: absolute; top: 0; left: -100%;
             width: 60%; height: 100%;
@@ -347,37 +355,60 @@
                         </div>
                     </div>
 
-                    <div class="bg-slate-800 border border-emerald-500/50 rounded-2xl p-5 sm:p-6 shadow-lg shadow-emerald-900/20 text-center relative overflow-hidden">
-                        <button onclick="abrirAvisoAnunciantes()" class="absolute top-3 left-3 w-7 h-7 bg-slate-700/80 hover:bg-slate-600 border border-slate-500/50 rounded-full flex items-center justify-center text-slate-300 text-sm font-bold transition-all active:scale-95 z-10" title="Información sobre las ofertas">?</button>
+                   <div class="bg-slate-800 border border-emerald-500/50 rounded-2xl p-5 sm:p-6 shadow-lg shadow-emerald-900/20 text-center relative overflow-hidden">
+                        <button onclick="abrirAvisoAnunciantes()" class="absolute top-3 left-3 w-7 h-7 bg-slate-700/80 hover:bg-slate-600 border border-slate-500/50 rounded-full flex items-center justify-center text-slate-300 text-sm font-bold transition-all active:scale-95 z-10" title="Información sobre las ofertas">
+                            ?
+                        </button>
+
                         <div class="text-4xl mb-2 mt-2">⚡</div>
                         <h3 class="text-lg sm:text-xl font-extrabold text-white mb-2">¡Ofertas de Anunciantes!</h3>
                         <p class="text-slate-400 text-xs sm:text-sm mb-5">Completa ofertas de Anunciantes y Gana Recompensas</p>
+                        
                         <a href="https://alarmpenguinmelt.com/xs190q6u83?key=04f0ec7b686d19b94a1462e816cccdcc" target="_blank" rel="noopener noreferrer" 
                            class="inline-block w-full sm:w-auto bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold py-3 px-8 rounded-xl shadow-lg transition-all active:scale-95 text-sm">
                             🚀 Ver Ofertas Disponibles
                         </a>
+                        
                     </div>
                     <div id="modalAvisoAnunciantes" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/80 backdrop-blur-sm px-4 opacity-0 transition-opacity duration-300">
                         <div class="bg-slate-800 border border-slate-600 rounded-2xl p-4 sm:p-5 max-w-sm w-full max-h-[90vh] overflow-y-auto shadow-2xl relative transform scale-95 transition-transform duration-300" id="modalAvisoCuerpo">
+                            
                             <button onclick="cerrarAvisoAnunciantes()" class="absolute top-3 right-3 text-slate-400 hover:text-white transition-colors bg-slate-700/50 hover:bg-slate-600 rounded-full p-1">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                             </button>
+                            
                             <div class="flex items-center gap-2 mb-3 pr-6">
                                 <div class="text-2xl">ℹ️</div>
                                 <h4 class="text-lg font-bold text-white leading-tight">Aviso de Ofertas de Anunciantes</h4>
                             </div>
+                            
                             <div class="text-slate-300 text-[13px] sm:text-sm space-y-2.5 leading-snug text-left">
-                                <p>Estas ofertas son operadas por <strong>anunciantes externos</strong>, no son administradas por nosotros.</p>
-                                <p>Cualquier recompensa se gestiona dentro de la plataforma del anunciante. <strong class="text-emerald-400 font-bold">NOSOTROS NO ACREDITAMOS NINGUN TIPO DE RECOMPENSAS</strong> por las acciones que realize dentro de estos sitios de anunciantes.</p>
+                                <p>
+                                    Estas ofertas son operadas por <strong>anunciantes externos</strong>, no son administradas por nosotros.
+                                </p>
+                                <p>
+                                    Cualquier recompensa se gestiona dentro de la plataforma del anunciante. <strong class="text-emerald-400 font-bold">NOSOTROS NO ACREDITAMOS NINGUN TIPO DE RECOMPENSAS</strong> por las acciones que realize dentro de estos sitios de anunciantes.
+                                </p>
+                                
                                 <div class="bg-slate-900/50 border border-slate-700/50 rounded-xl p-3 mt-2">
                                     <p class="mb-2 text-center text-xs">Al hacer clic en el botón:</p>
+                                    
                                     <div class="flex justify-center mb-2">
-                                        <span class="inline-block bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold py-1.5 px-4 rounded-lg text-xs cursor-default opacity-90 select-none shadow-sm">🚀 Ver Ofertas Disponibles</span>
+                                        <span class="inline-block bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold py-1.5 px-4 rounded-lg text-xs cursor-default opacity-90 select-none shadow-sm">
+                                            🚀 Ver Ofertas Disponibles
+                                        </span>
                                     </div>
-                                    <p class="text-slate-400 text-[11px] text-center leading-tight">Serás redirigido a sitios de anunciantes. cualquier dinámica o beneficio  que te prometan estos anunciantes solo son válidos <strong>dentro de esa plataforma del anunciante</strong>.</p>
+                                    
+                                    <p class="text-slate-400 text-[11px] text-center leading-tight">
+                                        Serás redirigido a sitios de anunciantes. cualquier dinámica o beneficio  que te prometan estos anunciantes solo son válidos <strong>dentro de esa plataforma del anunciante</strong>.
+                                    </p>
                                 </div>
+                                
                             </div>
-                            <button onclick="cerrarAvisoAnunciantes()" class="mt-4 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-2.5 px-4 rounded-xl transition-colors active:scale-95 text-sm">Entendido</button>
+                            
+                            <button onclick="cerrarAvisoAnunciantes()" class="mt-4 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-2.5 px-4 rounded-xl transition-colors active:scale-95 text-sm">
+                                Entendido
+                            </button>
                         </div>
                     </div>
                     <div class="bg-gradient-to-r from-emerald-900/50 to-teal-900/50 border border-emerald-500/30 rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mt-4">
@@ -393,6 +424,7 @@
                 </div>
 
                 <div id="tab-ofertas" class="tab-content space-y-4 sm:space-y-6">
+
                     <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
                         <div class="flex border-b border-slate-700 bg-slate-900/50 overflow-x-auto">
                             <button id="tab-muro-cpalead" onclick="cambiarMuroTab('cpalead')"
@@ -412,13 +444,32 @@
                             </button>
                         </div>
                         <div id="muro-cpalead" class="muro-panel">
-                            <iframe id="iframe-cpalead" sandbox='allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-popups-to-escape-sandbox' referrerpolicy='no-referrer' src='about:blank' style='width:100%; height:690px; border:none;' frameborder='0'></iframe>
+                            <iframe
+                                id="iframe-cpalead"
+                                sandbox='allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-popups-to-escape-sandbox'
+                                referrerpolicy='no-referrer'
+                                src='about:blank'
+                                style='width:100%; height:690px; border:none;'
+                                frameborder='0'>
+                            </iframe>
                         </div>
                         <div id="muro-adgem" class="muro-panel hidden">
-                            <iframe id="iframe-adgem" src="about:blank" style="width:100%; height:690px; border:none;" frameborder="0" scrolling="yes"></iframe>
+                            <iframe
+                                id="iframe-adgem"
+                                src="about:blank"
+                                style="width:100%; height:690px; border:none;"
+                                frameborder="0"
+                                scrolling="yes">
+                            </iframe>
                         </div>
                         <div id="muro-bitlabs" class="muro-panel hidden">
-                            <iframe id="iframe-bitlabs" src="about:blank" style="width:100%; height:690px; border:none;" frameborder="0" scrolling="yes"></iframe>
+                            <iframe
+                                id="iframe-bitlabs"
+                                src="about:blank"
+                                style="width:100%; height:690px; border:none;"
+                                frameborder="0"
+                                scrolling="yes">
+                            </iframe>
                         </div>
                     </div>
 
@@ -676,26 +727,6 @@
     </div>
 
     <script>
-        const SUPABASE_URL = "https://meiwuluwrdjszxeyoqtt.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_gZgGIamNJqf8ir8vvt1OTw_bJ-rosi4";
-        const CONVERSION_RATE = 100;
-        const NC_POR_REFERIDO = 500;
-        const NC_BONUS_BIENVENIDA = 1000;
-        const BASE_URL = "https://daniel00998888.github.io/NetGamer-MX/";
-
-        const adgemAppId = "32755";
-        const toroxAppId = "TU_APP_ID_TOROX";
-        const toroxSecretKey = "TU_SECRET_KEY_TOROX";
-        const monlixAppId = "TU_APP_ID_MONLIX";
-        const bitlabsAppToken = "8b10d67e-42fe-448a-809f-2bdb45d7b79a";
-
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        let currentUser = null;
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const refCode = urlParams.get('ref');
-        if (refCode) sessionStorage.setItem('ref_code', refCode);
-
         // ==========================================
         // SISTEMA DE NOTIFICACIONES (TOASTS)
         // ==========================================
@@ -719,12 +750,31 @@
             
             container.appendChild(toast);
             
-            // Eliminar automáticamente después de 4 segundos
             setTimeout(() => {
                 toast.classList.replace('toast-enter', 'toast-exit');
                 setTimeout(() => toast.remove(), 300);
             }, 4000);
         }
+
+        const SUPABASE_URL = "https://meiwuluwrdjszxeyoqtt.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_gZgGIamNJqf8ir8vvt1OTw_bJ-rosi4";
+        const CONVERSION_RATE = 100;
+        const NC_POR_REFERIDO = 500;
+        const NC_BONUS_BIENVENIDA = 1000;
+        const BASE_URL = "https://daniel00998888.github.io/NetGamer-MX/";
+
+        const adgemAppId = "32755";
+        const toroxAppId = "TU_APP_ID_TOROX";
+        const toroxSecretKey = "TU_SECRET_KEY_TOROX";
+        const monlixAppId = "TU_APP_ID_MONLIX";
+        const bitlabsAppToken = "8b10d67e-42fe-448a-809f-2bdb45d7b79a";
+
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        let currentUser = null;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const refCode = urlParams.get('ref');
+        if (refCode) sessionStorage.setItem('ref_code', refCode);
 
         document.addEventListener("DOMContentLoaded", () => {
             configurarEventosAuth();
@@ -802,11 +852,8 @@
         async function reenviarCodigo() {
             const email = document.getElementById("verify-email-address").innerText;
             const { error } = await _supabase.auth.resend({ type: 'signup', email });
-            if (error) {
-                mostrarNotificacion("Error al reenviar el código. Intenta de nuevo más tarde.", "error");
-            } else {
-                mostrarNotificacion("¡Código reenviado! Revisa tu bandeja de entrada o spam.", "success");
-            }
+            if (error) mostrarNotificacion("Error al reenviar el código. Intenta de nuevo.", "error");
+            else mostrarNotificacion("¡Código reenviado! Revisa tu correo o bandeja de spam.", "success");
         }
 
         function configurarEventosAuth() {
@@ -818,12 +865,8 @@
                 btn.disabled = true; btn.innerText = "Ingresando...";
                 const { error } = await _supabase.auth.signInWithPassword({ email, password });
                 btn.disabled = false; btn.innerText = "Ingresar";
-                if (error) {
-                    // Reemplazamos alert por Toast y traducimos el error genérico
-                    mostrarNotificacion("Credenciales incorrectas. Verifica tu correo y contraseña.", "error");
-                } else {
-                    verificarSesionActiva();
-                }
+                if (error) mostrarNotificacion("Credenciales incorrectas. Verifica tu correo y contraseña.", "error");
+                else verificarSesionActiva();
             });
 
             document.getElementById("register-form").addEventListener("submit", async (e) => {
@@ -839,11 +882,7 @@
                     options: { data: { username, referred_by: refCodeGuardado || null }, emailRedirectTo: null }
                 });
                 btn.disabled = false; btn.innerText = "Registrarse";
-                if (error) { 
-                    // Reemplazamos alert por Toast
-                    mostrarNotificacion("Error al registrarte. Es posible que el correo ya esté en uso o la contraseña sea muy corta.", "error");
-                    return; 
-                }
+                if (error) { mostrarNotificacion("Error al registrarte. El correo ya está en uso o la contraseña es débil.", "error"); return; }
                 if (refCodeGuardado) sessionStorage.setItem('ref_pending_user', data.user?.id || '');
                 mostrarPantallaVerificacion(email);
             });
@@ -1005,7 +1044,6 @@
         function copiarEnlace() {
             const input = document.getElementById("referral-link-input");
             navigator.clipboard.writeText(input.value).then(() => {
-                // Notificación Toast en lugar de alert
                 mostrarNotificacion("¡Enlace copiado al portapapeles exitosamente!", "success");
                 
                 const btn = document.getElementById("btn-copiar");
@@ -1028,14 +1066,19 @@
         function compartirFacebook() { window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(document.getElementById("referral-link-input").value)}`, '_blank'); }
         function compartirTwitter() { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(obtenerMensajeCompartir())}`, '_blank'); }
 
-        function suscribirseCambiosEnVivo(user) {
+        async function suscribirseCambiosEnVivo(user) {
+            // Corrección al error supabase.js:4 (Desuscribir del canal antes de volver a crearlo)
+            try { await _supabase.removeChannel(_supabase.channel('cambios-saldo')); } catch (e) {}
+
             _supabase.channel('cambios-saldo')
                 .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'perfiles', filter: `id=eq.${user.id}` },
                     (payload) => {
                         actualizarTextosInterfaz(payload.new.netcoins || 0);
                         const el = document.getElementById("user-balance");
-                        el.classList.add("balance-bump");
-                        setTimeout(() => el.classList.remove("balance-bump"), 400);
+                        if(el){
+                            el.classList.add("balance-bump");
+                            setTimeout(() => el.classList.remove("balance-bump"), 400);
+                        }
                     }
                 ).subscribe();
         }
@@ -1101,22 +1144,11 @@
             const tipoPremio = document.getElementById("tipo-recompensa-txt").innerText;
             const costoNetCoins = montoMXN * CONVERSION_RATE;
             
-            // Reemplazo de alerts por notificaciones
-            if (montoMXN < 100 || montoMXN > 3000) { 
-                mostrarNotificacion("Transacciones permitidas de 100 a 3000 MXN.", "error"); 
-                return; 
-            }
-            if (!banco || !beneficiario || !destino) { 
-                mostrarNotificacion("Completa todos los campos para poder retirar.", "error"); 
-                return; 
-            }
+            if (montoMXN < 100 || montoMXN > 3000) { mostrarNotificacion("Transacciones permitidas de 100 a 3000 MXN.", "error"); return; }
+            if (!banco || !beneficiario || !destino) { mostrarNotificacion("Completa todos los campos obligatorios.", "error"); return; }
             
             const { data: perfil } = await _supabase.from('perfiles').select('netcoins').eq('id', currentUser.id).single();
-            
-            if (!perfil || perfil.netcoins < costoNetCoins) { 
-                mostrarNotificacion(`Fondos insuficientes. Requieres ${costoNetCoins} NetCoins.`, "error"); 
-                return; 
-            }
+            if (!perfil || perfil.netcoins < costoNetCoins) { mostrarNotificacion(`Fondos insuficientes. Requieres ${costoNetCoins} NetCoins.`, "error"); return; }
             
             const { error: errorInsert } = await _supabase.from('retiros_pendientes').insert([{
                 user_id: currentUser.id, monto_mxn: montoMXN, netcoins_deducidos: costoNetCoins,
@@ -1124,14 +1156,10 @@
                 tipo_premio: tipoPremio, estatus: 'Pendiente'
             }]);
             
-            if (errorInsert) { 
-                mostrarNotificacion("Ocurrió un error al registrar tu retiro en el sistema.", "error"); 
-                return; 
-            }
+            if (errorInsert) { mostrarNotificacion("Ocurrió un error al registrar tu retiro.", "error"); return; }
             
             await _supabase.from('perfiles').update({ netcoins: perfil.netcoins - costoNetCoins }).eq('id', currentUser.id);
-            
-            mostrarNotificacion("¡Solicitud enviada para revisión exitosamente!", "success");
+            mostrarNotificacion("¡Solicitud de retiro enviada para revisión!", "success");
             cerrarFormularioRetiro();
         }
 
@@ -1332,7 +1360,7 @@
             document.getElementById('ruleta-resultado').innerHTML =
                 `🎉 <span class="text-amber-400 font-extrabold">+${premio.nc} NetCoins</span> acreditados`;
             
-            // Animación de notificacion extra para la ruleta
+            // También mostramos una notificación tipo Toast
             mostrarNotificacion(`¡Ganaste ${premio.nc} NetCoins en la ruleta!`, "success");
 
             const btn = document.getElementById('btn-girar');
@@ -1402,8 +1430,11 @@
             modal.classList.add('opacity-0');
             cuerpo.classList.remove('scale-100');
             cuerpo.classList.add('scale-95');
-            setTimeout(() => modal.classList.add('hidden'), 300);
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
         }
     </script>
+ 
 </body>
 </html>
