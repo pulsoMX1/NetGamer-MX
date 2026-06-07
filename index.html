@@ -627,84 +627,153 @@
                 </div>
 
                 <div id="tab-canjear" class="tab-content space-y-4 sm:space-y-6">
-                    <div class="border-b border-slate-700 pb-3 sm:pb-4">
-                        <h2 class="text-xl sm:text-2xl font-extrabold">Módulo de Retiros y Canjes</h2>
-                        <p class="text-slate-400 text-xs sm:text-sm mt-1">Cambia tus NetCoins por recompensas reales.</p>
-                    </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6">
-                        <div class="stat-card bg-slate-800 border border-slate-700 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-purple-500 transition duration-300">
-                            <div>
-                                <span class="bg-red-600/20 text-red-400 text-xs font-bold px-2.5 py-1 rounded-md inline-block mb-3">Código Digital</span>
-                                <h3 class="text-base sm:text-lg font-bold">Robux (Roblox Pin)</h3>
-                                <p class="text-slate-400 text-xs mt-1">Canjea directamente en tu cuenta de Roblox.</p>
-                            </div>
-                            <div class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-slate-700/50 flex items-center justify-between">
-                                <span class="text-amber-400 font-extrabold text-xs sm:text-sm"><i class="fa-solid fa-coins mr-1"></i> 100 NC = $1 MXN</span>
-                                <button onclick="abrirFormularioRetiro('Roblox')" class="bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-xs font-bold px-3 sm:px-4 py-2 rounded-xl transition">Canjear</button>
-                            </div>
+                    <!-- Vista principal: catálogo de recompensas -->
+                    <div id="canje-catalogo">
+                        <div class="border-b border-slate-700 pb-3 sm:pb-4 mb-4 sm:mb-6">
+                            <h2 class="text-xl sm:text-2xl font-extrabold">Centro de Canjes</h2>
+                            <p class="text-slate-400 text-xs sm:text-sm mt-1">Selecciona una recompensa y elige el monto que deseas canjear.</p>
                         </div>
-                        <div class="stat-card bg-slate-800 border border-slate-700 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-purple-500 transition duration-300">
-                            <div>
-                                <span class="bg-blue-600/20 text-blue-400 text-xs font-bold px-2.5 py-1 rounded-md inline-block mb-3">Saldo Electrónico</span>
-                                <h3 class="text-base sm:text-lg font-bold">PayPal Balance (USD)</h3>
-                                <p class="text-slate-400 text-xs mt-1">Recibe fondos directamente en tu cuenta PayPal.</p>
-                            </div>
-                            <div class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-slate-700/50 flex items-center justify-between">
-                                <span class="text-amber-400 font-extrabold text-xs sm:text-sm"><i class="fa-solid fa-coins mr-1"></i> 100 NC = $1 MXN</span>
-                                <button onclick="abrirFormularioRetiro('PayPal')" class="bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-xs font-bold px-3 sm:px-4 py-2 rounded-xl transition">Canjear</button>
-                            </div>
-                        </div>
-                        <div class="stat-card bg-slate-800 border border-slate-700 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-purple-500 transition duration-300">
-                            <div>
-                                <span class="bg-emerald-600/20 text-emerald-400 text-xs font-bold px-2.5 py-1 rounded-md inline-block mb-3">Transferencia Directa</span>
-                                <h3 class="text-base sm:text-lg font-bold">Transferencia Bancaria (SPEI)</h3>
-                                <p class="text-slate-400 text-xs mt-1">Recibe dinero en tu cuenta bancaria mexicana.</p>
-                            </div>
-                            <div class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-slate-700/50 flex items-center justify-between">
-                                <span class="text-amber-400 font-extrabold text-xs sm:text-sm"><i class="fa-solid fa-coins mr-1"></i> 100 NC = $1 MXN</span>
-                                <button onclick="abrirFormularioRetiro('SPEI / Banco')" class="bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-xs font-bold px-3 sm:px-4 py-2 rounded-xl transition">Canjear</button>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div id="container-formulario-retiro" class="hidden bg-slate-800 border border-slate-700 p-4 sm:p-6 rounded-2xl max-w-xl mx-auto shadow-2xl">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-base sm:text-lg font-bold text-purple-400">Canjear: <span id="tipo-recompensa-txt" class="text-white"></span></h3>
-                            <button onclick="cerrarFormularioRetiro()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
-                        </div>
-                        <div class="bg-slate-900 border border-purple-500/30 p-3 rounded-xl text-xs text-purple-300 mb-4 flex items-start gap-2">
-                            <i class="fa-solid fa-shield-halved text-amber-400 mt-0.5 shrink-0"></i>
-                            <span>Retiro mínimo <strong>100 MXN</strong> y máximo <strong>3000 MXN</strong> por operación.</span>
-                        </div>
-                        <form id="form-solicitud-retiro" class="space-y-3 sm:space-y-4">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Monto a Retirar (MXN)</label>
-                                <input type="number" id="retiro-monto" min="100" max="3000" placeholder="Min 100 - Max 3000 MXN"
-                                    class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required>
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Banco / Plataforma</label>
-                                    <input type="text" id="retiro-banco" placeholder="BBVA, Santander, PayPal..."
-                                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required>
+                        <!-- Tarjetas de categorías -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+
+                            <!-- PayPal -->
+                            <button onclick="abrirCategoria('paypal')" class="group relative bg-slate-800 border border-slate-700 hover:border-blue-400 rounded-2xl p-6 sm:p-8 flex flex-col items-center gap-4 transition-all duration-300 hover:shadow-xl hover:shadow-blue-900/30 hover:-translate-y-1 active:scale-95 text-left w-full">
+                                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-blue-500/10 rounded-2xl flex items-center justify-center group-hover:bg-blue-500/20 transition-all duration-300">
+                                    <!-- Logo PayPal SVG -->
+                                    <svg viewBox="0 0 24 24" class="w-12 h-12 sm:w-14 sm:h-14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M19.5 6.5C19.5 9.5 17.5 12 14 12H11.5L10.5 18H7.5L9.5 6H14C17 6 19.5 6.5 19.5 6.5Z" fill="#009cde"/>
+                                        <path d="M7 8.5C7 11.5 5 14 1.5 14H-1L-2 20H-5L-3 8.5H1.5C4.5 8.5 7 8.5 7 8.5Z" fill="#012169" transform="translate(9 -2)"/>
+                                        <path d="M6 4C6 4 7.5 3.5 9.5 3.5H14C18 3.5 20.5 5.5 20.5 9C20.5 13.5 17 16 13 16H10.5L9.5 21H5.5L8 4H6Z" fill="#003087"/>
+                                        <path d="M9 7C9 7 10 6.5 12 6.5H15.5C18.5 6.5 20 8 20 10.5C20 14 17.5 16 14 16H11.5L10.5 20.5H7L9 7Z" fill="#009cde"/>
+                                    </svg>
                                 </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Nombre del Beneficiario</label>
-                                    <input type="text" id="retiro-beneficiario" placeholder="Titular de la cuenta"
-                                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required>
+                                <div class="text-center">
+                                    <h3 class="text-lg sm:text-xl font-extrabold text-white group-hover:text-blue-300 transition-colors">PayPal</h3>
+                                    <p class="text-slate-400 text-xs mt-1">Saldo directo a tu cuenta</p>
+                                    <span class="inline-block mt-2 bg-blue-500/20 text-blue-400 text-xs font-bold px-3 py-1 rounded-full border border-blue-500/30">Desde 1,000 NC</span>
                                 </div>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">CLABE / Email de Destino</label>
-                                <input type="text" id="retiro-destino" placeholder="CLABE 18 dígitos o Email"
-                                    class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required>
-                            </div>
-                            <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-purple-600/30 text-sm sm:text-base">
-                                Enviar Solicitud
+                                <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <i class="fa-solid fa-arrow-right text-blue-400 text-sm"></i>
+                                </div>
                             </button>
-                        </form>
+
+                            <!-- SPEI -->
+                            <button onclick="abrirCategoria('spei')" class="group relative bg-slate-800 border border-slate-700 hover:border-emerald-400 rounded-2xl p-6 sm:p-8 flex flex-col items-center gap-4 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-900/30 hover:-translate-y-1 active:scale-95 text-left w-full">
+                                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-emerald-500/10 rounded-2xl flex items-center justify-center group-hover:bg-emerald-500/20 transition-all duration-300">
+                                    <svg viewBox="0 0 48 48" class="w-12 h-12 sm:w-14 sm:h-14" xmlns="http://www.w3.org/2000/svg">
+                                        <rect width="48" height="48" rx="10" fill="#10b981" opacity="0.15"/>
+                                        <text x="24" y="32" text-anchor="middle" font-size="20" font-weight="900" fill="#10b981" font-family="Arial">$</text>
+                                        <rect x="8" y="36" width="32" height="3" rx="1.5" fill="#10b981" opacity="0.6"/>
+                                        <rect x="8" y="10" width="32" height="3" rx="1.5" fill="#10b981" opacity="0.6"/>
+                                    </svg>
+                                </div>
+                                <div class="text-center">
+                                    <h3 class="text-lg sm:text-xl font-extrabold text-white group-hover:text-emerald-300 transition-colors">Transferencia SPEI</h3>
+                                    <p class="text-slate-400 text-xs mt-1">A cualquier banco mexicano</p>
+                                    <span class="inline-block mt-2 bg-emerald-500/20 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full border border-emerald-500/30">Desde 1,000 NC</span>
+                                </div>
+                                <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <i class="fa-solid fa-arrow-right text-emerald-400 text-sm"></i>
+                                </div>
+                            </button>
+
+                            <!-- Robux -->
+                            <button onclick="abrirCategoria('robux')" class="group relative bg-slate-800 border border-slate-700 hover:border-red-400 rounded-2xl p-6 sm:p-8 flex flex-col items-center gap-4 transition-all duration-300 hover:shadow-xl hover:shadow-red-900/30 hover:-translate-y-1 active:scale-95 text-left w-full">
+                                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-red-500/10 rounded-2xl flex items-center justify-center group-hover:bg-red-500/20 transition-all duration-300">
+                                    <svg viewBox="0 0 48 48" class="w-12 h-12 sm:w-14 sm:h-14" xmlns="http://www.w3.org/2000/svg">
+                                        <rect width="48" height="48" rx="10" fill="#ef4444" opacity="0.15"/>
+                                        <polygon points="24,6 38,14 38,34 24,42 10,34 10,14" fill="#ef4444" opacity="0.9"/>
+                                        <polygon points="24,14 32,18 32,30 24,34 16,30 16,18" fill="#1e293b"/>
+                                        <polygon points="24,18 28,20 28,28 24,30 20,28 20,20" fill="#ef4444" opacity="0.7"/>
+                                    </svg>
+                                </div>
+                                <div class="text-center">
+                                    <h3 class="text-lg sm:text-xl font-extrabold text-white group-hover:text-red-300 transition-colors">Robux</h3>
+                                    <p class="text-slate-400 text-xs mt-1">Gift cards para Roblox</p>
+                                    <span class="inline-block mt-2 bg-red-500/20 text-red-400 text-xs font-bold px-3 py-1 rounded-full border border-red-500/30">Desde 1,000 NC</span>
+                                </div>
+                                <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <i class="fa-solid fa-arrow-right text-red-400 text-sm"></i>
+                                </div>
+                            </button>
+
+                        </div>
+
+                        <!-- Info conversión -->
+                        <div class="mt-4 bg-slate-900/60 border border-slate-700/50 rounded-2xl p-4 flex items-center gap-3">
+                            <i class="fa-solid fa-circle-info text-purple-400 text-lg shrink-0"></i>
+                            <p class="text-xs text-slate-400"><strong class="text-white">Tasa de conversión:</strong> 100 NetCoins = $1 MXN. Los canjes son procesados manualmente en un plazo de 24–72 horas hábiles.</p>
+                        </div>
                     </div>
+
+                    <!-- Vista detalle: opciones de monto -->
+                    <div id="canje-detalle" class="hidden space-y-4 sm:space-y-6">
+                        <!-- Header detalle -->
+                        <div class="flex items-center gap-3 border-b border-slate-700 pb-3 sm:pb-4">
+                            <button onclick="volverCatalogo()" class="w-9 h-9 bg-slate-700 hover:bg-slate-600 rounded-xl flex items-center justify-center transition shrink-0">
+                                <i class="fa-solid fa-arrow-left text-sm"></i>
+                            </button>
+                            <div>
+                                <h2 id="detalle-titulo" class="text-lg sm:text-xl font-extrabold text-white"></h2>
+                                <p id="detalle-subtitulo" class="text-slate-400 text-xs mt-0.5"></p>
+                            </div>
+                        </div>
+
+                        <!-- Grid de montos -->
+                        <div id="detalle-montos" class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4"></div>
+
+                        <!-- Formulario de solicitud -->
+                        <div id="container-formulario-retiro" class="hidden bg-slate-800 border border-slate-700 p-4 sm:p-6 rounded-2xl shadow-2xl">
+                            <div class="flex justify-between items-center mb-4">
+                                <div>
+                                    <h3 class="text-base sm:text-lg font-bold text-purple-400">Confirmar Canje</h3>
+                                    <p id="tipo-recompensa-txt" class="text-white text-sm font-semibold mt-0.5"></p>
+                                </div>
+                                <button onclick="cerrarFormularioRetiro()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+                            </div>
+                            <div class="bg-amber-900/20 border border-amber-500/30 p-3 rounded-xl text-xs text-amber-300 mb-4 flex items-start gap-2">
+                                <i class="fa-solid fa-clock text-amber-400 mt-0.5 shrink-0"></i>
+                                <span>Procesamiento en <strong>24–72 horas hábiles</strong> tras la verificación de tu solicitud.</span>
+                            </div>
+                            <!-- Resumen del canje seleccionado -->
+                            <div id="resumen-canje" class="bg-slate-900 border border-purple-500/20 rounded-xl p-4 mb-4 flex items-center justify-between">
+                                <div>
+                                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Costo</p>
+                                    <p id="resumen-nc" class="text-2xl font-black text-amber-400 mt-0.5"></p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Recibes</p>
+                                    <p id="resumen-valor" class="text-2xl font-black text-emerald-400 mt-0.5"></p>
+                                </div>
+                            </div>
+                            <form id="form-solicitud-retiro" class="space-y-3 sm:space-y-4">
+                                <input type="hidden" id="retiro-monto">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Banco / Plataforma</label>
+                                        <input type="text" id="retiro-banco" placeholder="BBVA, Santander, PayPal..."
+                                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Nombre del Beneficiario</label>
+                                        <input type="text" id="retiro-beneficiario" placeholder="Titular de la cuenta"
+                                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1" id="label-destino">CLABE / Email de Destino</label>
+                                    <input type="text" id="retiro-destino" placeholder="CLABE 18 dígitos o Email"
+                                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required>
+                                </div>
+                                <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-extrabold py-3.5 rounded-xl transition shadow-lg shadow-purple-600/30 text-sm sm:text-base">
+                                    <i class="fa-solid fa-paper-plane mr-2"></i>Enviar Solicitud de Canje
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
                 </div>
 
             </main>
@@ -1162,10 +1231,118 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // ══ CENTRO DE CANJES ══
+        const CANJES_CONFIG = {
+            paypal: {
+                titulo: 'PayPal',
+                subtitulo: 'Saldo directo a tu cuenta PayPal',
+                color: 'blue',
+                labelDestino: 'Correo PayPal',
+                placeholderDestino: 'tucorreo@paypal.com',
+                placeholderBanco: 'PayPal',
+                montos: [
+                    { nc: 1000,  mxn: 10,   label: '$10 MXN' },
+                    { nc: 2500,  mxn: 25,   label: '$25 MXN' },
+                    { nc: 5000,  mxn: 50,   label: '$50 MXN' },
+                    { nc: 10000, mxn: 100,  label: '$100 MXN' },
+                    { nc: 25000, mxn: 250,  label: '$250 MXN' },
+                    { nc: 50000, mxn: 500,  label: '$500 MXN' },
+                ]
+            },
+            spei: {
+                titulo: 'Transferencia SPEI',
+                subtitulo: 'A cualquier banco mexicano (BBVA, HSBC, Santander...)',
+                color: 'emerald',
+                labelDestino: 'CLABE Interbancaria (18 dígitos)',
+                placeholderDestino: '012345678901234567',
+                placeholderBanco: 'BBVA, Santander, HSBC...',
+                montos: [
+                    { nc: 1000,  mxn: 10,   label: '$10 MXN' },
+                    { nc: 2500,  mxn: 25,   label: '$25 MXN' },
+                    { nc: 5000,  mxn: 50,   label: '$50 MXN' },
+                    { nc: 10000, mxn: 100,  label: '$100 MXN' },
+                    { nc: 25000, mxn: 250,  label: '$250 MXN' },
+                    { nc: 50000, mxn: 500,  label: '$500 MXN' },
+                ]
+            },
+            robux: {
+                titulo: 'Robux — Roblox',
+                subtitulo: 'Gift card canjeada directamente en tu cuenta',
+                color: 'red',
+                labelDestino: 'Usuario de Roblox',
+                placeholderDestino: 'Tu nombre de usuario en Roblox',
+                placeholderBanco: 'Roblox',
+                montos: [
+                    { nc: 1000,  mxn: 10,   label: '~80 Robux' },
+                    { nc: 2500,  mxn: 25,   label: '~200 Robux' },
+                    { nc: 5000,  mxn: 50,   label: '~400 Robux' },
+                    { nc: 10000, mxn: 100,  label: '~800 Robux' },
+                    { nc: 25000, mxn: 250,  label: '~2,000 Robux' },
+                    { nc: 50000, mxn: 500,  label: '~4,000 Robux' },
+                ]
+            }
+        };
+
+        let canjeActivo = null;
+
+        function abrirCategoria(tipo) {
+            canjeActivo = tipo;
+            const cfg = CANJES_CONFIG[tipo];
+            const colores = {
+                blue:    { border: 'border-blue-500/40',    bg: 'bg-blue-500/10',    text: 'text-blue-400',    btn: 'bg-blue-600 hover:bg-blue-500' },
+                emerald: { border: 'border-emerald-500/40', bg: 'bg-emerald-500/10', text: 'text-emerald-400', btn: 'bg-emerald-600 hover:bg-emerald-500' },
+                red:     { border: 'border-red-500/40',     bg: 'bg-red-500/10',     text: 'text-red-400',     btn: 'bg-red-600 hover:bg-red-500' },
+            };
+            const c = colores[cfg.color];
+
+            document.getElementById('canje-catalogo').classList.add('hidden');
+            document.getElementById('canje-detalle').classList.remove('hidden');
+            document.getElementById('detalle-titulo').innerText = cfg.titulo;
+            document.getElementById('detalle-subtitulo').innerText = cfg.subtitulo;
+
+            const grid = document.getElementById('detalle-montos');
+            grid.innerHTML = cfg.montos.map(m => `
+                <button onclick="seleccionarMonto(${m.nc}, ${m.mxn}, '${m.label}', '${tipo}')"
+                    class="group relative bg-slate-800 border ${c.border} hover:${c.bg} rounded-2xl p-4 sm:p-5 flex flex-col items-center gap-2 transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:scale-95 w-full">
+                    <div class="w-12 h-12 ${c.bg} rounded-xl flex items-center justify-center mb-1">
+                        <i class="fa-solid fa-coins ${c.text} text-xl"></i>
+                    </div>
+                    <p class="${c.text} font-black text-xl">${m.label}</p>
+                    <p class="text-slate-400 text-xs font-semibold">${m.nc.toLocaleString()} NetCoins</p>
+                    <div class="mt-1 w-full bg-slate-700 rounded-lg py-1.5 text-center text-xs font-bold text-white group-hover:bg-purple-600 transition-colors">
+                        Seleccionar
+                    </div>
+                </button>
+            `).join('');
+
+            document.getElementById('container-formulario-retiro').classList.add('hidden');
+            document.getElementById('form-solicitud-retiro').reset();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function volverCatalogo() {
+            document.getElementById('canje-catalogo').classList.remove('hidden');
+            document.getElementById('canje-detalle').classList.add('hidden');
+            document.getElementById('container-formulario-retiro').classList.add('hidden');
+        }
+
+        function seleccionarMonto(nc, mxn, label, tipo) {
+            const cfg = CANJES_CONFIG[tipo];
+            document.getElementById('retiro-monto').value = mxn;
+            document.getElementById('tipo-recompensa-txt').innerText = `${cfg.titulo} — ${label}`;
+            document.getElementById('resumen-nc').innerText = `${nc.toLocaleString()} NC`;
+            document.getElementById('resumen-valor').innerText = label;
+            document.getElementById('retiro-banco').placeholder = cfg.placeholderBanco;
+            document.getElementById('retiro-banco').value = cfg.placeholderBanco;
+            document.getElementById('label-destino').innerText = cfg.labelDestino;
+            document.getElementById('retiro-destino').placeholder = cfg.placeholderDestino;
+            document.getElementById('container-formulario-retiro').classList.remove('hidden');
+            setTimeout(() => document.getElementById('container-formulario-retiro').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+        }
+
         function abrirFormularioRetiro(tipo) {
-            document.getElementById("tipo-recompensa-txt").innerText = tipo;
-            document.getElementById("container-formulario-retiro").classList.remove("hidden");
-            setTimeout(() => document.getElementById("container-formulario-retiro").scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+            // compatibilidad legacy
+            abrirCategoria(tipo.toLowerCase().replace('spei / banco', 'spei').replace('roblox', 'robux'));
         }
 
         function cerrarFormularioRetiro() {
@@ -1181,24 +1358,35 @@
             const destino = document.getElementById("retiro-destino").value.trim();
             const tipoPremio = document.getElementById("tipo-recompensa-txt").innerText;
             const costoNetCoins = montoMXN * CONVERSION_RATE;
-            
-            if (montoMXN < 100 || montoMXN > 3000) { mostrarNotificacion("Transacciones permitidas de 100 a 3000 MXN.", "error"); return; }
-            if (!banco || !beneficiario || !destino) { mostrarNotificacion("Completa todos los campos obligatorios.", "error"); return; }
-            
+
+            if (!banco || !beneficiario || !destino) {
+                mostrarNotificacion("Por favor completa todos los campos.", "error"); return;
+            }
             const { data: perfil } = await _supabase.from('perfiles').select('netcoins').eq('id', currentUser.id).single();
-            if (!perfil || perfil.netcoins < costoNetCoins) { mostrarNotificacion(`Fondos insuficientes. Requieres ${costoNetCoins} NetCoins.`, "error"); return; }
-            
+            if (!perfil || perfil.netcoins < costoNetCoins) {
+                mostrarNotificacion(`Saldo insuficiente. Necesitas ${costoNetCoins.toLocaleString()} NC y tienes ${(perfil?.netcoins || 0).toLocaleString()} NC.`, "error"); return;
+            }
+            const btn = document.querySelector('#form-solicitud-retiro button[type="submit"]');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Procesando...';
+
             const { error: errorInsert } = await _supabase.from('retiros_pendientes').insert([{
                 user_id: currentUser.id, monto_mxn: montoMXN, netcoins_deducidos: costoNetCoins,
                 banco_plataforma: banco, nombre_beneficiario: beneficiario, cuenta_destino: destino,
                 tipo_premio: tipoPremio, estatus: 'Pendiente'
             }]);
-            
-            if (errorInsert) { mostrarNotificacion("Ocurrió un error al registrar tu retiro.", "error"); return; }
-            
+            if (errorInsert) {
+                mostrarNotificacion("Error al registrar la solicitud. Intenta de nuevo.", "error");
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane mr-2"></i>Enviar Solicitud de Canje';
+                return;
+            }
             await _supabase.from('perfiles').update({ netcoins: perfil.netcoins - costoNetCoins }).eq('id', currentUser.id);
-            mostrarNotificacion("¡Solicitud de retiro enviada para revisión!", "success");
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-paper-plane mr-2"></i>Enviar Solicitud de Canje';
+            mostrarToastSesion('success', '¡Solicitud enviada!', 'Tu canje está en revisión. En 24–72 hrs hábiles recibirás tu recompensa.');
             cerrarFormularioRetiro();
+            volverCatalogo();
         }
 
         // ══════════════════════════════════════════
