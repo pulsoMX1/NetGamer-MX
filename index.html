@@ -110,31 +110,9 @@
         }
         .toast-enter { animation: slideInRight 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         .toast-exit { animation: fadeOutRight 0.3s ease-in forwards; }
-
-        /* ── Toast de sesión ── */
-        #toast-sesion {
-            position: fixed; top: 24px; left: 50%; transform: translateX(-50%) translateY(-80px);
-            z-index: 9999; transition: transform 0.45s cubic-bezier(.36,.07,.19,.97), opacity 0.3s;
-            opacity: 0; pointer-events: none; min-width: 300px; max-width: 90vw;
-        }
-        #toast-sesion.visible {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-100 font-sans min-h-screen">
-
-    <!-- ══ TOAST DE SESIÓN ══ -->
-    <div id="toast-sesion">
-        <div id="toast-sesion-inner" class="flex items-center gap-3 px-5 py-4 rounded-2xl shadow-2xl border text-sm font-semibold">
-            <span id="toast-sesion-icon" class="text-xl shrink-0"></span>
-            <div>
-                <p id="toast-sesion-titulo" class="font-extrabold text-base"></p>
-                <p id="toast-sesion-msg" class="font-normal text-xs opacity-80 mt-0.5"></p>
-            </div>
-        </div>
-    </div>
 
     <div id="toast-container" class="fixed top-5 right-5 z-[9999] flex flex-col gap-3 pointer-events-none max-w-xs w-full sm:max-w-sm"></div>
 
@@ -627,153 +605,84 @@
                 </div>
 
                 <div id="tab-canjear" class="tab-content space-y-4 sm:space-y-6">
+                    <div class="border-b border-slate-700 pb-3 sm:pb-4">
+                        <h2 class="text-xl sm:text-2xl font-extrabold">Módulo de Retiros y Canjes</h2>
+                        <p class="text-slate-400 text-xs sm:text-sm mt-1">Cambia tus NetCoins por recompensas reales.</p>
+                    </div>
 
-                    <!-- Vista principal: catálogo de recompensas -->
-                    <div id="canje-catalogo">
-                        <div class="border-b border-slate-700 pb-3 sm:pb-4 mb-4 sm:mb-6">
-                            <h2 class="text-xl sm:text-2xl font-extrabold">Centro de Canjes</h2>
-                            <p class="text-slate-400 text-xs sm:text-sm mt-1">Selecciona una recompensa y elige el monto que deseas canjear.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6">
+                        <div class="stat-card bg-slate-800 border border-slate-700 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-purple-500 transition duration-300">
+                            <div>
+                                <span class="bg-red-600/20 text-red-400 text-xs font-bold px-2.5 py-1 rounded-md inline-block mb-3">Código Digital</span>
+                                <h3 class="text-base sm:text-lg font-bold">Robux (Roblox Pin)</h3>
+                                <p class="text-slate-400 text-xs mt-1">Canjea directamente en tu cuenta de Roblox.</p>
+                            </div>
+                            <div class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-slate-700/50 flex items-center justify-between">
+                                <span class="text-amber-400 font-extrabold text-xs sm:text-sm"><i class="fa-solid fa-coins mr-1"></i> 100 NC = $1 MXN</span>
+                                <button onclick="abrirFormularioRetiro('Roblox')" class="bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-xs font-bold px-3 sm:px-4 py-2 rounded-xl transition">Canjear</button>
+                            </div>
                         </div>
-
-                        <!-- Tarjetas de categorías -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-
-                            <!-- PayPal -->
-                            <button onclick="abrirCategoria('paypal')" class="group relative bg-slate-800 border border-slate-700 hover:border-blue-400 rounded-2xl p-6 sm:p-8 flex flex-col items-center gap-4 transition-all duration-300 hover:shadow-xl hover:shadow-blue-900/30 hover:-translate-y-1 active:scale-95 text-left w-full">
-                                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-blue-500/10 rounded-2xl flex items-center justify-center group-hover:bg-blue-500/20 transition-all duration-300">
-                                    <!-- Logo PayPal SVG -->
-                                    <svg viewBox="0 0 24 24" class="w-12 h-12 sm:w-14 sm:h-14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M19.5 6.5C19.5 9.5 17.5 12 14 12H11.5L10.5 18H7.5L9.5 6H14C17 6 19.5 6.5 19.5 6.5Z" fill="#009cde"/>
-                                        <path d="M7 8.5C7 11.5 5 14 1.5 14H-1L-2 20H-5L-3 8.5H1.5C4.5 8.5 7 8.5 7 8.5Z" fill="#012169" transform="translate(9 -2)"/>
-                                        <path d="M6 4C6 4 7.5 3.5 9.5 3.5H14C18 3.5 20.5 5.5 20.5 9C20.5 13.5 17 16 13 16H10.5L9.5 21H5.5L8 4H6Z" fill="#003087"/>
-                                        <path d="M9 7C9 7 10 6.5 12 6.5H15.5C18.5 6.5 20 8 20 10.5C20 14 17.5 16 14 16H11.5L10.5 20.5H7L9 7Z" fill="#009cde"/>
-                                    </svg>
-                                </div>
-                                <div class="text-center">
-                                    <h3 class="text-lg sm:text-xl font-extrabold text-white group-hover:text-blue-300 transition-colors">PayPal</h3>
-                                    <p class="text-slate-400 text-xs mt-1">Saldo directo a tu cuenta</p>
-                                    <span class="inline-block mt-2 bg-blue-500/20 text-blue-400 text-xs font-bold px-3 py-1 rounded-full border border-blue-500/30">Desde 1,000 NC</span>
-                                </div>
-                                <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <i class="fa-solid fa-arrow-right text-blue-400 text-sm"></i>
-                                </div>
-                            </button>
-
-                            <!-- SPEI -->
-                            <button onclick="abrirCategoria('spei')" class="group relative bg-slate-800 border border-slate-700 hover:border-emerald-400 rounded-2xl p-6 sm:p-8 flex flex-col items-center gap-4 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-900/30 hover:-translate-y-1 active:scale-95 text-left w-full">
-                                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-emerald-500/10 rounded-2xl flex items-center justify-center group-hover:bg-emerald-500/20 transition-all duration-300">
-                                    <svg viewBox="0 0 48 48" class="w-12 h-12 sm:w-14 sm:h-14" xmlns="http://www.w3.org/2000/svg">
-                                        <rect width="48" height="48" rx="10" fill="#10b981" opacity="0.15"/>
-                                        <text x="24" y="32" text-anchor="middle" font-size="20" font-weight="900" fill="#10b981" font-family="Arial">$</text>
-                                        <rect x="8" y="36" width="32" height="3" rx="1.5" fill="#10b981" opacity="0.6"/>
-                                        <rect x="8" y="10" width="32" height="3" rx="1.5" fill="#10b981" opacity="0.6"/>
-                                    </svg>
-                                </div>
-                                <div class="text-center">
-                                    <h3 class="text-lg sm:text-xl font-extrabold text-white group-hover:text-emerald-300 transition-colors">Transferencia SPEI</h3>
-                                    <p class="text-slate-400 text-xs mt-1">A cualquier banco mexicano</p>
-                                    <span class="inline-block mt-2 bg-emerald-500/20 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full border border-emerald-500/30">Desde 1,000 NC</span>
-                                </div>
-                                <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <i class="fa-solid fa-arrow-right text-emerald-400 text-sm"></i>
-                                </div>
-                            </button>
-
-                            <!-- Robux -->
-                            <button onclick="abrirCategoria('robux')" class="group relative bg-slate-800 border border-slate-700 hover:border-red-400 rounded-2xl p-6 sm:p-8 flex flex-col items-center gap-4 transition-all duration-300 hover:shadow-xl hover:shadow-red-900/30 hover:-translate-y-1 active:scale-95 text-left w-full">
-                                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-red-500/10 rounded-2xl flex items-center justify-center group-hover:bg-red-500/20 transition-all duration-300">
-                                    <svg viewBox="0 0 48 48" class="w-12 h-12 sm:w-14 sm:h-14" xmlns="http://www.w3.org/2000/svg">
-                                        <rect width="48" height="48" rx="10" fill="#ef4444" opacity="0.15"/>
-                                        <polygon points="24,6 38,14 38,34 24,42 10,34 10,14" fill="#ef4444" opacity="0.9"/>
-                                        <polygon points="24,14 32,18 32,30 24,34 16,30 16,18" fill="#1e293b"/>
-                                        <polygon points="24,18 28,20 28,28 24,30 20,28 20,20" fill="#ef4444" opacity="0.7"/>
-                                    </svg>
-                                </div>
-                                <div class="text-center">
-                                    <h3 class="text-lg sm:text-xl font-extrabold text-white group-hover:text-red-300 transition-colors">Robux</h3>
-                                    <p class="text-slate-400 text-xs mt-1">Gift cards para Roblox</p>
-                                    <span class="inline-block mt-2 bg-red-500/20 text-red-400 text-xs font-bold px-3 py-1 rounded-full border border-red-500/30">Desde 1,000 NC</span>
-                                </div>
-                                <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <i class="fa-solid fa-arrow-right text-red-400 text-sm"></i>
-                                </div>
-                            </button>
-
+                        <div class="stat-card bg-slate-800 border border-slate-700 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-purple-500 transition duration-300">
+                            <div>
+                                <span class="bg-blue-600/20 text-blue-400 text-xs font-bold px-2.5 py-1 rounded-md inline-block mb-3">Saldo Electrónico</span>
+                                <h3 class="text-base sm:text-lg font-bold">PayPal Balance (USD)</h3>
+                                <p class="text-slate-400 text-xs mt-1">Recibe fondos directamente en tu cuenta PayPal.</p>
+                            </div>
+                            <div class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-slate-700/50 flex items-center justify-between">
+                                <span class="text-amber-400 font-extrabold text-xs sm:text-sm"><i class="fa-solid fa-coins mr-1"></i> 100 NC = $1 MXN</span>
+                                <button onclick="abrirFormularioRetiro('PayPal')" class="bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-xs font-bold px-3 sm:px-4 py-2 rounded-xl transition">Canjear</button>
+                            </div>
                         </div>
-
-                        <!-- Info conversión -->
-                        <div class="mt-4 bg-slate-900/60 border border-slate-700/50 rounded-2xl p-4 flex items-center gap-3">
-                            <i class="fa-solid fa-circle-info text-purple-400 text-lg shrink-0"></i>
-                            <p class="text-xs text-slate-400"><strong class="text-white">Tasa de conversión:</strong> 100 NetCoins = $1 MXN. Los canjes son procesados manualmente en un plazo de 24–72 horas hábiles.</p>
+                        <div class="stat-card bg-slate-800 border border-slate-700 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-purple-500 transition duration-300">
+                            <div>
+                                <span class="bg-emerald-600/20 text-emerald-400 text-xs font-bold px-2.5 py-1 rounded-md inline-block mb-3">Transferencia Directa</span>
+                                <h3 class="text-base sm:text-lg font-bold">Transferencia Bancaria (SPEI)</h3>
+                                <p class="text-slate-400 text-xs mt-1">Recibe dinero en tu cuenta bancaria mexicana.</p>
+                            </div>
+                            <div class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-slate-700/50 flex items-center justify-between">
+                                <span class="text-amber-400 font-extrabold text-xs sm:text-sm"><i class="fa-solid fa-coins mr-1"></i> 100 NC = $1 MXN</span>
+                                <button onclick="abrirFormularioRetiro('SPEI / Banco')" class="bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-xs font-bold px-3 sm:px-4 py-2 rounded-xl transition">Canjear</button>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Vista detalle: opciones de monto -->
-                    <div id="canje-detalle" class="hidden space-y-4 sm:space-y-6">
-                        <!-- Header detalle -->
-                        <div class="flex items-center gap-3 border-b border-slate-700 pb-3 sm:pb-4">
-                            <button onclick="volverCatalogo()" class="w-9 h-9 bg-slate-700 hover:bg-slate-600 rounded-xl flex items-center justify-center transition shrink-0">
-                                <i class="fa-solid fa-arrow-left text-sm"></i>
-                            </button>
-                            <div>
-                                <h2 id="detalle-titulo" class="text-lg sm:text-xl font-extrabold text-white"></h2>
-                                <p id="detalle-subtitulo" class="text-slate-400 text-xs mt-0.5"></p>
-                            </div>
+                    <div id="container-formulario-retiro" class="hidden bg-slate-800 border border-slate-700 p-4 sm:p-6 rounded-2xl max-w-xl mx-auto shadow-2xl">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-base sm:text-lg font-bold text-purple-400">Canjear: <span id="tipo-recompensa-txt" class="text-white"></span></h3>
+                            <button onclick="cerrarFormularioRetiro()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
                         </div>
-
-                        <!-- Grid de montos -->
-                        <div id="detalle-montos" class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4"></div>
-
-                        <!-- Formulario de solicitud -->
-                        <div id="container-formulario-retiro" class="hidden bg-slate-800 border border-slate-700 p-4 sm:p-6 rounded-2xl shadow-2xl">
-                            <div class="flex justify-between items-center mb-4">
-                                <div>
-                                    <h3 class="text-base sm:text-lg font-bold text-purple-400">Confirmar Canje</h3>
-                                    <p id="tipo-recompensa-txt" class="text-white text-sm font-semibold mt-0.5"></p>
-                                </div>
-                                <button onclick="cerrarFormularioRetiro()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+                        <div class="bg-slate-900 border border-purple-500/30 p-3 rounded-xl text-xs text-purple-300 mb-4 flex items-start gap-2">
+                            <i class="fa-solid fa-shield-halved text-amber-400 mt-0.5 shrink-0"></i>
+                            <span>Retiro mínimo <strong>100 MXN</strong> y máximo <strong>3000 MXN</strong> por operación.</span>
+                        </div>
+                        <form id="form-solicitud-retiro" class="space-y-3 sm:space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Monto a Retirar (MXN)</label>
+                                <input type="number" id="retiro-monto" min="100" max="3000" placeholder="Min 100 - Max 3000 MXN"
+                                    class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required>
                             </div>
-                            <div class="bg-amber-900/20 border border-amber-500/30 p-3 rounded-xl text-xs text-amber-300 mb-4 flex items-start gap-2">
-                                <i class="fa-solid fa-clock text-amber-400 mt-0.5 shrink-0"></i>
-                                <span>Procesamiento en <strong>24–72 horas hábiles</strong> tras la verificación de tu solicitud.</span>
-                            </div>
-                            <!-- Resumen del canje seleccionado -->
-                            <div id="resumen-canje" class="bg-slate-900 border border-purple-500/20 rounded-xl p-4 mb-4 flex items-center justify-between">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                 <div>
-                                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Costo</p>
-                                    <p id="resumen-nc" class="text-2xl font-black text-amber-400 mt-0.5"></p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Recibes</p>
-                                    <p id="resumen-valor" class="text-2xl font-black text-emerald-400 mt-0.5"></p>
-                                </div>
-                            </div>
-                            <form id="form-solicitud-retiro" class="space-y-3 sm:space-y-4">
-                                <input type="hidden" id="retiro-monto">
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                                    <div>
-                                        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Banco / Plataforma</label>
-                                        <input type="text" id="retiro-banco" placeholder="BBVA, Santander, PayPal..."
-                                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required>
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Nombre del Beneficiario</label>
-                                        <input type="text" id="retiro-beneficiario" placeholder="Titular de la cuenta"
-                                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1" id="label-destino">CLABE / Email de Destino</label>
-                                    <input type="text" id="retiro-destino" placeholder="CLABE 18 dígitos o Email"
+                                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Banco / Plataforma</label>
+                                    <input type="text" id="retiro-banco" placeholder="BBVA, Santander, PayPal..."
                                         class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required>
                                 </div>
-                                <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-extrabold py-3.5 rounded-xl transition shadow-lg shadow-purple-600/30 text-sm sm:text-base">
-                                    <i class="fa-solid fa-paper-plane mr-2"></i>Enviar Solicitud de Canje
-                                </button>
-                            </form>
-                        </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Nombre del Beneficiario</label>
+                                    <input type="text" id="retiro-beneficiario" placeholder="Titular de la cuenta"
+                                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">CLABE / Email de Destino</label>
+                                <input type="text" id="retiro-destino" placeholder="CLABE 18 dígitos o Email"
+                                    class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required>
+                            </div>
+                            <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-purple-600/30 text-sm sm:text-base">
+                                Enviar Solicitud
+                            </button>
+                        </form>
                     </div>
-
                 </div>
 
             </main>
@@ -937,12 +846,7 @@
                     await procesarBonoReferido(data.user.id, refCode);
                 }
             }
-            mostrarSplashYluego(async () => {
-                await verificarSesionActiva();
-                setTimeout(() => {
-                    mostrarToastSesion('info', '🎉 ¡Cuenta creada exitosamente!', 'Tu cuenta está activa. ¡Bienvenido a NetGamer MX!');
-                }, 600);
-            });
+            verificarSesionActiva();
         }
 
         async function reenviarCodigo() {
@@ -959,19 +863,10 @@
                 const password = document.getElementById("login-password").value;
                 const btn = e.target.querySelector('button[type="submit"]');
                 btn.disabled = true; btn.innerText = "Ingresando...";
-                const { data: loginData, error } = await _supabase.auth.signInWithPassword({ email, password });
+                const { error } = await _supabase.auth.signInWithPassword({ email, password });
                 btn.disabled = false; btn.innerText = "Ingresar";
-                if (error) {
-                    mostrarNotificacion("Credenciales incorrectas. Verifica tu correo y contraseña.", "error");
-                } else {
-                    mostrarSplashYluego(async () => {
-                        await verificarSesionActiva();
-                        setTimeout(() => {
-                            const nombre = loginData.user?.user_metadata?.username || loginData.user?.email || "usuario";
-                            mostrarToastSesion('success', `¡Bienvenido de vuelta, ${nombre}!`, 'Has iniciado sesión correctamente.');
-                        }, 600);
-                    });
-                }
+                if (error) mostrarNotificacion("Credenciales incorrectas. Verifica tu correo y contraseña.", "error");
+                else verificarSesionActiva();
             });
 
             document.getElementById("register-form").addEventListener("submit", async (e) => {
@@ -1051,13 +946,11 @@
                 document.getElementById("app-container").classList.add("hidden");
             }
 
-            // Ocultar splash al terminar de cargar
+            // Ocultar splash con fade suave
             const splash = document.getElementById("splash-screen");
-            if (splash.style.display !== "none") {
-                splash.style.transition = "opacity 0.4s ease";
-                splash.style.opacity = "0";
-                setTimeout(() => splash.style.display = "none", 400);
-            }
+            splash.style.transition = "opacity 0.4s ease";
+            splash.style.opacity = "0";
+            setTimeout(() => splash.style.display = "none", 400);
         }
 
         async function cargarDatosPerfil(user) {
@@ -1088,31 +981,40 @@
             btn.disabled = true;
             btn.innerText = '⏳ Acreditando...';
 
-            // Llamada segura a la Edge Function
-            const { data, error } = await _supabase.functions.invoke('reclamar-bonus');
+            try {
+                const { data: { session } } = await _supabase.auth.getSession();
+                const res = await fetch(`${SUPABASE_URL}/functions/v1/reclamar-bonus`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.access_token}`
+                    }
+                });
+                const result = await res.json();
 
-            // Manejo de errores desde el servidor
-            if (error || data?.error) {
-                const mensajeError = data?.error === 'ya_reclamado' 
-                    ? 'Ya reclamaste este bono anteriormente.' 
-                    : 'Error al procesar el bono. Intenta de nuevo.';
-                mostrarNotificacion(mensajeError, "error");
-                cerrarModalBonus();
-                return;
+                if (!res.ok) {
+                    // Ya reclamado o error
+                    document.getElementById('modal-bonus').classList.remove('activo');
+                    document.body.style.overflow = '';
+                    return;
+                }
+
+                // Animación de éxito
+                const card = document.getElementById('modal-bonus-card');
+                card.innerHTML = `
+                    <div class="text-7xl mb-4">🎉</div>
+                    <h2 class="text-2xl font-black text-white mb-2">¡NetCoins Acreditadas!</h2>
+                    <p class="text-slate-400 text-sm mb-4">Se han añadido <strong class="text-amber-400">${NC_BONUS_BIENVENIDA} NetCoins</strong> a tu balance.</p>
+                    <div class="text-5xl font-black text-amber-400 mb-6">+${NC_BONUS_BIENVENIDA} NC</div>
+                    <button onclick="cerrarModalBonus()" class="w-full bg-purple-600 hover:bg-purple-700 font-bold py-3 rounded-2xl transition active:scale-95">
+                        ¡Empezar a ganar! 🚀
+                    </button>
+                `;
+            } catch(e) {
+                console.error('Error reclamando bonus:', e);
+                btn.disabled = false;
+                btn.innerText = '🎉 ¡Reclamar mis NetCoins!';
             }
-
-            // Animación de éxito usando la cantidad que devolvió el servidor (1000)
-            const ncAcreditadas = data.nc || NC_BONUS_BIENVENIDA;
-            const card = document.getElementById('modal-bonus-card');
-            card.innerHTML = `
-                <div class="text-7xl mb-4">🎉</div>
-                <h2 class="text-2xl font-black text-white mb-2">¡NetCoins Acreditadas!</h2>
-                <p class="text-slate-400 text-sm mb-4">Se han añadido <strong class="text-amber-400">${ncAcreditadas} NetCoins</strong> a tu balance.</p>
-                <div class="text-5xl font-black text-amber-400 mb-6">+${ncAcreditadas} NC</div>
-                <button onclick="cerrarModalBonus()" class="w-full bg-purple-600 hover:bg-purple-700 font-bold py-3 rounded-2xl transition active:scale-95">
-                    ¡Empezar a ganar! 🚀
-                </button>
-            `;
         }
 
         function cerrarModalBonus() {
@@ -1228,118 +1130,10 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ══ CENTRO DE CANJES ══
-        const CANJES_CONFIG = {
-            paypal: {
-                titulo: 'PayPal',
-                subtitulo: 'Saldo directo a tu cuenta PayPal',
-                color: 'blue',
-                labelDestino: 'Correo PayPal',
-                placeholderDestino: 'tucorreo@paypal.com',
-                placeholderBanco: 'PayPal',
-                montos: [
-                    { nc: 1000,  mxn: 10,   label: '$10 MXN' },
-                    { nc: 2500,  mxn: 25,   label: '$25 MXN' },
-                    { nc: 5000,  mxn: 50,   label: '$50 MXN' },
-                    { nc: 10000, mxn: 100,  label: '$100 MXN' },
-                    { nc: 25000, mxn: 250,  label: '$250 MXN' },
-                    { nc: 50000, mxn: 500,  label: '$500 MXN' },
-                ]
-            },
-            spei: {
-                titulo: 'Transferencia SPEI',
-                subtitulo: 'A cualquier banco mexicano (BBVA, HSBC, Santander...)',
-                color: 'emerald',
-                labelDestino: 'CLABE Interbancaria (18 dígitos)',
-                placeholderDestino: '012345678901234567',
-                placeholderBanco: 'BBVA, Santander, HSBC...',
-                montos: [
-                    { nc: 1000,  mxn: 10,   label: '$10 MXN' },
-                    { nc: 2500,  mxn: 25,   label: '$25 MXN' },
-                    { nc: 5000,  mxn: 50,   label: '$50 MXN' },
-                    { nc: 10000, mxn: 100,  label: '$100 MXN' },
-                    { nc: 25000, mxn: 250,  label: '$250 MXN' },
-                    { nc: 50000, mxn: 500,  label: '$500 MXN' },
-                ]
-            },
-            robux: {
-                titulo: 'Robux — Roblox',
-                subtitulo: 'Gift card canjeada directamente en tu cuenta',
-                color: 'red',
-                labelDestino: 'Usuario de Roblox',
-                placeholderDestino: 'Tu nombre de usuario en Roblox',
-                placeholderBanco: 'Roblox',
-                montos: [
-                    { nc: 1000,  mxn: 10,   label: '~80 Robux' },
-                    { nc: 2500,  mxn: 25,   label: '~200 Robux' },
-                    { nc: 5000,  mxn: 50,   label: '~400 Robux' },
-                    { nc: 10000, mxn: 100,  label: '~800 Robux' },
-                    { nc: 25000, mxn: 250,  label: '~2,000 Robux' },
-                    { nc: 50000, mxn: 500,  label: '~4,000 Robux' },
-                ]
-            }
-        };
-
-        let canjeActivo = null;
-
-        function abrirCategoria(tipo) {
-            canjeActivo = tipo;
-            const cfg = CANJES_CONFIG[tipo];
-            const colores = {
-                blue:    { border: 'border-blue-500/40',    bg: 'bg-blue-500/10',    text: 'text-blue-400',    btn: 'bg-blue-600 hover:bg-blue-500' },
-                emerald: { border: 'border-emerald-500/40', bg: 'bg-emerald-500/10', text: 'text-emerald-400', btn: 'bg-emerald-600 hover:bg-emerald-500' },
-                red:     { border: 'border-red-500/40',     bg: 'bg-red-500/10',     text: 'text-red-400',     btn: 'bg-red-600 hover:bg-red-500' },
-            };
-            const c = colores[cfg.color];
-
-            document.getElementById('canje-catalogo').classList.add('hidden');
-            document.getElementById('canje-detalle').classList.remove('hidden');
-            document.getElementById('detalle-titulo').innerText = cfg.titulo;
-            document.getElementById('detalle-subtitulo').innerText = cfg.subtitulo;
-
-            const grid = document.getElementById('detalle-montos');
-            grid.innerHTML = cfg.montos.map(m => `
-                <button onclick="seleccionarMonto(${m.nc}, ${m.mxn}, '${m.label}', '${tipo}')"
-                    class="group relative bg-slate-800 border ${c.border} hover:${c.bg} rounded-2xl p-4 sm:p-5 flex flex-col items-center gap-2 transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:scale-95 w-full">
-                    <div class="w-12 h-12 ${c.bg} rounded-xl flex items-center justify-center mb-1">
-                        <i class="fa-solid fa-coins ${c.text} text-xl"></i>
-                    </div>
-                    <p class="${c.text} font-black text-xl">${m.label}</p>
-                    <p class="text-slate-400 text-xs font-semibold">${m.nc.toLocaleString()} NetCoins</p>
-                    <div class="mt-1 w-full bg-slate-700 rounded-lg py-1.5 text-center text-xs font-bold text-white group-hover:bg-purple-600 transition-colors">
-                        Seleccionar
-                    </div>
-                </button>
-            `).join('');
-
-            document.getElementById('container-formulario-retiro').classList.add('hidden');
-            document.getElementById('form-solicitud-retiro').reset();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function volverCatalogo() {
-            document.getElementById('canje-catalogo').classList.remove('hidden');
-            document.getElementById('canje-detalle').classList.add('hidden');
-            document.getElementById('container-formulario-retiro').classList.add('hidden');
-        }
-
-        function seleccionarMonto(nc, mxn, label, tipo) {
-            const cfg = CANJES_CONFIG[tipo];
-            document.getElementById('retiro-monto').value = mxn;
-            document.getElementById('tipo-recompensa-txt').innerText = `${cfg.titulo} — ${label}`;
-            document.getElementById('resumen-nc').innerText = `${nc.toLocaleString()} NC`;
-            document.getElementById('resumen-valor').innerText = label;
-            document.getElementById('retiro-banco').placeholder = cfg.placeholderBanco;
-            document.getElementById('retiro-banco').value = cfg.placeholderBanco;
-            document.getElementById('label-destino').innerText = cfg.labelDestino;
-            document.getElementById('retiro-destino').placeholder = cfg.placeholderDestino;
-            document.getElementById('container-formulario-retiro').classList.remove('hidden');
-            setTimeout(() => document.getElementById('container-formulario-retiro').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-        }
-
         function abrirFormularioRetiro(tipo) {
-            // compatibilidad legacy
-            abrirCategoria(tipo.toLowerCase().replace('spei / banco', 'spei').replace('roblox', 'robux'));
+            document.getElementById("tipo-recompensa-txt").innerText = tipo;
+            document.getElementById("container-formulario-retiro").classList.remove("hidden");
+            setTimeout(() => document.getElementById("container-formulario-retiro").scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
         }
 
         function cerrarFormularioRetiro() {
@@ -1356,37 +1150,48 @@
             const tipoPremio = document.getElementById("tipo-recompensa-txt").innerText;
 
             if (!banco || !beneficiario || !destino) {
-                mostrarNotificacion("Por favor completa todos los campos obligatorios.", "error"); 
-                return;
+                mostrarNotificacion("Por favor completa todos los campos.", "error"); return;
             }
-            
+
             const btn = document.querySelector('#form-solicitud-retiro button[type="submit"]');
             btn.disabled = true;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Procesando...';
 
-            // Llamada segura a la Edge Function mandando los datos del formulario
-            const { data, error } = await _supabase.functions.invoke('procesar-retiro', {
-                body: { montoMXN, banco, beneficiario, destino, tipoPremio }
-            });
+            try {
+                const { data: { session } } = await _supabase.auth.getSession();
+                const res = await fetch(`${SUPABASE_URL}/functions/v1/procesar-retiro`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.access_token}`
+                    },
+                    body: JSON.stringify({ montoMXN, banco, beneficiario, destino, tipoPremio })
+                });
+                const result = await res.json();
 
-            if (error || data?.error) {
-                let msg = "Error al registrar la solicitud.";
-                if (data?.error === 'saldo_insuficiente') msg = `Saldo insuficiente. Necesitas ${data.necesitas} NC.`;
-                else if (data?.error === 'campos_incompletos') msg = "Por favor completa todos los campos.";
-                else if (data?.error === 'error_db') msg = "Error del servidor al registrar retiro.";
-                
-                mostrarNotificacion(msg, "error");
+                if (!res.ok) {
+                    if (result.error === 'saldo_insuficiente') {
+                        mostrarNotificacion(`Saldo insuficiente. Necesitas ${(montoMXN * CONVERSION_RATE).toLocaleString()} NC y tienes ${(result.tienes || 0).toLocaleString()} NC.`, "error");
+                    } else {
+                        mostrarNotificacion("Error al registrar la solicitud. Intenta de nuevo.", "error");
+                    }
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-paper-plane mr-2"></i>Enviar Solicitud de Canje';
+                    return;
+                }
+
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fa-solid fa-paper-plane mr-2"></i>Enviar Solicitud de Canje';
-                return;
-            }
+                mostrarToastSesion('success', '¡Solicitud enviada!', 'Tu canje está en revisión. En 24–72 hrs hábiles recibirás tu recompensa.');
+                cerrarFormularioRetiro();
+                volverCatalogo();
 
-            // Éxito
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fa-solid fa-paper-plane mr-2"></i>Enviar Solicitud de Canje';
-            mostrarToastSesion('success', '¡Solicitud enviada!', 'Tu canje está en revisión. En 24–72 hrs hábiles recibirás tu recompensa.');
-            cerrarFormularioRetiro();
-            volverCatalogo();
+            } catch(e) {
+                console.error('Error procesando retiro:', e);
+                mostrarNotificacion("Error de conexión. Intenta de nuevo.", "error");
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane mr-2"></i>Enviar Solicitud de Canje';
+            }
         }
 
         // ══════════════════════════════════════════
@@ -1525,34 +1330,37 @@
 
         async function girarRuleta() {
             if (ruletaGirando || !currentUser) return;
-            
-            ruletaGirando = true;
-            const btn = document.getElementById('btn-girar');
-            btn.disabled = true;
-            btn.innerText = '🎰 Conectando...';
-            document.getElementById('ruleta-resultado').innerText = '';
 
-            // 1. Llamar a la Edge Function PRIMERO para obtener el premio oficial
-            const { data, error } = await _supabase.functions.invoke('girar-ruleta');
+            // Llamar Edge Function para validar y obtener el premio
+            const { data: { session } } = await _supabase.auth.getSession();
+            const res = await fetch(`${SUPABASE_URL}/functions/v1/girar-ruleta`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session.access_token}`
+                }
+            });
+            const result = await res.json();
 
-            if (error || data?.error) {
-                ruletaGirando = false;
-                btn.innerText = '✅ Ya giraste hoy';
-                btn.className = btn.className.replace('from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-900', 'from-slate-700 to-slate-600 text-slate-400 cursor-not-allowed');
-                document.getElementById('ruleta-resultado').innerText = '⚠️ Ya usaste tu giro de hoy.';
-                iniciarCuentaRegresiva();
+            if (!res.ok) {
+                if (result.error === 'ya_giro') {
+                    document.getElementById('ruleta-resultado').innerText = '⚠️ Ya usaste tu giro de hoy.';
+                } else {
+                    mostrarNotificacion('Error al girar la ruleta. Intenta de nuevo.', 'error');
+                }
                 return;
             }
 
-            // 2. Extraer el resultado seguro enviado por el servidor
-            const idxGanador = data.idx;
-            const ncGanadas = data.nc;
+            const { nc, idx } = result;
 
+            ruletaGirando = true;
+            const btn = document.getElementById('btn-girar');
+            btn.disabled = true;
             btn.innerText = '🎰 Girando...';
+            document.getElementById('ruleta-resultado').innerText = '';
 
-            // 3. Calcular los grados para que la animación caiga en el slice correcto
             const slice = (2 * Math.PI) / RULETA_PREMIOS.length;
-            const anguloDestino = (Math.PI * 2 * 5) - (idxGanador * slice) - (slice / 2) + (Math.PI * 1.5);
+            const anguloDestino = (Math.PI * 2 * 5) - (idx * slice) - (slice / 2) + (Math.PI * 1.5);
             const inicio = ruletaAngulo;
             const duracion = 4000;
             const startTime = performance.now();
@@ -1563,42 +1371,19 @@
                 const ease = 1 - Math.pow(1 - progress, 4);
                 ruletaAngulo = inicio + (anguloDestino - inicio) * ease;
                 dibujarRuleta(ruletaAngulo);
-                
-                if (progress < 1) { 
-                    requestAnimationFrame(animar); 
-                } else { 
-                    // Cuando termina la animación visual, mostramos el éxito
-                    ruletaGirando = false;
-                    document.getElementById('ruleta-resultado').innerHTML =
-                        `🎉 <span class="text-amber-400 font-extrabold">+${ncGanadas} NetCoins</span> acreditados`;
-                    
-                    mostrarNotificacion(`¡Ganaste ${ncGanadas} NetCoins en la ruleta!`, "success");
-
-                    btn.innerText = '✅ Ya giraste hoy';
-                    btn.className = btn.className.replace('from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-900', 'from-slate-700 to-slate-600 text-slate-400 cursor-not-allowed');
-                    iniciarCuentaRegresiva();
-                }
+                if (progress < 1) { requestAnimationFrame(animar); }
+                else { finalizarGiro(nc); }
             }
-            
             requestAnimationFrame(animar);
         }
 
-        async function finalizarGiro(idx, perfil) {
+        function finalizarGiro(nc) {
             ruletaGirando = false;
-            const premio = RULETA_PREMIOS[idx];
-            const hoy = new Date().toISOString().split('T')[0];
-
-            // Acreditar NC y guardar fecha
-            await _supabase.from('perfiles').update({
-                netcoins: (perfil.netcoins || 0) + premio.nc,
-                ultimo_giro_ruleta: hoy
-            }).eq('id', currentUser.id);
 
             document.getElementById('ruleta-resultado').innerHTML =
-                `🎉 <span class="text-amber-400 font-extrabold">+${premio.nc} NetCoins</span> acreditados`;
-            
-            // También mostramos una notificación tipo Toast
-            mostrarNotificacion(`¡Ganaste ${premio.nc} NetCoins en la ruleta!`, "success");
+                `🎉 <span class="text-amber-400 font-extrabold">+${nc} NetCoins</span> acreditados`;
+
+            mostrarNotificacion(`¡Ganaste ${nc} NetCoins en la ruleta!`, "success");
 
             const btn = document.getElementById('btn-girar');
             btn.innerText = '✅ Ya giraste hoy';
@@ -1607,52 +1392,9 @@
             iniciarCuentaRegresiva();
         }
 
-        function mostrarToastSesion(tipo, titulo, mensaje) {
-            const toast = document.getElementById('toast-sesion');
-            const inner = document.getElementById('toast-sesion-inner');
-            const icon  = document.getElementById('toast-sesion-icon');
-            const tit   = document.getElementById('toast-sesion-titulo');
-            const msg   = document.getElementById('toast-sesion-msg');
-
-            const estilos = {
-                success: { bg: 'bg-emerald-900', border: 'border-emerald-500/50', text: 'text-emerald-100', icon: '✅' },
-                error:   { bg: 'bg-rose-900',    border: 'border-rose-500/50',    text: 'text-rose-100',    icon: '❌' },
-                info:    { bg: 'bg-purple-900',   border: 'border-purple-500/50',  text: 'text-purple-100',  icon: '🎉' },
-            };
-            const e = estilos[tipo] || estilos.info;
-
-            inner.className = `flex items-center gap-3 px-5 py-4 rounded-2xl shadow-2xl border text-sm font-semibold ${e.bg} ${e.border} ${e.text}`;
-            icon.innerText  = e.icon;
-            tit.innerText   = titulo;
-            msg.innerText   = mensaje;
-
-            toast.classList.add('visible');
-            clearTimeout(window._toastTimer);
-            window._toastTimer = setTimeout(() => toast.classList.remove('visible'), 3500);
-        }
-
-        function mostrarSplashYluego(callback) {
-            const splash = document.getElementById('splash-screen');
-            splash.style.transition = 'none';
-            splash.style.opacity = '1';
-            splash.style.display = 'flex';
-            setTimeout(() => {
-                callback();
-                setTimeout(() => {
-                    splash.style.transition = 'opacity 0.5s ease';
-                    splash.style.opacity = '0';
-                    setTimeout(() => splash.style.display = 'none', 500);
-                }, 900);
-            }, 400);
-        }
-
         async function cerrarSesion() {
-            mostrarSplashYluego(async () => {
-                await _supabase.auth.signOut();
-                currentUser = null;
-                document.getElementById("auth-container").classList.remove("hidden");
-                document.getElementById("app-container").classList.add("hidden");
-            });
+            await _supabase.auth.signOut();
+            verificarSesionActiva();
         }
 
         /* ==================== LÓGICA MODAL LEGAL ==================== */
