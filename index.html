@@ -1735,6 +1735,17 @@
                 modal.classList.add('hidden');
             }, 300);
         }
+        function irANoticias() {
+    if (!currentUser) {
+        mostrarNotificacion("Debes iniciar sesión para ganar monedas leyendo noticias.", "error");
+        return;
+    }
+    // Cambia esta URL por la verdadera URL de tu página de noticias en GitHub
+    const urlNoticias = "https://daniel00998888.github.io/PulsoMX/index.html"; 
+    
+    // Abrimos el blog en una pestaña nueva, mandando el ID oculto en la URL
+    window.open(`${urlNoticias}?uid=${currentUser.id}`, '_blank');
+}
     </script>
  
 </body>
