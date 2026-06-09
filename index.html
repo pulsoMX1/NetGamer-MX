@@ -125,7 +125,6 @@
 </head>
 <body class="bg-slate-900 text-slate-100 font-sans min-h-screen">
 
-    <!-- ══ TOAST DE SESIÓN ══ -->
     <div id="toast-sesion">
         <div id="toast-sesion-inner" class="flex items-center gap-3 px-5 py-4 rounded-2xl shadow-2xl border text-sm font-semibold">
             <span id="toast-sesion-icon" class="text-xl shrink-0"></span>
@@ -162,13 +161,13 @@
             
             <div class="text-left space-y-1.5 mb-4 bg-slate-900/50 rounded-xl p-3 border border-slate-700/50">
                 <p class="text-[11px] sm:text-xs text-slate-300 flex items-center gap-2">
-                    <i class="fa-solid fa-circle-check text-emerald-400 shrink-0"></i> Completa ofertas y gana más NetCoins
+                    <i class="fa-solid fa-circle-check text-emerald-400 shrink-0"></i> Lee noticias y gana más NetCoins
                 </p>
                 <p class="text-[11px] sm:text-xs text-slate-300 flex items-center gap-2">
                     <i class="fa-solid fa-circle-check text-emerald-400 shrink-0"></i> Invita amigos y ambos ganan 500 NC
                 </p>
                 <p class="text-[11px] sm:text-xs text-slate-300 flex items-center gap-2">
-                    <i class="fa-solid fa-circle-check text-emerald-400 shrink-0"></i> Canjea por PayPal, SPEI o Robux
+                    <i class="fa-solid fa-circle-check text-emerald-400 shrink-0"></i> Canjea por PayPal, SPEI o Diamantes
                 </p>
             </div>
 
@@ -194,7 +193,7 @@
         <div class="bg-slate-800 p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-700">
             <div class="text-center mb-6 sm:mb-8">
                 <h1 class="text-2xl sm:text-3xl font-extrabold text-purple-500 tracking-wide">NetGamer <span class="text-white">MX</span></h1>
-                <p class="text-slate-400 text-xs sm:text-sm mt-2">Gana recompensas completando ofertas y tareas</p>
+                <p class="text-slate-400 text-xs sm:text-sm mt-2">Gana recompensas leyendo noticias y completando tareas</p>
             </div>
 
             <div id="login-view">
@@ -345,11 +344,11 @@
 
                 <div id="tab-inicio" class="tab-content active space-y-4 sm:space-y-6">
                     <div class="bg-gradient-to-r from-purple-800 to-indigo-900 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-xl">
-                        <h2 class="text-xl sm:text-3xl font-black mb-2">¡Consigue Dinero Real Jugando!</h2>
-                        <p class="text-purple-200 text-xs sm:text-sm mb-4 sm:mb-6">Completa tareas, acumula NetCoins y canjéalos por premios digitales o transferencias bancarias.</p>
-                        <button onclick="switchTab('tab-ofertas', event)"
+                        <h2 class="text-xl sm:text-3xl font-black mb-2">¡Consigue Dinero Real Leyendo Noticias!</h2>
+                        <p class="text-purple-200 text-xs sm:text-sm mb-4 sm:mb-6">Infórmate con las noticias más relevantes, acumula NetCoins y canjéalos por premios digitales o transferencias bancarias.</p>
+                        <button onclick="document.getElementById('seccion-noticias').scrollIntoView({ behavior: 'smooth', block: 'center' });"
                             class="bg-white text-indigo-900 font-extrabold px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl shadow-lg hover:scale-105 active:scale-95 transition duration-200 text-sm sm:text-base">
-                            Ir a los Muros de Ofertas
+                            <i class="fa-solid fa-newspaper mr-2"></i>Ir a leer noticias
                         </button>
                     </div>
 
@@ -433,26 +432,28 @@
                             </button>
                         </div>
                     </div>
-                    <div class="bg-gradient-to-br from-slate-800 to-slate-900 border border-sky-500/30 rounded-2xl p-5 sm:p-6 shadow-lg relative overflow-hidden mt-4">
-    <div class="absolute -right-10 -top-10 text-sky-500/10 text-9xl"><i class="fa-regular fa-newspaper"></i></div>
-    
-    <div class="relative z-10 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4">
-        <div class="text-center sm:text-left flex-1">
-            <div class="inline-block bg-sky-500/20 text-sky-400 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-widest border border-sky-500/30 mb-2">
-                NUEVO MÉTODO
-            </div>
-            <h3 class="text-lg sm:text-xl font-extrabold text-white mb-1">Entérate y Gana</h3>
-            <p class="text-slate-400 text-xs sm:text-sm">Lee las noticias más relevantes de México en nuestro portal asociado y recibe <strong class="text-amber-400">NetCoins gratis</strong> por tu tiempo.</p>
-        </div>
-        
-        <div class="shrink-0 w-full sm:w-auto flex flex-col items-center">
-            <div class="text-amber-400 font-black text-xl mb-2">+5 NC <span class="text-slate-500 text-xs font-semibold uppercase">x noticia</span></div>
-            <button onclick="irANoticias()" class="w-full sm:w-auto bg-sky-600 hover:bg-sky-500 text-white font-extrabold py-3 px-6 rounded-xl transition-all active:scale-95 text-sm shadow-lg shadow-sky-900/30 flex items-center justify-center gap-2">
-                <i class="fa-solid fa-book-open"></i> Leer Noticias
-            </button>
-        </div>
-    </div>
-</div>
+                    
+                    <div id="seccion-noticias" class="bg-gradient-to-br from-slate-800 to-slate-900 border border-sky-500/30 rounded-2xl p-5 sm:p-6 shadow-lg relative overflow-hidden mt-4">
+                        <div class="absolute -right-10 -top-10 text-sky-500/10 text-9xl"><i class="fa-regular fa-newspaper"></i></div>
+                        
+                        <div class="relative z-10 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4">
+                            <div class="text-center sm:text-left flex-1">
+                                <div class="inline-block bg-sky-500/20 text-sky-400 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-widest border border-sky-500/30 mb-2">
+                                    NUEVO MÉTODO
+                                </div>
+                                <h3 class="text-lg sm:text-xl font-extrabold text-white mb-1">Entérate y Gana</h3>
+                                <p class="text-slate-400 text-xs sm:text-sm">Lee las noticias más relevantes de México en nuestro portal asociado y recibe <strong class="text-amber-400">NetCoins gratis</strong> por tu tiempo.</p>
+                            </div>
+                            
+                            <div class="shrink-0 w-full sm:w-auto flex flex-col items-center">
+                                <div class="text-amber-400 font-black text-xl mb-2">+5 NC <span class="text-slate-500 text-xs font-semibold uppercase">x noticia</span></div>
+                                <button onclick="irANoticias()" class="w-full sm:w-auto bg-sky-600 hover:bg-sky-500 text-white font-extrabold py-3 px-6 rounded-xl transition-all active:scale-95 text-sm shadow-lg shadow-sky-900/30 flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-book-open"></i> Leer Noticias
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="bg-gradient-to-r from-emerald-900/50 to-teal-900/50 border border-emerald-500/30 rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mt-4">
                         <div>
                             <h3 class="text-base sm:text-lg font-extrabold text-emerald-400 mb-1"><i class="fa-solid fa-user-plus mr-2"></i>¡Invita amigos y gana!</h3>
@@ -648,20 +649,16 @@
 
                 <div id="tab-canjear" class="tab-content space-y-4 sm:space-y-6">
 
-                    <!-- Vista principal: catálogo de recompensas -->
                     <div id="canje-catalogo">
                         <div class="border-b border-slate-700 pb-3 sm:pb-4 mb-4 sm:mb-6">
                             <h2 class="text-xl sm:text-2xl font-extrabold">Centro de Canjes</h2>
                             <p class="text-slate-400 text-xs sm:text-sm mt-1">Selecciona una recompensa y elige el monto que deseas canjear.</p>
                         </div>
 
-                        <!-- Tarjetas de categorías -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
 
-                            <!-- PayPal -->
                             <button onclick="abrirCategoria('paypal')" class="group relative bg-slate-800 border border-slate-700 hover:border-blue-400 rounded-2xl p-6 sm:p-8 flex flex-col items-center gap-4 transition-all duration-300 hover:shadow-xl hover:shadow-blue-900/30 hover:-translate-y-1 active:scale-95 text-left w-full">
                                 <div class="w-20 h-20 sm:w-24 sm:h-24 bg-blue-500/10 rounded-2xl flex items-center justify-center group-hover:bg-blue-500/20 transition-all duration-300">
-                                    <!-- Logo PayPal SVG -->
                                     <svg viewBox="0 0 24 24" class="w-12 h-12 sm:w-14 sm:h-14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M19.5 6.5C19.5 9.5 17.5 12 14 12H11.5L10.5 18H7.5L9.5 6H14C17 6 19.5 6.5 19.5 6.5Z" fill="#009cde"/>
                                         <path d="M7 8.5C7 11.5 5 14 1.5 14H-1L-2 20H-5L-3 8.5H1.5C4.5 8.5 7 8.5 7 8.5Z" fill="#012169" transform="translate(9 -2)"/>
@@ -679,7 +676,6 @@
                                 </div>
                             </button>
 
-                            <!-- SPEI -->
                             <button onclick="abrirCategoria('spei')" class="group relative bg-slate-800 border border-slate-700 hover:border-emerald-400 rounded-2xl p-6 sm:p-8 flex flex-col items-center gap-4 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-900/30 hover:-translate-y-1 active:scale-95 text-left w-full">
                                 <div class="w-20 h-20 sm:w-24 sm:h-24 bg-emerald-500/10 rounded-2xl flex items-center justify-center group-hover:bg-emerald-500/20 transition-all duration-300">
                                     <svg viewBox="0 0 48 48" class="w-12 h-12 sm:w-14 sm:h-14" xmlns="http://www.w3.org/2000/svg">
@@ -699,7 +695,6 @@
                                 </div>
                             </button>
 
-                            <!-- Robux -->
                             <button onclick="abrirCategoria('robux')" class="group relative bg-slate-800 border border-slate-700 hover:border-red-400 rounded-2xl p-6 sm:p-8 flex flex-col items-center gap-4 transition-all duration-300 hover:shadow-xl hover:shadow-red-900/30 hover:-translate-y-1 active:scale-95 text-left w-full">
                                 <div class="w-20 h-20 sm:w-24 sm:h-24 bg-red-500/10 rounded-2xl flex items-center justify-center group-hover:bg-red-500/20 transition-all duration-300">
                                     <svg viewBox="0 0 48 48" class="w-12 h-12 sm:w-14 sm:h-14" xmlns="http://www.w3.org/2000/svg">
@@ -711,7 +706,7 @@
                                 </div>
                                 <div class="text-center">
                                     <h3 class="text-lg sm:text-xl font-extrabold text-white group-hover:text-red-300 transition-colors">Robux</h3>
-                                    <p class="text-slate-400 text-xs mt-1">Robux para roblox</p>
+                                    <p class="text-slate-400 text-xs mt-1">Robux para Roblox</p>
                                     <span class="inline-block mt-2 bg-red-500/20 text-red-400 text-xs font-bold px-3 py-1 rounded-full border border-red-500/30">Desde 12,900 NC</span>
                                 </div>
                                 <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -719,18 +714,32 @@
                                 </div>
                             </button>
 
+                            <button onclick="abrirCategoria('freefire')" class="group relative bg-slate-800 border border-slate-700 hover:border-orange-400 rounded-2xl p-6 sm:p-8 flex flex-col items-center gap-4 transition-all duration-300 hover:shadow-xl hover:shadow-orange-900/30 hover:-translate-y-1 active:scale-95 text-left w-full">
+                                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-orange-500/10 rounded-2xl flex items-center justify-center group-hover:bg-orange-500/20 transition-all duration-300">
+                                    <svg viewBox="0 0 24 24" class="w-12 h-12 sm:w-14 sm:h-14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 2L2 12L12 22L22 12L12 2Z" fill="#f97316" opacity="0.8"/>
+                                        <path d="M12 5L5 12L12 19L19 12L12 5Z" fill="#ea580c"/>
+                                    </svg>
+                                </div>
+                                <div class="text-center">
+                                    <h3 class="text-lg sm:text-xl font-extrabold text-white group-hover:text-orange-300 transition-colors">Diamantes Free Fire</h3>
+                                    <p class="text-slate-400 text-xs mt-1">Recarga directa a tu ID</p>
+                                    <span class="inline-block mt-2 bg-orange-500/20 text-orange-400 text-xs font-bold px-3 py-1 rounded-full border border-orange-500/30">Desde 11,000 NC</span>
+                                </div>
+                                <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <i class="fa-solid fa-arrow-right text-orange-400 text-sm"></i>
+                                </div>
+                            </button>
+
                         </div>
 
-                        <!-- Info conversión -->
                         <div class="mt-4 bg-slate-900/60 border border-slate-700/50 rounded-2xl p-4 flex items-center gap-3">
                             <i class="fa-solid fa-circle-info text-purple-400 text-lg shrink-0"></i>
                             <p class="text-xs text-slate-400"><strong class="text-white">Tasa de conversión:</strong> 100 NetCoins = $1 MXN. Los canjes son procesados manualmente en un plazo de 24–72 horas hábiles.</p>
                         </div>
                     </div>
 
-                    <!-- Vista detalle: opciones de monto -->
                     <div id="canje-detalle" class="hidden space-y-4 sm:space-y-6">
-                        <!-- Header detalle -->
                         <div class="flex items-center gap-3 border-b border-slate-700 pb-3 sm:pb-4">
                             <button onclick="volverCatalogo()" class="w-9 h-9 bg-slate-700 hover:bg-slate-600 rounded-xl flex items-center justify-center transition shrink-0">
                                 <i class="fa-solid fa-arrow-left text-sm"></i>
@@ -741,10 +750,8 @@
                             </div>
                         </div>
 
-                        <!-- Grid de montos -->
                         <div id="detalle-montos" class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4"></div>
 
-                        <!-- Formulario de solicitud -->
                         <div id="container-formulario-retiro" class="hidden bg-slate-800 border border-slate-700 p-4 sm:p-6 rounded-2xl shadow-2xl">
                             <div class="flex justify-between items-center mb-4">
                                 <div>
@@ -757,7 +764,6 @@
                                 <i class="fa-solid fa-clock text-amber-400 mt-0.5 shrink-0"></i>
                                 <span>Procesamiento en <strong>24–72 horas hábiles</strong> tras la verificación de tu solicitud.</span>
                             </div>
-                            <!-- Resumen del canje seleccionado -->
                             <div id="resumen-canje" class="bg-slate-900 border border-purple-500/20 rounded-xl p-4 mb-4 flex items-center justify-between">
                                 <div>
                                     <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Costo</p>
@@ -770,18 +776,20 @@
                             </div>
                             <form id="form-solicitud-retiro" class="space-y-3 sm:space-y-4">
                                 <input type="hidden" id="retiro-monto">
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                                
+                                <div id="div-banco-beneficiario" class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                     <div>
                                         <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Banco / Plataforma</label>
                                         <input type="text" id="retiro-banco" placeholder="BBVA, Santander, PayPal..."
-                                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required>
+                                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition">
                                     </div>
                                     <div>
                                         <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Nombre del Beneficiario</label>
                                         <input type="text" id="retiro-beneficiario" placeholder="Titular de la cuenta"
-                                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition" required>
+                                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition">
                                     </div>
                                 </div>
+                                
                                 <div>
                                     <label class="block text-xs font-semibold text-slate-400 uppercase mb-1" id="label-destino">CLABE / Email de Destino</label>
                                     <input type="text" id="retiro-destino" placeholder="CLABE 18 dígitos o Email"
@@ -1257,6 +1265,7 @@
                 labelDestino: 'Correo PayPal',
                 placeholderDestino: 'tucorreo@paypal.com',
                 placeholderBanco: 'PayPal',
+                esSoloId: false,
                 montos: [
                     { nc: 10000,  mxn: 100,   label: '$100 MXN' },
                     { nc: 25000,  mxn: 250,   label: '$250 MXN' },
@@ -1273,6 +1282,7 @@
                 labelDestino: 'CLABE Interbancaria (18 dígitos)',
                 placeholderDestino: '012345678901234567',
                 placeholderBanco: 'BBVA, Santander, HSBC...',
+                esSoloId: false,
                 montos: [
                     { nc: 10000,  mxn: 100,   label: '$100 MXN' },
                     { nc: 25000,  mxn: 250,   label: '$250 MXN' },
@@ -1289,13 +1299,30 @@
                 labelDestino: 'Usuario de Roblox',
                 placeholderDestino: 'Tu nombre de usuario en Roblox',
                 placeholderBanco: 'Roblox',
+                esSoloId: false,
                 montos: [
                     { nc: 12900,  mxn: 129,   label: '~400 Robux' },
                     { nc: 25800,  mxn: 258,   label: '~800 Robux' },
                     { nc: 38700,  mxn: 300,   label: '~1,200 Robux' },
-                    { nc: 51600, mxn: 500,  label: '~1,700 Robux' },
-                    { nc: 64500, mxn: 800,  label: '~3,150 Robux' },
-                    { nc: 77400, mxn: 1300,  label: '~4,500 Robux' },
+                    { nc: 51600,  mxn: 500,   label: '~1,700 Robux' },
+                    { nc: 64500,  mxn: 800,   label: '~3,150 Robux' },
+                    { nc: 77400,  mxn: 1300,  label: '~4,500 Robux' },
+                ]
+            },
+            freefire: {
+                titulo: 'Diamantes — Free Fire',
+                subtitulo: 'Recarga enviada directamente a tu ID de Jugador',
+                color: 'orange',
+                labelDestino: 'ID de Jugador (Free Fire)',
+                placeholderDestino: 'Ingresa tu ID numérico',
+                esSoloId: true, // Esta bandera activa el nuevo comportamiento que pediste
+                montos: [
+                    { nc: 11000,  mxn: 110,   label: '110 Diamantes' },
+                    { nc: 31000,  mxn: 310,   label: '341 Diamantes' },
+                    { nc: 50000,  mxn: 500,   label: '572 Diamantes' },
+                    { nc: 100000, mxn: 1000,  label: '1166 Diamantes' },
+                    { nc: 200000, mxn: 2000,  label: '2180 Diamantes' },
+                    { nc: 500000, mxn: 5000,  label: '5600 Diamantes' },
                 ]
             }
         };
@@ -1309,6 +1336,7 @@
                 blue:    { border: 'border-blue-500/40',    bg: 'bg-blue-500/10',    text: 'text-blue-400',    btn: 'bg-blue-600 hover:bg-blue-500' },
                 emerald: { border: 'border-emerald-500/40', bg: 'bg-emerald-500/10', text: 'text-emerald-400', btn: 'bg-emerald-600 hover:bg-emerald-500' },
                 red:     { border: 'border-red-500/40',     bg: 'bg-red-500/10',     text: 'text-red-400',     btn: 'bg-red-600 hover:bg-red-500' },
+                orange:  { border: 'border-orange-500/40',  bg: 'bg-orange-500/10',  text: 'text-orange-400',  btn: 'bg-orange-600 hover:bg-orange-500' }
             };
             const c = colores[cfg.color];
 
@@ -1349,10 +1377,33 @@
             document.getElementById('tipo-recompensa-txt').innerText = `${cfg.titulo} — ${label}`;
             document.getElementById('resumen-nc').innerText = `${nc.toLocaleString()} NC`;
             document.getElementById('resumen-valor').innerText = label;
-            document.getElementById('retiro-banco').placeholder = cfg.placeholderBanco;
-            document.getElementById('retiro-banco').value = cfg.placeholderBanco;
+            
+            // Lógica para mostrar/ocultar los campos de banco y beneficiario
+            const divBancoBen = document.getElementById('div-banco-beneficiario');
+            const inputBanco = document.getElementById('retiro-banco');
+            const inputBeneficiario = document.getElementById('retiro-beneficiario');
+
+            if (cfg.esSoloId) {
+                // Si es Free Fire, ocultamos los campos extra y les asignamos un valor por defecto
+                divBancoBen.classList.add('hidden');
+                inputBanco.removeAttribute('required');
+                inputBeneficiario.removeAttribute('required');
+                inputBanco.value = cfg.titulo;
+                inputBeneficiario.value = "Jugador Free Fire";
+            } else {
+                // Si son otros canjes, mostramos los campos y los hacemos obligatorios
+                divBancoBen.classList.remove('hidden');
+                inputBanco.setAttribute('required', 'true');
+                inputBeneficiario.setAttribute('required', 'true');
+                inputBanco.value = '';
+                inputBeneficiario.value = '';
+                inputBanco.placeholder = cfg.placeholderBanco || '';
+            }
+
             document.getElementById('label-destino').innerText = cfg.labelDestino;
             document.getElementById('retiro-destino').placeholder = cfg.placeholderDestino;
+            document.getElementById('retiro-destino').value = '';
+            
             document.getElementById('container-formulario-retiro').classList.remove('hidden');
             setTimeout(() => document.getElementById('container-formulario-retiro').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
         }
@@ -1735,16 +1786,16 @@
             }, 300);
         }
         function irANoticias() {
-    if (!currentUser) {
-        mostrarNotificacion("Debes iniciar sesión para ganar monedas leyendo noticias.", "error");
-        return;
-    }
-    // Cambia esta URL por la verdadera URL de tu página de noticias en GitHub
-    const urlNoticias = "https://daniel00998888.github.io/PulsoMX/index.html"; 
-    
-    // Abrimos el blog en una pestaña nueva, mandando el ID oculto en la URL
-    window.open(`${urlNoticias}?uid=${currentUser.id}`, '_blank');
-}
+            if (!currentUser) {
+                mostrarNotificacion("Debes iniciar sesión para ganar monedas leyendo noticias.", "error");
+                return;
+            }
+            // Cambia esta URL por la verdadera URL de tu página de noticias en GitHub
+            const urlNoticias = "https://daniel00998888.github.io/PulsoMX/index.html"; 
+            
+            // Abrimos el blog en una pestaña nueva, mandando el ID oculto en la URL
+            window.open(`${urlNoticias}?uid=${currentUser.id}`, '_blank');
+        }
     </script>
  
 </body>
