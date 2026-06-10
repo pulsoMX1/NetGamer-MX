@@ -1952,16 +1952,24 @@
             }, 300);
         }
         function irANoticias() {
-            if (!currentUser) {
-                mostrarNotificacion("Debes iniciar sesión para ganar monedas leyendo noticias.", "error");
-                return;
-            }
-            // Cambia esta URL por la verdadera URL de tu página de noticias en GitHub
-            const urlNoticias = "https://daniel00998888.github.io/PulsoMX/index.html"; 
-            
-            // Abrimos el blog en una pestaña nueva, mandando el ID oculto en la URL
-            window.open(`${urlNoticias}?uid=${currentUser.id}`, '_blank');
-        }
+    if (!currentUser) {
+        mostrarNotificacion("Debes iniciar sesión para ganar monedas leyendo noticias.", "error");
+        return;
+    }
+    
+    // 1. La URL de tu sitio de noticias con el UID
+    const urlDestino = `https://daniel00998888.github.io/PulsoMX/index.html?uid=${currentUser.id}`;
+    
+    // 2. TUS DATOS DE SHRINKEARN
+    const apiToken = "b35639e0cb48591262d8d15b248bc8f9ef50522b"; // <--- PEGA AQUÍ EL TOKEN QUE COPIASTE
+    
+    // 3. Generamos la URL monetizada
+    // ShrinkEarn usa este formato de API
+    const urlMonetizada = `https://shrinkearn.com/api?api=${apiToken}&url=${encodeURIComponent(urlDestino)}`;
+    
+    // Abrimos la pestaña monetizada
+    window.open(urlMonetizada, '_blank');
+}
     </script>
  
 </body>
