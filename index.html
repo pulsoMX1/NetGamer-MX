@@ -1960,29 +1960,6 @@
     // 1. URL de destino original
     const urlDestino = `https://daniel00998888.github.io/PulsoMX/index.html?uid=${currentUser.id}`;
     
-    // 2. Tu API Token configurado
-    const apiToken = "b35639e0cb48591262d8d15b248bc8f9ef50522b";
-    
-    // 3. URL de la API de ShrinkEarn
-    const urlApi = `https://shrinkearn.com/api?api=${apiToken}&url=${encodeURIComponent(urlDestino)}`;
-
-    // 4. Llamada a la API
-    fetch(urlApi)
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                // Redirigir al usuario al link acortado
-                window.open(data.shortenedUrl, '_blank');
-            } else {
-                // Si la API falla, abrimos directo
-                window.open(urlDestino, '_blank');
-            }
-        })
-        .catch(error => {
-            console.error("Error al monetizar:", error);
-            window.open(urlDestino, '_blank');
-        });
-}
     </script>
  
 </body>
