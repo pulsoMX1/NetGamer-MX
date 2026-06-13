@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>NetGamer MX - Plataforma Premium</title>
@@ -9,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        
         * { box-sizing: border-box; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
@@ -126,7 +124,7 @@
     </style>
 </head>
 <body class="bg-slate-900 text-slate-100 font-sans min-h-screen">
-    
+
     <div id="toast-sesion">
         <div id="toast-sesion-inner" class="flex items-center gap-3 px-5 py-4 rounded-2xl shadow-2xl border text-sm font-semibold">
             <span id="toast-sesion-icon" class="text-xl shrink-0"></span>
@@ -314,9 +312,6 @@
                     </button>
                     <button onclick="switchTab('tab-canjear', event)" class="tab-btn w-full flex items-center gap-3 px-3 sm:px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-700 hover:text-white transition text-left text-sm">
                         <i class="fa-solid fa-gift shrink-0"></i> <span class="sidebar-label">Canjear Premios</span>
-                    </button>
-                    <button onclick="switchTab('tab-historial', event)" class="tab-btn w-full flex items-center gap-3 px-3 sm:px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-700 hover:text-white transition text-left text-sm">
-                        <i class="fa-solid fa-clock-rotate-left shrink-0"></i> <span class="sidebar-label">Historial</span>
                     </button>
                 </nav>
             </div>
@@ -809,49 +804,6 @@
 
                 </div>
 
-                <!-- ══ TAB HISTORIAL ══ -->
-                <div id="tab-historial" class="tab-content space-y-4 sm:space-y-6">
-
-                    <!-- Selector de sub-sección -->
-                    <div class="flex gap-2 border-b border-slate-700 pb-1">
-                        <button id="btn-hist-ganancias" onclick="mostrarSubHistorial('ganancias')"
-                            class="px-4 py-2 text-sm font-bold rounded-t-xl border-b-2 border-purple-500 text-purple-400 transition">
-                            <i class="fa-solid fa-coins mr-1"></i> Ganancias
-                        </button>
-                        <button id="btn-hist-canjes" onclick="mostrarSubHistorial('canjes')"
-                            class="px-4 py-2 text-sm font-bold rounded-t-xl border-b-2 border-transparent text-slate-400 hover:text-white transition">
-                            <i class="fa-solid fa-gift mr-1"></i> Canjes
-                        </button>
-                    </div>
-
-                    <!-- Historial de Ganancias -->
-                    <div id="sub-hist-ganancias">
-                        <div class="flex items-center justify-between mb-3">
-                            <h2 class="text-lg font-extrabold text-white">Historial de Ganancias</h2>
-                            <span class="text-xs text-slate-500">Últimas 50 entradas</span>
-                        </div>
-                        <div id="lista-historial-ganancias" class="space-y-2">
-                            <div class="flex items-center justify-center py-10">
-                                <i class="fa-solid fa-spinner fa-spin text-purple-400 text-2xl"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Historial de Canjes -->
-                    <div id="sub-hist-canjes" class="hidden">
-                        <div class="flex items-center justify-between mb-3">
-                            <h2 class="text-lg font-extrabold text-white">Historial de Canjes</h2>
-                            <span class="text-xs text-slate-500">Últimas 50 solicitudes</span>
-                        </div>
-                        <div id="lista-historial-canjes" class="space-y-2">
-                            <div class="flex items-center justify-center py-10">
-                                <i class="fa-solid fa-spinner fa-spin text-purple-400 text-2xl"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
             </main>
         </div>
 
@@ -871,10 +823,6 @@
             <button onclick="switchTab('tab-canjear', event)" class="tab-btn-mobile flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-slate-400 transition min-w-0">
                 <i class="fa-solid fa-gift text-lg"></i>
                 <span class="text-xs font-semibold">Canjear</span>
-            </button>
-            <button onclick="switchTab('tab-historial', event)" class="tab-btn-mobile flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-slate-400 transition min-w-0">
-                <i class="fa-solid fa-clock-rotate-left text-lg"></i>
-                <span class="text-xs font-semibold">Historial</span>
             </button>
             <button onclick="cerrarSesion()" class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-rose-400 transition min-w-0">
                 <i class="fa-solid fa-right-from-bracket text-lg"></i>
@@ -932,7 +880,7 @@
         const CONVERSION_RATE = 100;
         const NC_POR_REFERIDO = 500;
         const NC_BONUS_BIENVENIDA = 1000;
-        const BASE_URL = "https://netgamermx.com";
+        const BASE_URL = "https://daniel00998888.github.io/NetGamer-MX/";
 
         const adgemAppId = "32755";
         const toroxAppId = "TU_APP_ID_TOROX";
@@ -1291,8 +1239,6 @@
         function switchTab(tabId, e) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
-            // Cargar historial la primera vez que se abre
-            if (tabId === 'tab-historial' && !historialCargado.ganancias) cargarHistorialGanancias();
             // Desktop sidebar
             document.querySelectorAll('.tab-btn').forEach(btn => { btn.classList.remove('bg-purple-600', 'text-white'); btn.classList.add('text-slate-400'); });
             // Mobile bottom nav
@@ -1769,121 +1715,7 @@
             }, 400);
         }
 
-        // ══════════════════════════════════════════
-        // HISTORIAL
-        // ══════════════════════════════════════════
-        let historialCargado = { ganancias: false, canjes: false };
-
-        function mostrarSubHistorial(tipo) {
-            // Tabs
-            document.getElementById('btn-hist-ganancias').classList.toggle('border-purple-500', tipo === 'ganancias');
-            document.getElementById('btn-hist-ganancias').classList.toggle('text-purple-400', tipo === 'ganancias');
-            document.getElementById('btn-hist-ganancias').classList.toggle('border-transparent', tipo !== 'ganancias');
-            document.getElementById('btn-hist-ganancias').classList.toggle('text-slate-400', tipo !== 'ganancias');
-
-            document.getElementById('btn-hist-canjes').classList.toggle('border-purple-500', tipo === 'canjes');
-            document.getElementById('btn-hist-canjes').classList.toggle('text-purple-400', tipo === 'canjes');
-            document.getElementById('btn-hist-canjes').classList.toggle('border-transparent', tipo !== 'canjes');
-            document.getElementById('btn-hist-canjes').classList.toggle('text-slate-400', tipo !== 'canjes');
-
-            document.getElementById('sub-hist-ganancias').classList.toggle('hidden', tipo !== 'ganancias');
-            document.getElementById('sub-hist-canjes').classList.toggle('hidden', tipo !== 'canjes');
-
-            if (tipo === 'ganancias' && !historialCargado.ganancias) cargarHistorialGanancias();
-            if (tipo === 'canjes'    && !historialCargado.canjes)    cargarHistorialCanjes();
-        }
-
-        async function cargarHistorialGanancias() {
-            if (!currentUser) return;
-            const lista = document.getElementById('lista-historial-ganancias');
-            const { data, error } = await _supabase
-                .from('historial_ganancias')
-                .select('concepto, netcoins, created_at')
-                .eq('user_id', currentUser.id)
-                .order('created_at', { ascending: false })
-                .limit(50);
-
-            historialCargado.ganancias = true;
-
-            if (error || !data || data.length === 0) {
-                lista.innerHTML = `<div class="bg-slate-800 border border-slate-700 rounded-2xl p-8 text-center">
-                    <i class="fa-solid fa-coins text-slate-600 text-3xl mb-3"></i>
-                    <p class="text-slate-500 text-sm">Aún no tienes ganancias registradas.</p>
-                </div>`;
-                return;
-            }
-
-            lista.innerHTML = data.map(g => {
-                const fecha = new Date(g.created_at);
-                const fechaStr = fecha.toLocaleDateString('es-MX', { day:'2-digit', month:'short', year:'numeric' });
-                const horaStr  = fecha.toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
-                return `<div class="flex items-center justify-between bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 hover:border-slate-600 transition">
-                    <div class="flex items-center gap-3 min-w-0">
-                        <div class="w-9 h-9 bg-amber-500/10 rounded-xl flex items-center justify-center shrink-0 text-base">${g.concepto.split(' ')[0]}</div>
-                        <div class="min-w-0">
-                            <p class="text-sm font-semibold text-white truncate">${g.concepto.replace(/^.\s/, '')}</p>
-                            <p class="text-xs text-slate-500">${fechaStr} · ${horaStr}</p>
-                        </div>
-                    </div>
-                    <span class="text-amber-400 font-extrabold text-sm shrink-0 ml-3">+${g.netcoins} NC</span>
-                </div>`;
-            }).join('');
-        }
-
-        async function cargarHistorialCanjes() {
-            if (!currentUser) return;
-            const lista = document.getElementById('lista-historial-canjes');
-            const { data, error } = await _supabase
-                .from('retiros_pendientes')
-                .select('tipo_premio, monto_mxn, netcoins_deducidos, estatus, created_at')
-                .eq('user_id', currentUser.id)
-                .order('created_at', { ascending: false })
-                .limit(50);
-
-            historialCargado.canjes = true;
-
-            if (error || !data || data.length === 0) {
-                lista.innerHTML = `<div class="bg-slate-800 border border-slate-700 rounded-2xl p-8 text-center">
-                    <i class="fa-solid fa-gift text-slate-600 text-3xl mb-3"></i>
-                    <p class="text-slate-500 text-sm">Aún no has realizado ningún canje.</p>
-                </div>`;
-                return;
-            }
-
-            const estatusConfig = {
-                'Pendiente':  { color: 'text-amber-400',  bg: 'bg-amber-500/10',  border: 'border-amber-500/30',  icono: '⏳' },
-                'Procesado':  { color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', icono: '✅' },
-                'Rechazado':  { color: 'text-rose-400',    bg: 'bg-rose-500/10',    border: 'border-rose-500/30',    icono: '❌' },
-            };
-
-            lista.innerHTML = data.map(c => {
-                const fecha   = new Date(c.created_at);
-                const fechaStr = fecha.toLocaleDateString('es-MX', { day:'2-digit', month:'short', year:'numeric' });
-                const horaStr  = fecha.toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
-                const est = estatusConfig[c.estatus] || estatusConfig['Pendiente'];
-                return `<div class="bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 hover:border-slate-600 transition">
-                    <div class="flex items-center justify-between mb-2">
-                        <div class="flex items-center gap-2 min-w-0">
-                            <div class="w-9 h-9 bg-purple-500/10 rounded-xl flex items-center justify-center shrink-0">
-                                <i class="fa-solid fa-gift text-purple-400 text-sm"></i>
-                            </div>
-                            <div class="min-w-0">
-                                <p class="text-sm font-semibold text-white truncate">${c.tipo_premio}</p>
-                                <p class="text-xs text-slate-500">${fechaStr} · ${horaStr}</p>
-                            </div>
-                        </div>
-                        <span class="${est.color} ${est.bg} ${est.border} border text-xs font-bold px-2.5 py-1 rounded-full shrink-0 ml-2">${est.icono} ${c.estatus}</span>
-                    </div>
-                    <div class="flex items-center justify-between mt-1 pt-2 border-t border-slate-700/50">
-                        <span class="text-xs text-slate-500">NetCoins descontadas</span>
-                        <span class="text-rose-400 font-bold text-sm">-${c.netcoins_deducidos.toLocaleString()} NC</span>
-                    </div>
-                </div>`;
-            }).join('');
-        }
-
         async function cerrarSesion() {
-            historialCargado = { ganancias: false, canjes: false };
             mostrarSplashYluego(async () => {
                 await _supabase.auth.signOut();
                 currentUser = null;
@@ -1952,14 +1784,16 @@
             }, 300);
         }
         function irANoticias() {
-    if (!currentUser) {
-        mostrarNotificacion("Debes iniciar sesión para ganar monedas leyendo noticias.", "error");
-        return;
-    }
-
-    // 1. URL de destino original
-    const urlDestino = `https://daniel00998888.github.io/PulsoMX/index.html?uid=${currentUser.id}`;
-    
+            if (!currentUser) {
+                mostrarNotificacion("Debes iniciar sesión para ganar monedas leyendo noticias.", "error");
+                return;
+            }
+            // Cambia esta URL por la verdadera URL de tu página de noticias en GitHub
+            const urlNoticias = "https://daniel00998888.github.io/PulsoMX/index.html"; 
+            
+            // Abrimos el blog en una pestaña nueva, mandando el ID oculto en la URL
+            window.open(`${urlNoticias}?uid=${currentUser.id}`, '_blank');
+        }
     </script>
  
 </body>
