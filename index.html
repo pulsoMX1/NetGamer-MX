@@ -2448,6 +2448,7 @@
         let _nombreRival   = 'Rival';
         let _timerRival    = null;
         let _timerRonda    = null;
+        let _timerPoll     = null;
         let _resultadoProcesado = false;  // evita doble procesamiento (respuesta HTTP + Realtime)
 
         // Genera un color de fondo de avatar basado en el string ID
@@ -2658,6 +2659,7 @@
             // Reset botones
             _jugadaHecha = false;
             _resultadoProcesado = false;  // listo para recibir resultado de esta ronda
+            if (_timerPoll) clearInterval(_timerPoll);
             document.querySelectorAll('.btn-jugada').forEach(b => {
                 b.disabled = false;
                 b.classList.remove('opacity-40', 'ring-2', 'ring-purple-500', 'bg-purple-500/20');
@@ -2704,17 +2706,42 @@
         }
 
         function suscribirsePartida(partida_id) {
-            _canalPartida = _supabase.channel('partida-' + partida_id)
+            if (_canalPartida) { _canalPartida.unsubscribe(); _canalPartida = null; }
+            _canalPartida = _supabase.channel('partida-rt-' + partida_id + '-' + Date.now())
                 .on('postgres_changes', {
                     event: 'UPDATE', schema: 'public', table: 'partidas',
                     filter: `id=eq.${partida_id}`
                 }, (payload) => {
-                    if (payload.new.estatus === 'terminada') {
+                    const p = payload.new;
+                    // Solo procesar si ambos jugaron en esta ronda (jugada1 y jugada2 presentes)
+                    // y la ronda del resultado coincide con la ronda actual del cliente
+                    const tieneAmbasJugadas = p.jugada1 && p.jugada2;
+                    const yaTerminada = p.estatus === 'terminada';
+
+                    if ((tieneAmbasJugadas || yaTerminada) && !_resultadoProcesado) {
                         clearInterval(_timerJugada);
-                        procesarResultadoRonda(payload.new, null);
+                        procesarResultadoRonda(p, null);
                     }
                 })
                 .subscribe();
+
+            // Polling de respaldo cada 2s por si Realtime falla
+            if (_timerPoll) clearInterval(_timerPoll);
+            _timerPoll = setInterval(async () => {
+                if (_resultadoProcesado) return;
+                const { data } = await _supabase
+                    .from('partidas')
+                    .select('*')
+                    .eq('id', partida_id)
+                    .single();
+                if (!data) return;
+                const tieneAmbasJugadas = data.jugada1 && data.jugada2;
+                if ((tieneAmbasJugadas || data.estatus === 'terminada') && !_resultadoProcesado) {
+                    clearInterval(_timerPoll);
+                    clearInterval(_timerJugada);
+                    procesarResultadoRonda(data, null);
+                }
+            }, 2000);
         }
 
         function procesarResultadoRonda(data, miJugada) {
@@ -2819,6 +2846,7 @@
             clearInterval(_timerJugada);
             clearInterval(_timerRival);
             clearInterval(_timerRonda);
+            clearInterval(_timerPoll);
             _partidaActual = null;
             _jugadorNum    = null;
             _jugadaHecha   = false;
