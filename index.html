@@ -2346,7 +2346,7 @@
             const canal = _supabase.channel('cola-' + currentUser.id)
                 .on('postgres_changes', {
                     event: 'INSERT', schema: 'public', table: 'partidas',
-                    filter: `jugador2_id=eq.${currentUser.id}`
+                    filter: `jugador1_id=eq.${currentUser.id}`
                 }, (payload) => {
                     clearInterval(_timerBusqueda);
                     canal.unsubscribe();
