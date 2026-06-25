@@ -909,9 +909,16 @@
                             <div class="h-px bg-slate-700"></div>
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-2 text-sm text-slate-300">
+                                    <i class="fa-solid fa-calendar-day text-blue-400 w-4"></i> Vencimiento
+                                </div>
+                                <span id="premium-fecha-vence" class="text-sm font-bold text-white">—</span>
+                            </div>
+                            <div class="h-px bg-slate-700"></div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2 text-sm text-slate-300">
                                     <i class="fa-solid fa-calendar-xmark text-amber-400 w-4"></i> Renovar antes del
                                 </div>
-                                <span id="premium-fecha-vence" class="text-sm font-bold text-amber-300">—</span>
+                                <span id="premium-fecha-renovar" class="text-sm font-bold text-amber-300">—</span>
                             </div>
                             <div id="premium-aviso-vence" class="hidden bg-rose-500/10 border border-rose-500/30 rounded-xl p-3 text-center">
                                 <p class="text-rose-400 text-xs font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Tu suscripción vence pronto — renueva para no perder tus beneficios</p>
@@ -2225,10 +2232,12 @@
 
                 if (fechas) {
                     const fmt = (iso) => iso ? new Date(iso).toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' }) : '—';
-                    const elInicio = document.getElementById('premium-fecha-inicio');
-                    const elVence  = document.getElementById('premium-fecha-vence');
-                    if (elInicio) elInicio.textContent = fmt(fechas.premium_desde);
-                    if (elVence)  elVence.textContent  = fmt(fechas.premium_hasta);
+                    const elInicio  = document.getElementById('premium-fecha-inicio');
+                    const elVence   = document.getElementById('premium-fecha-vence');
+                    const elRenovar = document.getElementById('premium-fecha-renovar');
+                    if (elInicio)  elInicio.textContent  = fmt(fechas.premium_desde);
+                    if (elVence)   elVence.textContent   = fmt(fechas.premium_hasta);
+                    if (elRenovar) elRenovar.textContent = fmt(fechas.premium_hasta);
 
                     // Aviso si vence en menos de 3 días
                     if (fechas.premium_hasta) {
