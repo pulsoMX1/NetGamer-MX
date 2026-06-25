@@ -2362,6 +2362,11 @@
             document.getElementById('fase-buscando').classList.add('hidden');
             document.getElementById('fase-jugando').classList.remove('hidden');
             document.getElementById('apuesta-display').textContent = _apuestaActual;
+            // Reset botones (por si quedaron deshabilitados de partida anterior)
+            document.querySelectorAll('.btn-jugada').forEach(b => {
+                b.disabled = false;
+                b.classList.remove('opacity-40', 'ring-2', 'ring-purple-500', 'scale-95');
+            });
             let seg = 15;
             document.getElementById('countdown-jugada').textContent = seg;
             _timerJugada = setInterval(async () => {
@@ -2378,7 +2383,17 @@
             if (_jugadaHecha) return;
             _jugadaHecha = true;
             clearInterval(_timerJugada);
-            document.querySelectorAll('.btn-jugada').forEach(b => b.disabled = true);
+
+            // Feedback visual: resaltar elegida, atenuar las demás
+            document.querySelectorAll('.btn-jugada').forEach(b => {
+                b.disabled = true;
+                const esEsta = b.getAttribute('onclick') === `hacerJugada('${jugada}')`;
+                if (esEsta) {
+                    b.classList.add('ring-2', 'ring-purple-500', 'bg-purple-500/20');
+                } else {
+                    b.classList.add('opacity-40');
+                }
+            });
 
             const { data: { session } } = await _supabase.auth.getSession();
             const { data, error } = await _supabase.functions.invoke('hacer-jugada', {
@@ -2446,10 +2461,17 @@
 
         function cerrarModalJuego() {
             document.getElementById('modal-buscando').classList.add('hidden');
-            if (_canalPartida) _canalPartida.unsubscribe();
+            if (_canalPartida) { _canalPartida.unsubscribe(); _canalPartida = null; }
+            clearInterval(_timerBusqueda);
+            clearInterval(_timerJugada);
             _partidaActual = null;
             _jugadorNum = null;
             _jugadaHecha = false;
+            // Re-habilitar botones para la próxima partida
+            document.querySelectorAll('.btn-jugada').forEach(b => {
+                b.disabled = false;
+                b.classList.remove('opacity-40', 'ring-2', 'ring-purple-500', 'scale-95');
+            });
         }
 
         // Cargar vidas cuando se abre el tab de juegos
