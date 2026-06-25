@@ -2658,8 +2658,10 @@
 
             // Reset botones
             _jugadaHecha = false;
-            _resultadoProcesado = false;  // listo para recibir resultado de esta ronda
+            _resultadoProcesado = false;
             if (_timerPoll) clearInterval(_timerPoll);
+            // Guardar puntos actuales para detectar cambio de ronda por polling
+            _puntosAntes = { j1: _jugadorNum === 1 ? _puntosYo : _puntosRival, j2: _jugadorNum === 1 ? _puntosRival : _puntosYo };
             document.querySelectorAll('.btn-jugada').forEach(b => {
                 b.disabled = false;
                 b.classList.remove('opacity-40', 'ring-2', 'ring-purple-500', 'bg-purple-500/20');
@@ -2701,8 +2703,38 @@
 
             if (data?.resultado) {
                 procesarResultadoRonda(data, jugada);
+            } else {
+                // Esperando al oponente — activar polling
+                _iniciarPollEsperaOponente(partida_id);
             }
-            // Si no hay resultado aún, lo recibimos por Realtime
+        }
+
+        // Puntos antes de la jugada actual (para detectar cambio de ronda)
+        let _puntosAntes = { j1: 0, j2: 0 };
+
+        function _iniciarPollEsperaOponente(partida_id) {
+            if (_timerPoll) clearInterval(_timerPoll);
+            _timerPoll = setInterval(async () => {
+                if (_resultadoProcesado) { clearInterval(_timerPoll); return; }
+                const { data } = await _supabase
+                    .from('partidas')
+                    .select('*')
+                    .eq('id', partida_id)
+                    .single();
+                if (!data) return;
+
+                // Detectar que la ronda se resolvió:
+                // los puntos cambiaron O la partida terminó
+                const ptsCambiaron = (data.puntos_j1 + data.puntos_j2) > (_puntosAntes.j1 + _puntosAntes.j2);
+                const esEmpate = data.resultado === 'empate' && data.jugada1 === null;
+                const termino = data.estatus === 'terminada';
+
+                if ((ptsCambiaron || esEmpate || termino) && !_resultadoProcesado) {
+                    clearInterval(_timerPoll);
+                    clearInterval(_timerJugada);
+                    procesarResultadoRonda(data, null);
+                }
+            }, 1000);
         }
 
         function suscribirsePartida(partida_id) {
@@ -2713,54 +2745,31 @@
                     filter: `id=eq.${partida_id}`
                 }, (payload) => {
                     const p = payload.new;
-                    // Solo procesar si ambos jugaron en esta ronda (jugada1 y jugada2 presentes)
-                    // y la ronda del resultado coincide con la ronda actual del cliente
-                    const tieneAmbasJugadas = p.jugada1 && p.jugada2;
-                    const yaTerminada = p.estatus === 'terminada';
-
-                    if ((tieneAmbasJugadas || yaTerminada) && !_resultadoProcesado) {
+                    const ptsCambiaron = (p.puntos_j1 + p.puntos_j2) > (_puntosAntes.j1 + _puntosAntes.j2);
+                    const termino = p.estatus === 'terminada';
+                    if ((ptsCambiaron || termino) && !_resultadoProcesado) {
+                        clearInterval(_timerPoll);
                         clearInterval(_timerJugada);
                         procesarResultadoRonda(p, null);
                     }
                 })
                 .subscribe();
-
-            // Polling de respaldo cada 2s por si Realtime falla
-            if (_timerPoll) clearInterval(_timerPoll);
-            _timerPoll = setInterval(async () => {
-                if (_resultadoProcesado) return;
-                const { data } = await _supabase
-                    .from('partidas')
-                    .select('*')
-                    .eq('id', partida_id)
-                    .single();
-                if (!data) return;
-                const tieneAmbasJugadas = data.jugada1 && data.jugada2;
-                if ((tieneAmbasJugadas || data.estatus === 'terminada') && !_resultadoProcesado) {
-                    clearInterval(_timerPoll);
-                    clearInterval(_timerJugada);
-                    procesarResultadoRonda(data, null);
-                }
-            }, 2000);
         }
 
         function procesarResultadoRonda(data, miJugada) {
             if (_resultadoProcesado) return;
 
-            // Solo procesar si el resultado es definitivo:
-            // - tiene ganador_id real, O
-            // - resultado es explícitamente 'empate'
-            const esEmpateConfirmado = data.resultado === 'empate';
-            const tieneGanador = !!data.ganador_id;
-            if (!esEmpateConfirmado && !tieneGanador) return; // esperar datos completos
-
             _resultadoProcesado = true;
             clearInterval(_timerJugada);
+            if (_timerPoll) clearInterval(_timerPoll);
             document.getElementById('estado-espera-rival').classList.add('hidden');
 
             const esJ1       = _jugadorNum === 1;
-            const empateRond = esEmpateConfirmado;
+            const empateRond = data.resultado === 'empate';
             const ganeRonda  = !empateRond && data.ganador_id === currentUser.id;
+
+            // Actualizar _puntosAntes para la siguiente ronda
+            _puntosAntes = { j1: data.puntos_j1 || 0, j2: data.puntos_j2 || 0 };
 
             // Usar puntos directo de la BD (no acumular localmente para evitar desfase)
             if (data.puntos_j1 !== undefined && data.puntos_j2 !== undefined) {
