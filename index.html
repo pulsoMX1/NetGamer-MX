@@ -888,13 +888,65 @@
                 <div id="tab-premium" class="tab-content space-y-4 sm:space-y-6">
 
                     <!-- Estado Premium activo -->
-                    <div id="premium-activo" class="hidden bg-gradient-to-br from-amber-900/40 to-yellow-900/30 border border-amber-500/50 rounded-2xl p-6 sm:p-8 text-center shadow-lg shadow-amber-900/20">
-                        <div class="text-5xl mb-3">👑</div>
-                        <h2 class="text-2xl font-black text-amber-300 mb-1">¡Eres Premium!</h2>
-                        <p class="text-slate-300 text-sm">Tu cuenta tiene la suscripción activa. Estás disfrutando de una experiencia sin anuncios.</p>
-                        <div class="mt-4 bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 inline-block">
-                            <p class="text-amber-400 text-xs font-bold"><i class="fa-solid fa-circle-check mr-1"></i> Sin anuncios activado</p>
+                    <div id="premium-activo" class="hidden space-y-4">
+
+                        <!-- Header -->
+                        <div class="bg-gradient-to-br from-amber-900/40 to-yellow-900/30 border border-amber-500/50 rounded-2xl p-6 sm:p-8 text-center shadow-lg shadow-amber-900/20">
+                            <div class="text-6xl mb-3">👑</div>
+                            <h2 class="text-3xl font-black text-amber-300 mb-1">¡Eres Premium!</h2>
+                            <p class="text-slate-300 text-sm">Estás disfrutando de todos los beneficios exclusivos de NetGamer Premium.</p>
                         </div>
+
+                        <!-- Fechas de suscripción -->
+                        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 space-y-3">
+                            <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest">Detalles de tu suscripción</h3>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2 text-sm text-slate-300">
+                                    <i class="fa-solid fa-calendar-check text-emerald-400 w-4"></i> Inicio
+                                </div>
+                                <span id="premium-fecha-inicio" class="text-sm font-bold text-white">—</span>
+                            </div>
+                            <div class="h-px bg-slate-700"></div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2 text-sm text-slate-300">
+                                    <i class="fa-solid fa-calendar-xmark text-amber-400 w-4"></i> Renovar antes del
+                                </div>
+                                <span id="premium-fecha-vence" class="text-sm font-bold text-amber-300">—</span>
+                            </div>
+                            <div id="premium-aviso-vence" class="hidden bg-rose-500/10 border border-rose-500/30 rounded-xl p-3 text-center">
+                                <p class="text-rose-400 text-xs font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Tu suscripción vence pronto — renueva para no perder tus beneficios</p>
+                            </div>
+                        </div>
+
+                        <!-- Beneficios activos -->
+                        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4">
+                            <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest mb-3">Tus beneficios activos</h3>
+                            <ul class="space-y-3">
+                                <li class="flex items-center gap-3 text-sm text-slate-200">
+                                    <span class="w-7 h-7 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-ban text-emerald-400 text-xs"></i></span>
+                                    Sin anuncios en toda la plataforma
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-slate-200">
+                                    <span class="w-7 h-7 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-crown text-amber-400 text-xs"></i></span>
+                                    Badge <span class="text-amber-400 font-bold ml-1">👑 Premium</span> en tu perfil
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-slate-200">
+                                    <span class="w-7 h-7 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-headset text-blue-400 text-xs"></i></span>
+                                    Soporte prioritario
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-slate-200">
+                                    <span class="w-7 h-7 rounded-full bg-purple-500/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-rocket text-purple-400 text-xs"></i></span>
+                                    Acceso anticipado a nuevas funciones
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Botón renovar -->
+                        <button onclick="iniciarPagoPremium()"
+                            class="w-full bg-slate-700 hover:bg-slate-600 border border-slate-600 text-slate-200 font-bold py-3 rounded-xl transition active:scale-95 text-sm flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-rotate-right text-amber-400"></i> Renovar suscripción — $49 MXN
+                        </button>
+
                     </div>
 
                     <!-- Plan Premium -->
@@ -2113,7 +2165,7 @@
             }
         }
 
-        function aplicarEstadoPremium() {
+        async function aplicarEstadoPremium() {
             // Inyectar/quitar CSS global para ocultar social bar y ads externos
             const styleId = 'premium-ad-blocker';
             let styleEl = document.getElementById(styleId);
@@ -2162,6 +2214,30 @@
 
             // Tab Premium: mostrar estado activo o formulario
             document.getElementById('premium-activo').classList.toggle('hidden', !isPremium);
+
+            // Llenar fechas de suscripción
+            if (isPremium) {
+                const { data: fechas } = await _supabase
+                    .from('perfiles')
+                    .select('premium_desde, premium_hasta')
+                    .eq('id', currentUser.id)
+                    .single();
+
+                if (fechas) {
+                    const fmt = (iso) => iso ? new Date(iso).toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' }) : '—';
+                    const elInicio = document.getElementById('premium-fecha-inicio');
+                    const elVence  = document.getElementById('premium-fecha-vence');
+                    if (elInicio) elInicio.textContent = fmt(fechas.premium_desde);
+                    if (elVence)  elVence.textContent  = fmt(fechas.premium_hasta);
+
+                    // Aviso si vence en menos de 3 días
+                    if (fechas.premium_hasta) {
+                        const diasRestantes = (new Date(fechas.premium_hasta) - new Date()) / (1000 * 60 * 60 * 24);
+                        const avisoEl = document.getElementById('premium-aviso-vence');
+                        if (avisoEl && diasRestantes <= 3) avisoEl.classList.remove('hidden');
+                    }
+                }
+            }
             document.getElementById('premium-oferta').classList.toggle('hidden', isPremium);
 
             // Si es premium, ocultar popunder/flotante (script ya ejecutado, pero ocultamos su iframe si existe)
