@@ -2187,13 +2187,16 @@
                     throw new Error(error?.message || 'No se pudo generar el link de pago.');
                 }
 
-                // En móvil redirigir en la misma pestaña, en desktop abrir nueva
+                // Usar payment-link URL que funciona bien en móvil y desktop
                 mostrarNotificacion('Redirigiendo a MercadoPago...', 'info');
                 const esMobil = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+                const urlPago = esMobil
+                    ? 'https://www.mercadopago.com.mx/payment-link/v1/redirect?preference-id=' + data.preference_id
+                    : data.init_point;
                 if (esMobil) {
-                    window.location.href = data.init_point;
+                    window.location.href = urlPago;
                 } else {
-                    window.open(data.init_point, '_blank');
+                    window.open(urlPago, '_blank');
                 }
             } catch (err) {
                 mostrarNotificacion('Error: ' + err.message, 'error');
