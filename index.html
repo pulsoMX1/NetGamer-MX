@@ -321,6 +321,9 @@
                     <button onclick="switchTab('tab-historial', event)" class="tab-btn w-full flex items-center gap-3 px-3 sm:px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-700 hover:text-white transition text-left text-sm">
                         <i class="fa-solid fa-clock-rotate-left shrink-0"></i> <span class="sidebar-label">Historial</span>
                     </button>
+                    <button id="sidebar-btn-premium" onclick="switchTab('tab-premium', event)" class="tab-btn w-full flex items-center gap-3 px-3 sm:px-4 py-3 rounded-xl text-amber-400 hover:bg-amber-500/10 transition text-left text-sm font-bold border border-amber-500/30">
+                        <i class="fa-solid fa-crown shrink-0"></i> <span class="sidebar-label">Premium</span>
+                    </button>
                 </nav>
             </div>
             <div class="p-4 sm:p-6 border-t border-slate-700 space-y-3">
@@ -669,6 +672,20 @@
 
                 <div id="tab-canjear" class="tab-content space-y-4 sm:space-y-6">
 
+                    <!-- Banner Premium (se oculta si ya es premium) -->
+                    <div id="canjear-banner-premium" class="bg-gradient-to-r from-amber-900/30 to-yellow-900/20 border border-amber-500/30 rounded-2xl p-4 flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <span class="text-2xl shrink-0">👑</span>
+                            <div class="min-w-0">
+                                <p class="text-sm font-extrabold text-amber-300">Hazte Premium</p>
+                                <p class="text-xs text-slate-400 truncate">Elimina todos los anuncios por $49 MXN/mes</p>
+                            </div>
+                        </div>
+                        <button onclick="switchTab('tab-premium', null)" class="shrink-0 bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs px-4 py-2 rounded-xl transition active:scale-95 whitespace-nowrap">
+                            Ver plan
+                        </button>
+                    </div>
+
                     <div id="canje-catalogo">
                         <div class="border-b border-slate-700 pb-3 sm:pb-4 mb-4 sm:mb-6">
                             <h2 class="text-xl sm:text-2xl font-extrabold">Centro de Canjes</h2>
@@ -867,8 +884,69 @@
 
                 </div>
 
+                <!-- ══ TAB PREMIUM ══ -->
+                <div id="tab-premium" class="tab-content space-y-4 sm:space-y-6">
+
+                    <!-- Estado Premium activo -->
+                    <div id="premium-activo" class="hidden bg-gradient-to-br from-amber-900/40 to-yellow-900/30 border border-amber-500/50 rounded-2xl p-6 sm:p-8 text-center shadow-lg shadow-amber-900/20">
+                        <div class="text-5xl mb-3">👑</div>
+                        <h2 class="text-2xl font-black text-amber-300 mb-1">¡Eres Premium!</h2>
+                        <p class="text-slate-300 text-sm">Tu cuenta tiene la suscripción activa. Estás disfrutando de una experiencia sin anuncios.</p>
+                        <div class="mt-4 bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 inline-block">
+                            <p class="text-amber-400 text-xs font-bold"><i class="fa-solid fa-circle-check mr-1"></i> Sin anuncios activado</p>
+                        </div>
+                    </div>
+
+                    <!-- Plan Premium -->
+                    <div id="premium-oferta">
+                        <div class="text-center mb-6">
+                            <span class="inline-block bg-amber-500/20 text-amber-400 text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-widest border border-amber-500/30 mb-3">Membresía</span>
+                            <h2 class="text-2xl sm:text-3xl font-black text-white mb-2">NetGamer <span class="text-amber-400">Premium</span></h2>
+                            <p class="text-slate-400 text-sm">Disfruta la plataforma sin interrupciones</p>
+                        </div>
+
+                        <!-- Card de precio -->
+                        <div class="relative bg-gradient-to-br from-slate-800 to-slate-900 border-2 border-amber-500/60 rounded-2xl p-6 sm:p-8 shadow-2xl shadow-amber-900/20 mb-4">
+                            <div class="absolute -top-3 left-1/2 -translate-x-1/2">
+                                <span class="bg-amber-500 text-black text-xs font-extrabold px-4 py-1 rounded-full uppercase tracking-wider">Más Popular</span>
+                            </div>
+                            <div class="text-center mb-6 mt-2">
+                                <div class="text-5xl font-black text-white mb-1">$49 <span class="text-2xl text-slate-400 font-semibold">MXN</span></div>
+                                <p class="text-slate-400 text-sm">por mes · cancela cuando quieras</p>
+                            </div>
+                            <ul class="space-y-3 mb-6">
+                                <li class="flex items-center gap-3 text-sm text-slate-200">
+                                    <i class="fa-solid fa-circle-check text-emerald-400 shrink-0"></i> Sin anuncios en toda la plataforma
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-slate-200">
+                                    <i class="fa-solid fa-circle-check text-emerald-400 shrink-0"></i> Badge <span class="text-amber-400 font-bold">👑 Premium</span> en tu perfil
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-slate-200">
+                                    <i class="fa-solid fa-circle-check text-emerald-400 shrink-0"></i> Soporte prioritario
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-slate-200">
+                                    <i class="fa-solid fa-circle-check text-emerald-400 shrink-0"></i> Acceso anticipado a nuevas funciones
+                                </li>
+                            </ul>
+                            <button onclick="iniciarPagoPremium()" id="btn-pagar-premium"
+                                class="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-black font-extrabold py-4 rounded-xl shadow-lg shadow-amber-700/30 transition-all active:scale-95 text-base flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-crown"></i> Obtener Premium — $49 MXN/mes
+                            </button>
+                            <p class="text-center text-xs text-slate-500 mt-3">Pago seguro vía MercadoPago · Tarjeta, OXXO, transferencia</p>
+                        </div>
+
+                        <!-- Métodos de pago aceptados -->
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-4 flex flex-wrap items-center justify-center gap-3">
+                            <span class="text-xs text-slate-500 font-semibold uppercase tracking-wider w-full text-center mb-1">Métodos de pago aceptados</span>
+                            <span class="bg-slate-700 text-slate-300 text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5"><i class="fa-solid fa-credit-card text-blue-400"></i> Tarjeta</span>
+                            <span class="bg-slate-700 text-slate-300 text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5"><i class="fa-solid fa-store text-red-400"></i> OXXO</span>
+                            <span class="bg-slate-700 text-slate-300 text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5"><i class="fa-solid fa-building-columns text-emerald-400"></i> Transferencia</span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Anuncio Native Banner (visible en móvil y escritorio) -->
-                <div class="flex justify-center mt-6 mb-2">
+                <div id="ad-native-banner" class="flex justify-center mt-6 mb-2">
                     <div id="container-08103591ba362aeb7a7ee360f307d4ac"></div>
                 </div>
 
@@ -906,11 +984,32 @@
                 <i class="fa-solid fa-clock-rotate-left text-lg"></i>
                 <span class="text-xs font-semibold">Historial</span>
             </button>
+            <button onclick="switchTab('tab-premium', event)" class="tab-btn-mobile flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-xl text-amber-400 transition min-w-0">
+                <i class="fa-solid fa-crown text-lg"></i>
+                <span class="text-xs font-bold">Premium</span>
+            </button>
             <button onclick="cerrarSesion()" class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-rose-400 transition min-w-0">
                 <i class="fa-solid fa-right-from-bracket text-lg"></i>
                 <span class="text-xs font-semibold">Salir</span>
             </button>
         </nav>
+    </div>
+
+    <!-- Modal: Eliminar anuncios con Premium -->
+    <div id="modal-premium-ads" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[5000] p-4">
+        <div class="bg-slate-800 border border-amber-500/40 rounded-2xl w-full max-w-sm text-center p-6 shadow-2xl shadow-amber-900/30 relative">
+            <button onclick="cerrarModalPremiumAds()" class="absolute top-3 right-3 text-slate-400 hover:text-white bg-slate-700 rounded-full w-7 h-7 flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+            <div class="text-4xl mb-3">😤</div>
+            <h3 class="text-xl font-black text-white mb-1">¿Cansado de los anuncios?</h3>
+            <p class="text-slate-400 text-sm mb-4">Con <span class="text-amber-400 font-bold">NetGamer Premium</span> los eliminas todos por solo <strong class="text-white">$49 MXN/mes</strong>.</p>
+            <button onclick="cerrarModalPremiumAds(); switchTab('tab-premium', null)"
+                class="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-black font-extrabold py-3 rounded-xl transition active:scale-95 mb-2 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-crown"></i> Quiero Premium
+            </button>
+            <button onclick="cerrarModalPremiumAds()" class="text-slate-500 text-xs hover:text-slate-300 transition">No gracias, seguir viendo anuncios</button>
+        </div>
     </div>
 
     <div id="modal-legal" class="hidden fixed inset-0 bg-slate-900/90 flex items-center justify-center z-[1000] p-4">
@@ -1992,6 +2091,120 @@
             // Abrimos el blog en una pestaña nueva, mandando el ID oculto en la URL
             window.open(`${urlNoticias}?uid=${currentUser.id}`, '_blank');
         }
+
+        // ══════════════════════════════════════════
+        // SISTEMA PREMIUM
+        // ══════════════════════════════════════════
+        let isPremium = false;
+
+        // Llama esto desde cargarDatosPerfil — ya inyectamos el hook abajo
+        async function cargarEstadoPremium(userId) {
+            const { data, error } = await _supabase
+                .from('perfiles')
+                .select('is_premium')
+                .eq('id', userId)
+                .single();
+            if (!error && data) {
+                isPremium = !!data.is_premium;
+                aplicarEstadoPremium();
+            }
+        }
+
+        function aplicarEstadoPremium() {
+            // Elementos de anuncios a ocultar/mostrar
+            const adEls = [
+                document.getElementById('ad-native-banner'),
+                document.getElementById('ad-mobile-320-wrap'),
+                document.getElementById('ad-desktop-728'),
+            ];
+
+            // Iframes de anuncios del <head> invoke container
+            const nativeContainer = document.getElementById('container-08103591ba362aeb7a7ee360f307d4ac');
+
+            adEls.forEach(el => { if (el) el.style.display = isPremium ? 'none' : ''; });
+            if (nativeContainer) nativeContainer.style.display = isPremium ? 'none' : '';
+
+            // Banners premium en UI
+            const bannerCanjear = document.getElementById('canjear-banner-premium');
+            if (bannerCanjear) bannerCanjear.style.display = isPremium ? 'none' : '';
+
+            const sidebarBtn = document.getElementById('sidebar-btn-premium');
+
+            // Tab Premium: mostrar estado activo o formulario
+            document.getElementById('premium-activo').classList.toggle('hidden', !isPremium);
+            document.getElementById('premium-oferta').classList.toggle('hidden', isPremium);
+
+            // Si es premium, ocultar popunder/flotante (script ya ejecutado, pero ocultamos su iframe si existe)
+            if (isPremium) {
+                document.querySelectorAll('iframe').forEach(f => {
+                    const src = f.src || '';
+                    if (src.includes('effectivecpmnetwork') || src.includes('highperformanceformat')) {
+                        f.style.display = 'none';
+                    }
+                });
+                // Limpiar ad containers del DOM
+                document.querySelectorAll('[id^="container-"]').forEach(el => {
+                    if (el.id !== 'app-container' && el.id !== 'auth-container') {
+                        el.style.display = 'none';
+                    }
+                });
+            }
+        }
+
+        // Modal "¿Cansado de los anuncios?"
+        let _modalPremiumShown = false;
+        function mostrarModalPremiumAds() {
+            if (isPremium || _modalPremiumShown) return;
+            _modalPremiumShown = true;
+            document.getElementById('modal-premium-ads').classList.remove('hidden');
+        }
+        function cerrarModalPremiumAds() {
+            document.getElementById('modal-premium-ads').classList.add('hidden');
+        }
+
+        // Mostrar el modal ~15 segundos después de entrar a la app
+        function programarModalPremiumAds() {
+            if (isPremium) return;
+            setTimeout(mostrarModalPremiumAds, 15000);
+        }
+
+        // Pago con MercadoPago vía Supabase Edge Function
+        async function iniciarPagoPremium() {
+            if (!currentUser) {
+                mostrarNotificacion('Debes iniciar sesión primero.', 'error');
+                return;
+            }
+            const btn = document.getElementById('btn-pagar-premium');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando link de pago...';
+
+            try {
+                const { data, error } = await _supabase.functions.invoke('create-payment', {
+                    body: { user_id: currentUser.id, plan: 'premium_mensual' }
+                });
+
+                if (error || !data?.init_point) {
+                    throw new Error(error?.message || 'No se pudo generar el link de pago.');
+                }
+
+                // Redirigir al checkout de MercadoPago
+                window.open(data.init_point, '_blank');
+                mostrarNotificacion('Redirigiendo a MercadoPago...', 'info');
+            } catch (err) {
+                mostrarNotificacion('Error: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-crown"></i> Obtener Premium — $49 MXN/mes';
+            }
+        }
+
+        // Hook: extender cargarDatosPerfil para cargar estado premium también
+        const _cargarDatosPerfilOriginal = cargarDatosPerfil;
+        cargarDatosPerfil = async function(user) {
+            await _cargarDatosPerfilOriginal(user);
+            await cargarEstadoPremium(user.id);
+            programarModalPremiumAds();
+        };
     </script>
     <!-- Anuncio flotante / popunder CPAnetwork -->
     <script src="https://pl29885986.effectivecpmnetwork.com/1f/e5/ad/1fe5ad3527321360c99671bf492a9bec.js"></script>
