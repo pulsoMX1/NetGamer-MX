@@ -2187,9 +2187,14 @@
                     throw new Error(error?.message || 'No se pudo generar el link de pago.');
                 }
 
-                // Redirigir al checkout de MercadoPago
-                window.open(data.init_point, '_blank');
+                // En móvil redirigir en la misma pestaña, en desktop abrir nueva
                 mostrarNotificacion('Redirigiendo a MercadoPago...', 'info');
+                const esMobil = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+                if (esMobil) {
+                    window.location.href = data.init_point;
+                } else {
+                    window.open(data.init_point, '_blank');
+                }
             } catch (err) {
                 mostrarNotificacion('Error: ' + err.message, 'error');
             } finally {
