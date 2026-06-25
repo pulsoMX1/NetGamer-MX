@@ -2337,7 +2337,6 @@
                     clearInterval(_timerBusqueda);
                     await cancelarBusqueda();
                     mostrarNotificacion('No se encontró rival. Se devolvieron tus NC.', 'info');
-                    cerrarModalJuego();
                 }
             }, 1000);
         }
@@ -2453,10 +2452,13 @@
 
         async function cancelarBusqueda() {
             clearInterval(_timerBusqueda);
-            const { data: { session } } = await _supabase.auth.getSession();
-            await _supabase.functions.invoke('cancelar-busqueda', {
-                headers: { Authorization: `Bearer ${session?.access_token}` }
-            });
+            try {
+                const { data: { session } } = await _supabase.auth.getSession();
+                await _supabase.functions.invoke('cancelar-busqueda', {
+                    headers: { Authorization: `Bearer ${session?.access_token}` }
+                });
+            } catch(e) { /* si falla el servidor igual cerramos */ }
+            cerrarModalJuego();
         }
 
         function cerrarModalJuego() {
