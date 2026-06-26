@@ -2685,10 +2685,13 @@
             }, 1000);
         }
 
+        let _miUltimaJugada = null;
+
         async function hacerJugada(jugada) {
             if (_jugadaHecha) return;
             _jugadaHecha = true;
-            clearInterval(_timerJugada);
+            _miUltimaJugada = jugada;
+            // NO detenemos _timerJugada aqui -- el contador sigue corriendo visualmente
 
             document.querySelectorAll('.btn-jugada').forEach(b => {
                 b.disabled = true;
@@ -2786,8 +2789,9 @@
             }
 
             const emojisJugada = { piedra: '✊', papel: '✋', tijeras: '✌️' };
-            const miEmoji    = emojisJugada[esJ1 ? data.jugada1 : data.jugada2] || '❓';
-            const rivalEmoji = emojisJugada[esJ1 ? data.jugada2 : data.jugada1] || '❓';
+            const miJugadaFinal = (esJ1 ? data.jugada1 : data.jugada2) || _miUltimaJugada;
+            const miEmoji    = emojisJugada[miJugadaFinal] || '❓';
+            const rivalEmoji = emojisJugada[esJ1 ? data.jugada2 : data.jugada1] || '🎰';
 
             // ¿Alguien ganó ya 3 rondas?
             if (_puntosYo >= 3 || _puntosRival >= 3) {
