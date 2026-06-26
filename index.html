@@ -10,7 +10,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <!-- Anuncio CPAnetwork invoke -->
-    <script async="async" data-cfasync="false" src="https://pl29885983.effectivecpmnetwork.com/08103591ba362aeb7a7ee360f307d4ac/invoke.js"></script>
     <style>
         
         * { box-sizing: border-box; }
@@ -3391,6 +3390,34 @@
                 if (styleEl) styleEl.remove();
             }
 
+            // Cargar Social Bar solo si NO es premium
+            if (!isPremium) {
+                if (!document.getElementById('sb-script-1')) {
+                    const sb1 = document.createElement('script');
+                    sb1.id = 'sb-script-1';
+                    sb1.async = true;
+                    sb1.setAttribute('data-cfasync', 'false');
+                    sb1.src = 'https://pl29885983.effectivecpmnetwork.com/08103591ba362aeb7a7ee360f307d4ac/invoke.js';
+                    document.head.appendChild(sb1);
+                }
+                if (!document.getElementById('sb-script-2')) {
+                    const sb2 = document.createElement('script');
+                    sb2.id = 'sb-script-2';
+                    sb2.src = 'https://pl29885986.effectivecpmnetwork.com/1f/e5/ad/1fe5ad3527321360c99671bf492a9bec.js';
+                    document.head.appendChild(sb2);
+                }
+            } else {
+                // Si es premium, remover scripts y contenedores del social bar
+                ['sb-script-1', 'sb-script-2'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.remove();
+                });
+                // Remover elementos inyectados por el social bar
+                document.querySelectorAll('body > div[style*="position: fixed"], body > div[style*="position:fixed"], body > iframe[style*="position: fixed"], body > iframe[style*="position:fixed"]').forEach(el => el.remove());
+                const sb = document.getElementById('container-08103591ba362aeb7a7ee360f307d4ac');
+                if (sb) sb.innerHTML = '';
+            }
+
             // Elementos de anuncios a ocultar/mostrar
             const adEls = [
                 document.getElementById('ad-native-banner'),
@@ -3523,7 +3550,6 @@
         };
     </script>
     <!-- Anuncio flotante / popunder CPAnetwork -->
-    <script src="https://pl29885986.effectivecpmnetwork.com/1f/e5/ad/1fe5ad3527321360c99671bf492a9bec.js"></script>
 
     <!-- Forzar sandbox en iframes de anuncios inyectados dinámicamente -->
     <script>
