@@ -1969,34 +1969,15 @@
                             el.classList.add("balance-bump");
                             setTimeout(() => el.classList.remove("balance-bump"), 400);
                         }
-                        // Actualizar premium en tiempo real
+                        // Actualizar premium en tiempo real — rellamar función central
                         if (payload.new.is_premium !== undefined) {
-                            const isPremiumRT = payload.new.is_premium &&
+                            isPremium = !!(payload.new.is_premium &&
                                 payload.new.premium_hasta &&
-                                new Date(payload.new.premium_hasta) >= new Date();
-
-                            if (isPremiumRT) {
-                                // Recién activado premium — quitar anuncios al instante
-                                document.body.classList.remove('ads-enabled');
-                                // Quitar elementos del social bar ya inyectados
-                                document.querySelectorAll('body > div[style*="position: fixed"], body > div[style*="position:fixed"], body > iframe[style*="position: fixed"], body > iframe[style*="position:fixed"]').forEach(el => el.remove());
-                                const sbContainer = document.getElementById('container-08103591ba362aeb7a7ee360f307d4ac');
-                                if (sbContainer) sbContainer.innerHTML = '';
-                                ['sb-script-1','sb-script-2'].forEach(id => { const s = document.getElementById(id); if (s) s.remove(); });
-                                // Inyectar CSS premium si no existe
-                                if (!document.getElementById('premium-ad-style')) {
-                                    const s = document.createElement('style');
-                                    s.id = 'premium-ad-style';
-                                    s.textContent = '#ad-native-banner,#ad-mobile-320-wrap,#ad-desktop-728,body>div[style*="position: fixed"],body>div[style*="position:fixed"],body>iframe[style*="position: fixed"],body>iframe[style*="position:fixed"]{display:none!important;visibility:hidden!important;}';
-                                    document.head.appendChild(s);
-                                }
-                                // Mostrar badge premium en UI
-                                document.querySelectorAll('.badge-premium-sidebar').forEach(el => el.classList.remove('hidden'));
-                            } else {
-                                // Premium vencido — mostrar anuncios
-                                document.body.classList.add('ads-enabled');
-                                const s = document.getElementById('premium-ad-style');
-                                if (s) s.remove();
+                                new Date(payload.new.premium_hasta) >= new Date());
+                            await aplicarEstadoPremium();
+                            await cargarVidas();
+                            if (document.getElementById('tab-perfil')?.classList.contains('active')) {
+                                await cargarTabPerfil();
                             }
                         }
 
