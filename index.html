@@ -1248,7 +1248,7 @@
                                 </li>
                                 <li class="flex items-center gap-3 text-sm text-slate-200">
                                     <span class="w-7 h-7 rounded-full bg-rose-500/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-heart text-rose-400 text-xs"></i></span>
-                                    <span><strong class="text-white">5 vidas por día</strong> <span class="text-slate-400 text-xs">(normales: 3)</span></span>
+                                    <span><strong class="text-white">Vidas ilimitadas</strong> <span class="text-slate-400 text-xs">para jugar sin límite</span></span>
                                 </li>
                                 <li class="flex items-center gap-3 text-sm text-slate-200">
                                     <span class="w-7 h-7 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-tag text-amber-400 text-xs"></i></span>
@@ -1300,7 +1300,7 @@
                                 </li>
                                 <li class="flex items-center gap-3 text-sm text-slate-200">
                                     <i class="fa-solid fa-circle-check text-emerald-400 shrink-0"></i>
-                                    <span><strong class="text-white">5 vidas por día</strong> <span class="text-slate-400">(usuarios normales solo tienen 3)</span></span>
+                                    <span><strong class="text-white">Vidas ilimitadas</strong> <span class="text-slate-400">para jugar sin límite</span></span>
                                 </li>
                                 <li class="flex items-center gap-3 text-sm text-slate-200">
                                     <i class="fa-solid fa-circle-check text-emerald-400 shrink-0"></i>
@@ -3283,9 +3283,6 @@
         }
 
         function abrirRecargarVidas() {
-            // Mostrar paquetes según tipo de usuario
-            document.getElementById('paquetes-normal').classList.toggle('hidden', isPremium);
-            document.getElementById('paquetes-premium').classList.toggle('hidden', !isPremium);
             document.getElementById('modal-recargar-vidas').classList.remove('hidden');
         }
 
