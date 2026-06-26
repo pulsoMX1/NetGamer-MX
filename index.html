@@ -2801,7 +2801,15 @@
                 } catch(e) {}
             }
             const miJugadaFinal    = (esJ1 ? jugada1Final : jugada2Final) || _miUltimaJugada;
-            const rivalJugadaFinal = (esJ1 ? jugada2Final : jugada1Final) || null;
+            let   rivalJugadaFinal = (esJ1 ? jugada2Final : jugada1Final) || null;
+            // Si la jugada del rival no llego aun, inferirla segun resultado
+            if (!rivalJugadaFinal && miJugadaFinal) {
+                const gana  = { piedra: 'tijeras', papel: 'piedra', tijeras: 'papel' }; // mi jugada vence a esto
+                const pierde = { piedra: 'papel',   papel: 'tijeras', tijeras: 'piedra' }; // mi jugada pierde ante esto
+                if (empateRond)   rivalJugadaFinal = miJugadaFinal;
+                else if (ganeRonda) rivalJugadaFinal = gana[miJugadaFinal];
+                else              rivalJugadaFinal = pierde[miJugadaFinal];
+            }
             const miEmoji    = emojisJugada[miJugadaFinal]    || '❓';
             const rivalEmoji = emojisJugada[rivalJugadaFinal] || '❓';
 
