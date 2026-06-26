@@ -890,105 +890,209 @@
                 <!-- ══ TAB JUEGOS ══ -->
                 <div id="tab-juegos" class="tab-content space-y-4 sm:space-y-5">
 
-                    <!-- Header Arena -->
-                    <div class="relative overflow-hidden rounded-2xl border border-purple-500/30 bg-gradient-to-br from-purple-950/60 via-slate-900 to-slate-900 p-5">
-                        <!-- glow decorativo -->
-                        <div class="pointer-events-none absolute -top-8 -right-8 w-40 h-40 rounded-full bg-purple-600/20 blur-3xl"></div>
-                        <div class="relative flex items-center justify-between">
-                            <div>
-                                <div class="flex items-center gap-2 mb-1">
-                                    <span class="text-xs font-bold tracking-widest uppercase text-purple-400">NetGamer</span>
+                    <!-- ══ HERO ARENA ══ -->
+                    <div class="relative overflow-hidden rounded-2xl border border-purple-500/30 bg-gradient-to-br from-purple-950/70 via-slate-900 to-slate-900 p-5 sm:p-6">
+                        <div class="pointer-events-none absolute -top-10 -right-10 w-48 h-48 rounded-full bg-purple-600/20 blur-3xl"></div>
+                        <div class="pointer-events-none absolute bottom-0 left-0 w-32 h-32 rounded-full bg-indigo-700/10 blur-2xl"></div>
+                        <div class="relative flex items-start justify-between gap-3">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="text-[10px] font-black tracking-widest uppercase text-purple-400">NetGamer</span>
                                     <span class="text-[10px] bg-purple-500/20 border border-purple-500/40 text-purple-300 rounded-full px-2 py-0.5 font-bold">ARENA</span>
+                                    <span class="text-[10px] bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 rounded-full px-2 py-0.5 font-bold animate-pulse">EN VIVO</span>
                                 </div>
-                                <h2 class="text-xl font-black text-white leading-tight">Juegos 1v1</h2>
-                                <p class="text-xs text-slate-400 mt-0.5">Gana NetCoins compitiendo en tiempo real</p>
+                                <h2 class="text-xl sm:text-2xl font-black text-white leading-tight">Juegos 1v1 con apuesta</h2>
+                                <p class="text-xs text-slate-400 mt-1 leading-relaxed">Compítete contra jugadores reales y gana o pierde NetCoins según el resultado.</p>
                             </div>
-                            <!-- Vidas -->
-                            <div class="text-right">
+                            <div class="text-right shrink-0">
                                 <div id="vidas-display" class="text-xl leading-none mb-1">❤️❤️❤️</div>
                                 <p class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Vidas hoy</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Título sección juegos -->
-                    <div>
-                        <p class="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3">Juegos</p>
+                    <!-- ══ CÓMO FUNCIONA ══ -->
+                    <div class="rounded-2xl border border-slate-700/80 bg-slate-800/60 overflow-hidden">
+                        <div class="flex items-center gap-2 px-4 py-3 border-b border-slate-700/60 bg-slate-800">
+                            <i class="fa-solid fa-circle-info text-purple-400 text-sm"></i>
+                            <h3 class="font-extrabold text-white text-sm">¿Cómo funcionan los juegos?</h3>
+                        </div>
+                        <div class="p-4 space-y-3">
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                <div class="flex items-start gap-3 bg-slate-900/50 rounded-xl p-3">
+                                    <div class="w-7 h-7 shrink-0 rounded-lg bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-xs font-black text-purple-400">1</div>
+                                    <div>
+                                        <p class="text-xs font-bold text-white">Elige tu apuesta</p>
+                                        <p class="text-[11px] text-slate-400 mt-0.5">Selecciona cuántos NC quieres arriesgar. Esos NC se descuentan de tu balance al iniciar.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3 bg-slate-900/50 rounded-xl p-3">
+                                    <div class="w-7 h-7 shrink-0 rounded-lg bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-xs font-black text-blue-400">2</div>
+                                    <div>
+                                        <p class="text-xs font-bold text-white">Te emparejamos</p>
+                                        <p class="text-[11px] text-slate-400 mt-0.5">El sistema busca un rival real con la misma apuesta. Si no hay rival en 30s, te devolvemos tus NC.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3 bg-slate-900/50 rounded-xl p-3">
+                                    <div class="w-7 h-7 shrink-0 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-xs font-black text-amber-400">3</div>
+                                    <div>
+                                        <p class="text-xs font-bold text-white">Juega y gana</p>
+                                        <p class="text-[11px] text-slate-400 mt-0.5">Primer jugador en ganar 3 rondas se lleva el doble de la apuesta directo a su balance.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-2 text-center">
+                                <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-2 py-3">
+                                    <div class="text-lg mb-0.5">🏆</div>
+                                    <p class="text-[11px] font-black text-emerald-400">Ganas</p>
+                                    <p class="text-[10px] text-slate-400 mt-0.5">Recibes el doble de tu apuesta al instante</p>
+                                </div>
+                                <div class="bg-slate-700/40 border border-slate-600/40 rounded-xl px-2 py-3">
+                                    <div class="text-lg mb-0.5">🤝</div>
+                                    <p class="text-[11px] font-black text-slate-300">Empate</p>
+                                    <p class="text-[10px] text-slate-400 mt-0.5">Se repite la ronda, tus NC no se pierden</p>
+                                </div>
+                                <div class="bg-rose-500/10 border border-rose-500/20 rounded-xl px-2 py-3">
+                                    <div class="text-lg mb-0.5">💔</div>
+                                    <p class="text-[11px] font-black text-rose-400">Pierdes</p>
+                                    <p class="text-[10px] text-slate-400 mt-0.5">Pierdes tu apuesta y consumes 1 vida</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-2.5 bg-amber-500/8 border border-amber-500/20 rounded-xl px-3 py-2.5">
+                                <i class="fa-solid fa-triangle-exclamation text-amber-400 text-xs mt-0.5 shrink-0"></i>
+                                <p class="text-[11px] text-amber-200/80 leading-relaxed">
+                                    <strong class="text-amber-300">Recuerda:</strong> Juegas contra personas reales, no contra un bot. Cada apuesta es real — si ganas, los NC se acreditan de inmediato; si pierdes, se descuentan. Juega responsablemente.
+                                </p>
+                            </div>
+
+                            <div class="flex items-start gap-2.5 bg-slate-900/50 border border-slate-700/50 rounded-xl px-3 py-2.5">
+                                <i class="fa-solid fa-heart text-rose-400 text-xs mt-0.5 shrink-0"></i>
+                                <p class="text-[11px] text-slate-300 leading-relaxed">
+                                    <strong class="text-white">Sistema de vidas:</strong> Tienes <strong class="text-rose-400">3 vidas por día</strong> (7 si eres Premium). Cada derrota consume 1 vida. Al agotar tus vidas no puedes jugar más ese día — se recargan automáticamente a medianoche.
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Juego: Piedra Papel Tijeras -->
+                    <!-- ══ JUEGO: PIEDRA PAPEL TIJERAS ══ -->
                     <div class="rounded-2xl border border-slate-700 bg-slate-800/80 overflow-hidden">
-
-                        <!-- Cabecera del juego -->
-                        <div class="flex items-center gap-3 px-4 py-3 border-b border-slate-700/70 bg-slate-800">
-                            <div class="w-9 h-9 shrink-0 rounded-xl bg-gradient-to-br from-violet-500 to-purple-700 flex items-center justify-center text-lg shadow-lg shadow-purple-900/40">✊</div>
+                        <div class="flex items-center gap-3 px-4 py-3.5 border-b border-slate-700/70 bg-slate-800">
+                            <div class="w-10 h-10 shrink-0 rounded-xl bg-gradient-to-br from-violet-500 to-purple-700 flex items-center justify-center text-xl shadow-lg shadow-purple-900/40">✊</div>
                             <div class="flex-1 min-w-0">
-                                <h3 class="font-extrabold text-white text-sm leading-tight">Piedra Papel Tijeras</h3>
-                                <p class="text-[11px] text-slate-400">Elige apuesta · Emparejamiento en vivo · 1 vida por derrota</p>
+                                <div class="flex items-center gap-2">
+                                    <h3 class="font-extrabold text-white text-sm leading-tight">Piedra Papel Tijeras</h3>
+                                    <span class="text-[10px] bg-violet-500/20 border border-violet-500/30 text-violet-300 rounded-full px-2 py-0.5 font-bold">1v1</span>
+                                </div>
+                                <p class="text-[11px] text-slate-400 mt-0.5">Emparejamiento en vivo · Mejor de 5 rondas · 15s por jugada</p>
                             </div>
                             <span class="shrink-0 text-[10px] font-bold bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 rounded-full px-2 py-0.5">EN VIVO</span>
                         </div>
 
-                        <!-- Modos de apuesta -->
-                        <div class="p-4 space-y-2">
-                            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Selecciona tu apuesta</p>
+                        <div class="px-4 pt-3 pb-2">
+                            <div class="grid grid-cols-3 gap-2 text-center mb-1">
+                                <div class="bg-slate-900/60 rounded-lg py-2 px-1">
+                                    <p class="text-base">✊</p>
+                                    <p class="text-[10px] text-slate-400 mt-0.5 leading-tight">Piedra<br><span class="text-purple-400 font-bold">vence</span> Tijeras</p>
+                                </div>
+                                <div class="bg-slate-900/60 rounded-lg py-2 px-1">
+                                    <p class="text-base">✋</p>
+                                    <p class="text-[10px] text-slate-400 mt-0.5 leading-tight">Papel<br><span class="text-purple-400 font-bold">vence</span> Piedra</p>
+                                </div>
+                                <div class="bg-slate-900/60 rounded-lg py-2 px-1">
+                                    <p class="text-base">✌️</p>
+                                    <p class="text-[10px] text-slate-400 mt-0.5 leading-tight">Tijeras<br><span class="text-purple-400 font-bold">vence</span> Papel</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="px-4 pb-2 space-y-2">
+                            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">⚡ Selecciona tu apuesta para jugar</p>
+
                             <button onclick="buscarPartida('ppt', 100)" class="btn-jugar w-full flex items-center justify-between gap-3 bg-slate-700/50 hover:bg-slate-700 border border-slate-600/60 hover:border-emerald-500/40 rounded-xl px-4 py-3 transition group active:scale-[.98]">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center text-sm">🌱</div>
+                                    <div class="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center text-base">🌱</div>
                                     <div class="text-left">
-                                        <p class="text-sm font-extrabold text-white">100 NC</p>
-                                        <p class="text-[11px] text-slate-400">Modo Básico</p>
+                                        <p class="text-sm font-extrabold text-white">100 NC <span class="text-[10px] font-semibold text-slate-500">apuesta</span></p>
+                                        <p class="text-[11px] text-slate-400">Principiante · Ideal para empezar</p>
                                     </div>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-[11px] text-emerald-400 font-bold">Ganar +100 NC</span>
-                                    <i class="fa-solid fa-chevron-right text-slate-500 text-xs group-hover:text-emerald-400 transition"></i>
+                                <div class="text-right">
+                                    <p class="text-xs font-black text-emerald-400">+100 NC</p>
+                                    <p class="text-[10px] text-slate-500">si ganas</p>
                                 </div>
                             </button>
+
                             <button onclick="buscarPartida('ppt', 200)" class="btn-jugar w-full flex items-center justify-between gap-3 bg-slate-700/50 hover:bg-slate-700 border border-slate-600/60 hover:border-blue-500/40 rounded-xl px-4 py-3 transition group active:scale-[.98]">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-blue-500/15 border border-blue-500/25 flex items-center justify-center text-sm">⚡</div>
+                                    <div class="w-9 h-9 rounded-xl bg-blue-500/15 border border-blue-500/25 flex items-center justify-center text-base">⚡</div>
                                     <div class="text-left">
-                                        <p class="text-sm font-extrabold text-white">200 NC</p>
-                                        <p class="text-[11px] text-slate-400">Modo Normal</p>
+                                        <p class="text-sm font-extrabold text-white">200 NC <span class="text-[10px] font-semibold text-slate-500">apuesta</span></p>
+                                        <p class="text-[11px] text-slate-400">Normal · Mayor recompensa</p>
                                     </div>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-[11px] text-blue-400 font-bold">Ganar +200 NC</span>
-                                    <i class="fa-solid fa-chevron-right text-slate-500 text-xs group-hover:text-blue-400 transition"></i>
+                                <div class="text-right">
+                                    <p class="text-xs font-black text-blue-400">+200 NC</p>
+                                    <p class="text-[10px] text-slate-500">si ganas</p>
                                 </div>
                             </button>
+
                             <button onclick="buscarPartida('ppt', 300)" class="btn-jugar w-full flex items-center justify-between gap-3 bg-slate-700/50 hover:bg-slate-700 border border-slate-600/60 hover:border-amber-500/40 rounded-xl px-4 py-3 transition group active:scale-[.98]">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-500/25 flex items-center justify-center text-sm">🔥</div>
+                                    <div class="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center text-base">🔥</div>
                                     <div class="text-left">
-                                        <p class="text-sm font-extrabold text-white">300 NC</p>
-                                        <p class="text-[11px] text-slate-400">Modo Pro</p>
+                                        <p class="text-sm font-extrabold text-white">300 NC <span class="text-[10px] font-semibold text-slate-500">apuesta</span></p>
+                                        <p class="text-[11px] text-slate-400">Pro · Para los más arriesgados</p>
                                     </div>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-[11px] text-amber-400 font-bold">Ganar +300 NC</span>
-                                    <i class="fa-solid fa-chevron-right text-slate-500 text-xs group-hover:text-amber-400 transition"></i>
+                                <div class="text-right">
+                                    <p class="text-xs font-black text-amber-400">+300 NC</p>
+                                    <p class="text-[10px] text-slate-500">si ganas</p>
                                 </div>
                             </button>
                         </div>
 
-                        <!-- Reglas rápidas -->
-                        <div class="px-4 pb-4">
-                            <div class="flex items-center gap-4 bg-slate-900/60 border border-slate-700/50 rounded-xl px-3 py-2.5 text-[10px] text-slate-400">
-                                <span class="flex items-center gap-1"><span class="text-emerald-400">✓</span> Empate devuelve NC</span>
-                                <span class="flex items-center gap-1"><span class="text-rose-400">✗</span> Derrota = −1 vida</span>
-                                <span class="flex items-center gap-1"><span class="text-purple-400">⏱</span> 15s para elegir</span>
+                        <div class="px-4 py-3">
+                            <div class="grid grid-cols-3 gap-1.5 text-center text-[10px]">
+                                <div class="bg-emerald-500/8 border border-emerald-500/15 rounded-lg py-1.5 px-1 text-emerald-400 font-semibold">
+                                    <i class="fa-solid fa-rotate-left mr-1"></i>Empate devuelve NC
+                                </div>
+                                <div class="bg-rose-500/8 border border-rose-500/15 rounded-lg py-1.5 px-1 text-rose-400 font-semibold">
+                                    <i class="fa-solid fa-heart-crack mr-1"></i>Derrota −1 vida
+                                </div>
+                                <div class="bg-purple-500/8 border border-purple-500/15 rounded-lg py-1.5 px-1 text-purple-400 font-semibold">
+                                    <i class="fa-solid fa-clock mr-1"></i>15s por jugada
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Próximamente -->
-                    <div class="rounded-2xl border border-dashed border-slate-700 bg-slate-800/30 p-5 flex items-center gap-4">
-                        <div class="w-10 h-10 shrink-0 rounded-xl bg-slate-700/60 flex items-center justify-center text-xl">🚀</div>
-                        <div>
-                            <p class="text-sm font-bold text-slate-300">Más juegos en camino</p>
-                            <p class="text-xs text-slate-500 mt-0.5">Trivia, Adivina el número y torneos</p>
+                    <!-- ══ PRÓXIMAMENTE ══ -->
+                    <div class="rounded-2xl border border-dashed border-slate-700 bg-slate-800/20 p-5">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 shrink-0 rounded-xl bg-slate-700/60 flex items-center justify-center text-xl">🚀</div>
+                            <div>
+                                <p class="text-sm font-bold text-slate-300">Más juegos en camino</p>
+                                <p class="text-xs text-slate-500">Nuevos modos llegarán pronto a la arena</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div class="bg-slate-800/60 border border-slate-700/50 rounded-xl p-2.5 text-center opacity-50">
+                                <p class="text-xl mb-1">🧠</p>
+                                <p class="text-[10px] font-bold text-slate-400">Trivia</p>
+                                <p class="text-[9px] text-slate-600 mt-0.5">Próximamente</p>
+                            </div>
+                            <div class="bg-slate-800/60 border border-slate-700/50 rounded-xl p-2.5 text-center opacity-50">
+                                <p class="text-xl mb-1">🎲</p>
+                                <p class="text-[10px] font-bold text-slate-400">Adivina el Número</p>
+                                <p class="text-[9px] text-slate-600 mt-0.5">Próximamente</p>
+                            </div>
+                            <div class="bg-slate-800/60 border border-slate-700/50 rounded-xl p-2.5 text-center opacity-50">
+                                <p class="text-xl mb-1">🏆</p>
+                                <p class="text-[10px] font-bold text-slate-400">Torneos</p>
+                                <p class="text-[9px] text-slate-600 mt-0.5">Próximamente</p>
+                            </div>
                         </div>
                     </div>
 
