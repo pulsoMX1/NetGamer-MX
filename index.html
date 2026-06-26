@@ -2614,13 +2614,24 @@
                 headers: { Authorization: `Bearer ${session?.access_token}` }
             });
 
-            if (error || data?.error) {
+            // Extraer el código de error ya sea que venga en data.error o en el body del error HTTP
+            let codigoError = data?.error;
+            if (!codigoError && error) {
+                try {
+                    const errBody = typeof error.context === 'string'
+                        ? JSON.parse(error.context)
+                        : (await error.context?.json?.());
+                    codigoError = errBody?.error;
+                } catch(e) {}
+            }
+
+            if (codigoError || error) {
                 const msgs = {
                     sin_vidas:        '💔 No tienes vidas para seguir jugando. Vuelve mañana.',
                     sin_netcoins:     `💰 Balance insuficiente. Necesitas ${apuesta} NC para jugar.`,
                     apuesta_invalida: '⚠️ Apuesta no válida.'
                 };
-                mostrarNotificacion(msgs[data?.error] || '⚠️ Ocurrió un error al buscar partida. Intenta de nuevo.', 'error');
+                mostrarNotificacion(msgs[codigoError] || '⚠️ Ocurrió un error al buscar partida. Intenta de nuevo.', 'error');
                 return;
             }
 
