@@ -1840,16 +1840,11 @@
             _supabase.channel('cambios-saldo')
                 .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'perfiles', filter: `id=eq.${user.id}` },
                     (payload) => {
-                        // Solo animar balance si las monedas realmente cambiaron
-                        const ncAnterior = payload.old?.netcoins;
-                        const ncNuevo = payload.new.netcoins || 0;
-                        actualizarTextosInterfaz(ncNuevo);
-                        if (ncAnterior !== undefined && ncNuevo !== ncAnterior) {
-                            const el = document.getElementById("user-balance");
-                            if (el) {
-                                el.classList.add("balance-bump");
-                                setTimeout(() => el.classList.remove("balance-bump"), 400);
-                            }
+                        actualizarTextosInterfaz(payload.new.netcoins || 0);
+                        const el = document.getElementById("user-balance");
+                        if (el) {
+                            el.classList.add("balance-bump");
+                            setTimeout(() => el.classList.remove("balance-bump"), 400);
                         }
                         // Actualizar corazones en tiempo real
                         const vidasEl = document.getElementById('vidas-display');
