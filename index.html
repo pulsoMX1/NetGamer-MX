@@ -2616,11 +2616,11 @@
 
             if (error || data?.error) {
                 const msgs = {
-                    sin_vidas:       '😴 Sin vidas por hoy. Vuelve mañana.',
-                    sin_netcoins:    `❌ Necesitas ${apuesta} NC para jugar.`,
-                    apuesta_invalida: 'Apuesta no válida.'
+                    sin_vidas:        '💔 No tienes vidas para seguir jugando. Vuelve mañana.',
+                    sin_netcoins:     `💰 Balance insuficiente. Necesitas ${apuesta} NC para jugar.`,
+                    apuesta_invalida: '⚠️ Apuesta no válida.'
                 };
-                mostrarNotificacion(msgs[data?.error] || 'Error al buscar partida', 'error');
+                mostrarNotificacion(msgs[data?.error] || '⚠️ Ocurrió un error al buscar partida. Intenta de nuevo.', 'error');
                 return;
             }
 
