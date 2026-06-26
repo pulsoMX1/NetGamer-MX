@@ -899,7 +899,7 @@
                             <div class="flex items-start gap-2.5 bg-slate-900/50 border border-slate-700/50 rounded-xl px-3 py-2.5">
                                 <i class="fa-solid fa-heart text-rose-400 text-xs mt-0.5 shrink-0"></i>
                                 <p class="text-[11px] text-slate-300 leading-relaxed">
-                                    <strong class="text-white">Sistema de vidas:</strong> Tienes <strong class="text-rose-400">3 vidas por día</strong> (5 si eres Premium). Cada derrota consume 1 vida. Al agotar tus vidas no puedes jugar más ese día — se recargan automáticamente a medianoche.
+                                    <strong class="text-white">Sistema de vidas:</strong> Tienes <strong class="text-rose-400">3 vidas por día</strong>. Obtén <strong class="text-rose-300">vidas ilimitadas</strong> con el paquete de $29 MXN o con Premium. Cada derrota consume 1 vida. Al agotar tus vidas no puedes jugar más ese día — se recargan automáticamente a medianoche.
                                 </p>
                             </div>
                         </div>
@@ -1502,109 +1502,60 @@
         <div class="bg-slate-900 border border-slate-700 rounded-t-3xl sm:rounded-2xl w-full sm:max-w-sm shadow-2xl overflow-hidden">
             <div class="h-1 w-full bg-gradient-to-r from-rose-500 via-pink-500 to-rose-500"></div>
             <div class="p-5">
-                <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center justify-between mb-5">
                     <div>
-                        <h3 class="text-lg font-black text-white">💖 Recargar Vidas</h3>
-                        <p class="text-xs text-slate-400 mt-0.5">Elige el paquete que mejor te convenga</p>
+                        <h3 class="text-lg font-black text-white">♾️ Vidas Ilimitadas</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Juega sin límite, sin preocuparte por las vidas</p>
                     </div>
                     <button onclick="cerrarRecargarVidas()" class="w-8 h-8 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-full flex items-center justify-center text-slate-400 hover:text-white transition">
                         <i class="fa-solid fa-xmark text-sm"></i>
                     </button>
                 </div>
 
-                <!-- Paquetes usuario normal -->
-                <div id="paquetes-normal" class="space-y-2 mb-4">
-                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Paquetes disponibles</p>
-                    <button onclick="comprarVidas(1, 2)" class="w-full flex items-center justify-between bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-rose-500/40 rounded-xl px-4 py-3 transition active:scale-95 group">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl bg-rose-500/15 border border-rose-500/25 flex items-center justify-center text-base">❤️</div>
-                            <div class="text-left">
-                                <p class="text-sm font-extrabold text-white">1 Vida</p>
-                                <p class="text-[11px] text-slate-400">Una vida extra para seguir jugando</p>
+                <!-- Opción 1: Paquete único $29 MXN para siempre -->
+                <button onclick="comprarVidasIlimitadas()" class="w-full flex items-center justify-between bg-gradient-to-r from-rose-950/60 to-slate-800 hover:from-rose-900/60 border border-rose-500/40 hover:border-rose-500/70 rounded-xl px-4 py-4 transition active:scale-95 group mb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 rounded-xl bg-rose-500/20 border border-rose-500/30 flex items-center justify-center text-xl">♾️</div>
+                        <div class="text-left">
+                            <div class="flex items-center gap-2">
+                                <p class="text-sm font-extrabold text-white">Vidas Ilimitadas</p>
+                                <span class="text-[10px] bg-rose-500/20 border border-rose-500/30 text-rose-300 rounded-full px-2 py-0.5 font-bold">PARA SIEMPRE</span>
                             </div>
+                            <p class="text-[11px] text-slate-400 mt-0.5">Pago único · Nunca se te acaban las vidas</p>
                         </div>
-                        <span class="text-sm font-black text-rose-400 group-hover:text-rose-300">$2 MXN</span>
-                    </button>
-                    <button onclick="comprarVidas(3, 5)" class="w-full flex items-center justify-between bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-rose-500/40 rounded-xl px-4 py-3 transition active:scale-95 group">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl bg-rose-500/15 border border-rose-500/25 flex items-center justify-center text-base">❤️</div>
-                            <div class="text-left">
-                                <p class="text-sm font-extrabold text-white">3 Vidas <span class="text-emerald-400 text-[10px] font-bold ml-1">¡Ahorra $1!</span></p>
-                                <p class="text-[11px] text-slate-400">El mejor valor del día</p>
-                            </div>
-                        </div>
-                        <span class="text-sm font-black text-rose-400 group-hover:text-rose-300">$5 MXN</span>
-                    </button>
-
-                    <!-- Preview paquetes premium (deshabilitados) -->
-                    <div class="mt-3 mb-1">
-                        <div class="flex items-center gap-2 mb-2">
-                            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Precios Premium</p>
-                            <span class="text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-full px-2 py-0.5 font-bold">👑 Solo miembros</span>
-                        </div>
-                        <div class="space-y-2 opacity-50 cursor-not-allowed">
-                            <div class="w-full flex items-center justify-between bg-slate-800/60 border border-amber-500/15 rounded-xl px-4 py-3 select-none">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-base">❤️</div>
-                                    <div class="text-left">
-                                        <p class="text-sm font-extrabold text-slate-300">1 Vida</p>
-                                        <p class="text-[11px] text-slate-500">Precio exclusivo Premium</p>
-                                    </div>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-sm font-black text-amber-500">$1 MXN</p>
-                                    <p class="text-[10px] text-slate-500 line-through">$2 MXN</p>
-                                </div>
-                            </div>
-                            <div class="w-full flex items-center justify-between bg-slate-800/60 border border-amber-500/15 rounded-xl px-4 py-3 select-none">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-base">❤️</div>
-                                    <div class="text-left">
-                                        <p class="text-sm font-extrabold text-slate-300">5 Vidas <span class="text-emerald-500 text-[10px] font-bold ml-1">¡Mejor oferta!</span></p>
-                                        <p class="text-[11px] text-slate-500">Precio exclusivo Premium</p>
-                                    </div>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-sm font-black text-amber-500">$3 MXN</p>
-                                    <p class="text-[10px] text-slate-500 line-through">$10 MXN</p>
-                                </div>
-                            </div>
-                        </div>
-                        <p class="text-[10px] text-slate-500 text-center mt-2">
-                            <button onclick="cerrarRecargarVidas(); switchTab('tab-premium', null)" class="text-amber-400 font-bold hover:text-amber-300 transition">Hazte Premium</button> y ahorra hasta un 70% en recargas
-                        </p>
                     </div>
+                    <div class="text-right shrink-0">
+                        <p class="text-lg font-black text-rose-400 group-hover:text-rose-300">$29 MXN</p>
+                        <p class="text-[10px] text-slate-500">pago único</p>
+                    </div>
+                </button>
+
+                <!-- Divisor -->
+                <div class="flex items-center gap-3 my-3">
+                    <div class="flex-1 h-px bg-slate-700"></div>
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">o también incluido en</p>
+                    <div class="flex-1 h-px bg-slate-700"></div>
                 </div>
 
-                <!-- Paquetes premium -->
-                <div id="paquetes-premium" class="hidden space-y-2 mb-4">
-                    <div class="flex items-center gap-2 mb-2">
-                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Paquetes Premium</p>
-                        <span class="text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-full px-2 py-0.5 font-bold">👑 Precio especial</span>
+                <!-- Opción 2: Premium -->
+                <button onclick="cerrarRecargarVidas(); switchTab('tab-premium', null)" class="w-full flex items-center justify-between bg-gradient-to-r from-amber-950/60 to-slate-800 hover:from-amber-900/60 border border-amber-500/40 hover:border-amber-500/70 rounded-xl px-4 py-4 transition active:scale-95 group mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-xl">👑</div>
+                        <div class="text-left">
+                            <div class="flex items-center gap-2">
+                                <p class="text-sm font-extrabold text-white">NetGamer Premium</p>
+                                <span class="text-[10px] bg-amber-500/20 border border-amber-500/30 text-amber-300 rounded-full px-2 py-0.5 font-bold">+BENEFICIOS</span>
+                            </div>
+                            <p class="text-[11px] text-slate-400 mt-0.5">Vidas ilimitadas + sin anuncios + más</p>
+                        </div>
                     </div>
-                    <button onclick="comprarVidas(1, 1)" class="w-full flex items-center justify-between bg-slate-800 hover:bg-slate-700 border border-amber-500/20 hover:border-amber-500/50 rounded-xl px-4 py-3 transition active:scale-95 group">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center text-base">❤️</div>
-                            <div class="text-left">
-                                <p class="text-sm font-extrabold text-white">1 Vida</p>
-                                <p class="text-[11px] text-slate-400">Precio exclusivo Premium</p>
-                            </div>
-                        </div>
-                        <span class="text-sm font-black text-amber-400 group-hover:text-amber-300">$1 MXN</span>
-                    </button>
-                    <button onclick="comprarVidas(5, 3)" class="w-full flex items-center justify-between bg-slate-800 hover:bg-slate-700 border border-amber-500/20 hover:border-amber-500/50 rounded-xl px-4 py-3 transition active:scale-95 group">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center text-base">❤️</div>
-                            <div class="text-left">
-                                <p class="text-sm font-extrabold text-white">5 Vidas <span class="text-emerald-400 text-[10px] font-bold ml-1">¡Mejor oferta!</span></p>
-                                <p class="text-[11px] text-slate-400">Precio exclusivo Premium</p>
-                            </div>
-                        </div>
-                        <span class="text-sm font-black text-amber-400 group-hover:text-amber-300">$3 MXN</span>
-                    </button>
-                </div>
+                    <div class="text-right shrink-0">
+                        <p class="text-lg font-black text-amber-400 group-hover:text-amber-300">$49 MXN</p>
+                        <p class="text-[10px] text-slate-500">por mes</p>
+                    </div>
+                </button>
 
-                <p class="text-[10px] text-slate-600 text-center">Pago seguro vía MercadoPago · Las vidas se acreditan al instante</p>
+                <p class="text-[10px] text-slate-600 text-center">Pago seguro vía MercadoPago · Se acredita al instante</p>
             </div>
         </div>
     </div>
@@ -2015,13 +1966,25 @@
                             const max = payload.new.is_premium ? 5 : 3;
                             const vidas = Math.max(0, Math.min(payload.new.vidas_hoy, max));
                             vidasEl.textContent = '❤️'.repeat(vidas) + '🖤'.repeat(max - vidas);
-                            const btnR = document.getElementById('btn-recargar-vidas');
-                            if (btnR) { if (vidas <= 0) { btnR.classList.remove('hidden'); btnR.style.display='flex'; } else { btnR.classList.add('hidden'); btnR.style.display=''; } }
-                            // Actualizar texto vidas en perfil en tiempo real
-                            const statVidas = document.getElementById('perfil-stat-vidas');
-                            if (statVidas) statVidas.textContent = `${vidas}/${max}`;
-                            const btnRecPerfil = document.getElementById('btn-recargar-vidas-perfil');
-                            if (btnRecPerfil) btnRecPerfil.classList.toggle('hidden', vidas > 0);
+                            const tieneIlimitadasRT = payload.new.vidas_ilimitadas ||
+                                (payload.new.is_premium && payload.new.premium_hasta && new Date(payload.new.premium_hasta) >= new Date());
+                            const vidasDisplayEl = document.getElementById('vidas-display');
+                            if (tieneIlimitadasRT) {
+                                if (vidasDisplayEl) vidasDisplayEl.textContent = '♾️';
+                                const btnR2 = document.getElementById('btn-recargar-vidas');
+                                if (btnR2) { btnR2.classList.add('hidden'); btnR2.style.display = ''; }
+                                const statVidasRT = document.getElementById('perfil-stat-vidas');
+                                if (statVidasRT) statVidasRT.textContent = '♾️';
+                                const btnRecPerfilRT = document.getElementById('btn-recargar-vidas-perfil');
+                                if (btnRecPerfilRT) btnRecPerfilRT.classList.add('hidden');
+                            } else {
+                                const btnR = document.getElementById('btn-recargar-vidas');
+                                if (btnR) { if (vidas <= 0) { btnR.classList.remove('hidden'); btnR.style.display='flex'; } else { btnR.classList.add('hidden'); btnR.style.display=''; } }
+                                const statVidas = document.getElementById('perfil-stat-vidas');
+                                if (statVidas) statVidas.textContent = `${vidas}/${max}`;
+                                const btnRecPerfil = document.getElementById('btn-recargar-vidas-perfil');
+                                if (btnRecPerfil) btnRecPerfil.classList.toggle('hidden', vidas > 0);
+                            }
                         }
                     }
                 ).subscribe();
@@ -2669,25 +2632,27 @@
 
             const { data } = await _supabase
                 .from('perfiles')
-                .select('netcoins, total_referidos, is_premium, vidas_hoy, vidas_reset_fecha')
+                .select('netcoins, total_referidos, is_premium, vidas_hoy, vidas_reset_fecha, vidas_ilimitadas, premium_hasta')
                 .eq('id', userId)
                 .single();
 
             if (data) {
                 const hoy      = new Date().toISOString().split('T')[0];
-                const maxVidas = data.is_premium ? 5 : 3;
-                const vidasHoy = data.vidas_reset_fecha !== hoy ? maxVidas : (data.vidas_hoy ?? maxVidas);
+                const tieneVidasIlim = data.vidas_ilimitadas ||
+                    (data.is_premium && data.premium_hasta && new Date(data.premium_hasta) >= new Date());
+                const maxVidas = tieneVidasIlim ? null : 3;
+                const vidasHoy = tieneVidasIlim ? null : (data.vidas_reset_fecha !== hoy ? 3 : (data.vidas_hoy ?? 3));
                 const isPremium = !!data.is_premium;
 
                 document.getElementById('perfil-stat-nc').textContent        = (data.netcoins || 0).toLocaleString('es-MX');
                 document.getElementById('perfil-stat-referidos').textContent = data.total_referidos || 0;
-                document.getElementById('perfil-stat-vidas').textContent     = `${vidasHoy}/${maxVidas}`;
+                document.getElementById('perfil-stat-vidas').textContent = tieneVidasIlim ? '♾️' : `${vidasHoy}/${maxVidas}`;
                 document.getElementById('perfil-info-plan').textContent      = isPremium ? '👑 Premium' : 'Gratuito';
                 document.getElementById('perfil-info-plan').className        = `text-xs font-bold ${isPremium ? 'text-amber-400' : 'text-slate-300'}`;
                 document.getElementById('perfil-badge-premium').classList.toggle('hidden', !isPremium);
                 document.getElementById('perfil-btn-premium').classList.toggle('hidden', isPremium);
                 const btnRecPerfil = document.getElementById('btn-recargar-vidas-perfil');
-                if (btnRecPerfil) btnRecPerfil.classList.toggle('hidden', vidasHoy > 0);
+                if (btnRecPerfil) btnRecPerfil.classList.toggle('hidden', tieneVidasIlim || vidasHoy > 0);
             }
         }
 
@@ -2807,17 +2772,24 @@
             if (!currentUser) return;
             const { data } = await _supabase
                 .from('perfiles')
-                .select('vidas_hoy, vidas_reset_fecha, is_premium')
+                .select('vidas_hoy, vidas_reset_fecha, is_premium, vidas_ilimitadas, premium_hasta')
                 .eq('id', currentUser.id)
                 .single();
             if (!data) return;
             const hoy = new Date().toISOString().split('T')[0];
-            let vidas = data.vidas_hoy;
-            if (data.vidas_reset_fecha !== hoy) vidas = data.is_premium ? 5 : 3;
-            const max = data.is_premium ? 5 : 3;
+            const tieneVidasIlimitadas = data.vidas_ilimitadas ||
+                (data.is_premium && data.premium_hasta && new Date(data.premium_hasta) >= new Date());
             const el = document.getElementById('vidas-display');
-            if (el) el.textContent = '❤️'.repeat(vidas) + '🖤'.repeat(Math.max(0, max - vidas));
             const btnRecargar = document.getElementById('btn-recargar-vidas');
+            if (tieneVidasIlimitadas) {
+                if (el) el.textContent = '♾️';
+                if (btnRecargar) { btnRecargar.classList.add('hidden'); btnRecargar.style.display = ''; }
+                return;
+            }
+            let vidas = data.vidas_hoy;
+            if (data.vidas_reset_fecha !== hoy) vidas = 3;
+            const max = 3;
+            if (el) el.textContent = '❤️'.repeat(vidas) + '🖤'.repeat(Math.max(0, max - vidas));
             if (btnRecargar) { if (vidas <= 0) { btnRecargar.classList.remove('hidden'); btnRecargar.style.display='flex'; } else { btnRecargar.classList.add('hidden'); btnRecargar.style.display=''; } }
         }
 
@@ -3293,6 +3265,23 @@
         // ══════════════════════════════════════════
         // RECARGAR VIDAS
         // ══════════════════════════════════════════
+        async function comprarVidasIlimitadas() {
+            cerrarRecargarVidas();
+            try {
+                const { data: { session } } = await _supabase.auth.getSession();
+                const res = await fetch('https://meiwuluwrdjszxeyoqtt.supabase.co/functions/v1/crear-preferencia-mp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
+                    body: JSON.stringify({ tipo: 'vidas_ilimitadas', monto: 29 })
+                });
+                const { url } = await res.json();
+                if (url) window.location.href = url;
+            } catch(e) {
+                console.error(e);
+                mostrarToast('Error al procesar el pago. Intenta de nuevo.', 'error');
+            }
+        }
+
         function abrirRecargarVidas() {
             // Mostrar paquetes según tipo de usuario
             document.getElementById('paquetes-normal').classList.toggle('hidden', isPremium);
