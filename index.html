@@ -1962,71 +1962,28 @@
 
             _supabase.channel('cambios-saldo')
                 .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'perfiles', filter: `id=eq.${user.id}` },
-                    (payload) => {
+                    async (payload) => {
+                        // Balance
                         actualizarTextosInterfaz(payload.new.netcoins || 0);
                         const el = document.getElementById("user-balance");
                         if (el) {
                             el.classList.add("balance-bump");
                             setTimeout(() => el.classList.remove("balance-bump"), 400);
                         }
-                        // Actualizar premium en tiempo real
+
+                        // Premium — re-ejecutar toda la lógica central
                         if (payload.new.is_premium !== undefined) {
-                            const isPremiumRT = payload.new.is_premium &&
+                            isPremium = !!(payload.new.is_premium &&
                                 payload.new.premium_hasta &&
-                                new Date(payload.new.premium_hasta) >= new Date();
-
-                            if (isPremiumRT) {
-                                // Recién activado premium — quitar anuncios al instante
-                                document.body.classList.remove('ads-enabled');
-                                // Quitar elementos del social bar ya inyectados
-                                document.querySelectorAll('body > div[style*="position: fixed"], body > div[style*="position:fixed"], body > iframe[style*="position: fixed"], body > iframe[style*="position:fixed"]').forEach(el => el.remove());
-                                const sbContainer = document.getElementById('container-08103591ba362aeb7a7ee360f307d4ac');
-                                if (sbContainer) sbContainer.innerHTML = '';
-                                ['sb-script-1','sb-script-2'].forEach(id => { const s = document.getElementById(id); if (s) s.remove(); });
-                                // Inyectar CSS premium si no existe
-                                if (!document.getElementById('premium-ad-style')) {
-                                    const s = document.createElement('style');
-                                    s.id = 'premium-ad-style';
-                                    s.textContent = '#ad-native-banner,#ad-mobile-320-wrap,#ad-desktop-728,body>div[style*="position: fixed"],body>div[style*="position:fixed"],body>iframe[style*="position: fixed"],body>iframe[style*="position:fixed"]{display:none!important;visibility:hidden!important;}';
-                                    document.head.appendChild(s);
-                                }
-                                // Mostrar badge premium en UI
-                                document.querySelectorAll('.badge-premium-sidebar').forEach(el => el.classList.remove('hidden'));
-                            } else {
-                                // Premium vencido — mostrar anuncios
-                                document.body.classList.add('ads-enabled');
-                                const s = document.getElementById('premium-ad-style');
-                                if (s) s.remove();
-                            }
+                                new Date(payload.new.premium_hasta) >= new Date());
+                            await aplicarEstadoPremium();
                         }
 
-                        // Actualizar corazones en tiempo real
-                        const vidasEl = document.getElementById('vidas-display');
-                        if (vidasEl && payload.new.vidas_hoy !== undefined) {
-                            const max = payload.new.is_premium ? 5 : 3;
-                            const vidas = Math.max(0, Math.min(payload.new.vidas_hoy, max));
-                            vidasEl.textContent = '❤️'.repeat(vidas) + '🖤'.repeat(max - vidas);
-                            const tieneIlimitadasRT = payload.new.vidas_ilimitadas_permanente ||
-                                payload.new.vidas_ilimitadas ||
-                                (payload.new.is_premium && payload.new.premium_hasta && new Date(payload.new.premium_hasta) >= new Date());
-                            const vidasDisplayEl = document.getElementById('vidas-display');
-                            if (tieneIlimitadasRT) {
-                                if (vidasDisplayEl) vidasDisplayEl.textContent = '♾️';
-                                const btnR2 = document.getElementById('btn-recargar-vidas');
-                                if (btnR2) { btnR2.classList.add('hidden'); btnR2.style.display = ''; }
-                                const statVidasRT = document.getElementById('perfil-stat-vidas');
-                                if (statVidasRT) statVidasRT.textContent = '♾️';
-                                const btnRecPerfilRT = document.getElementById('btn-recargar-vidas-perfil');
-                                if (btnRecPerfilRT) btnRecPerfilRT.classList.add('hidden');
-                            } else {
-                                const btnR = document.getElementById('btn-recargar-vidas');
-                                if (btnR) { if (vidas <= 0) { btnR.classList.remove('hidden'); btnR.style.display='flex'; } else { btnR.classList.add('hidden'); btnR.style.display=''; } }
-                                const statVidas = document.getElementById('perfil-stat-vidas');
-                                if (statVidas) statVidas.textContent = `${vidas}/${max}`;
-                                const btnRecPerfil = document.getElementById('btn-recargar-vidas-perfil');
-                                if (btnRecPerfil) btnRecPerfil.classList.toggle('hidden', vidas > 0);
-                            }
-                        }
+                        // Vidas — siempre recargar
+                        await cargarVidas();
+
+                        // Perfil — siempre recargar (no solo cuando está activo)
+                        await cargarTabPerfil();
                     }
                 ).subscribe();
         }
