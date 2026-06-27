@@ -10,10 +10,20 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <!-- Anuncio CPAnetwork invoke -->
-    <script async="async" data-cfasync="false" src="https://pl29885983.effectivecpmnetwork.com/08103591ba362aeb7a7ee360f307d4ac/invoke.js"></script>
     <style>
         
         * { box-sizing: border-box; }
+
+        /* Ocultar anuncios por defecto hasta saber si es premium */
+        #ad-native-banner, #ad-mobile-320-wrap, #ad-desktop-728 {
+            display: none !important;
+        }
+        /* Clase que activa los anuncios para no-premium */
+        body.ads-enabled #ad-native-banner,
+        body.ads-enabled #ad-mobile-320-wrap,
+        body.ads-enabled #ad-desktop-728 {
+            display: flex !important;
+        }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
@@ -327,6 +337,9 @@
                     <button id="sidebar-btn-premium" onclick="switchTab('tab-premium', event)" class="tab-btn w-full flex items-center gap-3 px-3 sm:px-4 py-3 rounded-xl text-amber-400 hover:bg-amber-500/10 transition text-left text-sm font-bold border border-amber-500/30">
                         <i class="fa-solid fa-crown shrink-0"></i> <span class="sidebar-label">Premium</span>
                     </button>
+                    <button onclick="switchTab('tab-perfil', event)" class="tab-btn w-full flex items-center gap-3 px-3 sm:px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-700 hover:text-white transition text-left text-sm">
+                        <i class="fa-solid fa-circle-user shrink-0"></i> <span class="sidebar-label">Mi Perfil</span>
+                    </button>
                 </nav>
             </div>
             <div class="p-4 sm:p-6 border-t border-slate-700 space-y-3">
@@ -335,8 +348,8 @@
                     <span>&bull;</span>
                     <button onclick="abrirTerminos()" class="hover:text-purple-400 transition">Términos</button>
                 </div>
-                <button onclick="cerrarSesion()" class="w-full bg-slate-900 hover:bg-rose-950 active:bg-rose-900 text-rose-400 font-semibold py-2 px-3 rounded-xl transition text-xs sm:text-sm flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-right-from-bracket shrink-0"></i> <span class="sidebar-label">Cerrar Sesión</span>
+                <button onclick="switchTab('tab-perfil', event)" class="tab-btn w-full bg-slate-900 hover:bg-slate-700 active:bg-slate-600 text-slate-300 hover:text-white font-semibold py-2 px-3 rounded-xl transition text-xs sm:text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-circle-user shrink-0 text-purple-400"></i> <span class="sidebar-label">Mi Perfil</span>
                 </button>
             </div>
         </aside>
@@ -354,19 +367,6 @@
             </header>
 
             <main id="main-content" class="flex-1 p-3 sm:p-6 overflow-y-auto">
-
-                <!-- Anuncio Banner Desktop 728x90 highperformanceformat -->
-                <div class="hidden sm:flex justify-center mb-4">
-                    <iframe sandbox="allow-popups allow-scripts allow-same-origin allow-top-navigation-by-user-activation" src="about:blank" id="ad-desktop-728" style="width:728px;height:90px;border:none;overflow:hidden;" scrolling="no"></iframe>
-                    <script>
-                    (function(){
-                        var atOptions = { 'key': '1e445d6376d731d4b4b8b14f689c49ee', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };
-                        window._adOptions728 = atOptions;
-                    })();
-                    </script>
-                    <script src="https://www.highperformanceformat.com/1e445d6376d731d4b4b8b14f689c49ee/invoke.js"></script>
-                </div>
-
 
                 <div id="tab-inicio" class="tab-content active space-y-4 sm:space-y-6">
                     <div class="bg-gradient-to-r from-purple-800 to-indigo-900 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-xl">
@@ -386,13 +386,7 @@
                             </div>
                             <div class="p-2.5 sm:p-3 bg-amber-500/10 text-amber-400 rounded-xl text-lg sm:text-xl"><i class="fa-solid fa-wallet"></i></div>
                         </div>
-                        <div class="stat-card bg-slate-800 border border-slate-700 p-4 sm:p-6 rounded-2xl flex items-center justify-between">
-                            <div>
-                                <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Equivalencia</span>
-                                <h3 class="text-xl sm:text-2xl font-black text-emerald-400 mt-1" id="mxn-equivalence">$0.00 MXN</h3>
-                            </div>
-                            <div class="p-2.5 sm:p-3 bg-emerald-500/10 text-emerald-400 rounded-xl text-lg sm:text-xl"><i class="fa-solid fa-money-bill-wave"></i></div>
-                        </div>
+
                         <div class="stat-card bg-slate-800 border border-slate-700 p-4 sm:p-6 rounded-2xl flex items-center justify-between">
                             <div>
                                 <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Mis Referidos</span>
@@ -402,62 +396,7 @@
                         </div>
                     </div>
 
-                   <div class="bg-slate-800 border border-emerald-500/50 rounded-2xl p-5 sm:p-6 shadow-lg shadow-emerald-900/20 text-center relative overflow-hidden">
-                        <button onclick="abrirAvisoAnunciantes()" class="absolute top-3 left-3 w-7 h-7 bg-slate-700/80 hover:bg-slate-600 border border-slate-500/50 rounded-full flex items-center justify-center text-slate-300 text-sm font-bold transition-all active:scale-95 z-10" title="Información sobre las ofertas">
-                            ?
-                        </button>
 
-                        <div class="text-4xl mb-2 mt-2">⚡</div>
-                        <h3 class="text-lg sm:text-xl font-extrabold text-white mb-2">¡Ofertas de Anunciantes!</h3>
-                        <p class="text-slate-400 text-xs sm:text-sm mb-5">Completa ofertas de Anunciantes y Gana Recompensas</p>
-                        
-                        <a href="https://alarmpenguinmelt.com/xs190q6u83?key=04f0ec7b686d19b94a1462e816cccdcc" target="_blank" rel="noopener noreferrer" 
-                           class="inline-block w-full sm:w-auto bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold py-3 px-8 rounded-xl shadow-lg transition-all active:scale-95 text-sm">
-                            🚀 Ver Ofertas Disponibles
-                        </a>
-                        
-                    </div>
-                    <div id="modalAvisoAnunciantes" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/80 backdrop-blur-sm px-4 opacity-0 transition-opacity duration-300">
-                        <div class="bg-slate-800 border border-slate-600 rounded-2xl p-4 sm:p-5 max-w-sm w-full max-h-[90vh] overflow-y-auto shadow-2xl relative transform scale-95 transition-transform duration-300" id="modalAvisoCuerpo">
-                            
-                            <button onclick="cerrarAvisoAnunciantes()" class="absolute top-3 right-3 text-slate-400 hover:text-white transition-colors bg-slate-700/50 hover:bg-slate-600 rounded-full p-1">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                            </button>
-                            
-                            <div class="flex items-center gap-2 mb-3 pr-6">
-                                <div class="text-2xl">ℹ️</div>
-                                <h4 class="text-lg font-bold text-white leading-tight">Aviso de Ofertas de Anunciantes</h4>
-                            </div>
-                            
-                            <div class="text-slate-300 text-[13px] sm:text-sm space-y-2.5 leading-snug text-left">
-                                <p>
-                                    Estas ofertas son operadas por <strong>anunciantes externos</strong>, no son administradas por nosotros.
-                                </p>
-                                <p>
-                                    Cualquier recompensa se gestiona dentro de la plataforma del anunciante. <strong class="text-emerald-400 font-bold">NOSOTROS NO ACREDITAMOS NINGUN TIPO DE RECOMPENSAS</strong> por las acciones que realize dentro de estos sitios de anunciantes.
-                                </p>
-                                
-                                <div class="bg-slate-900/50 border border-slate-700/50 rounded-xl p-3 mt-2">
-                                    <p class="mb-2 text-center text-xs">Al hacer clic en el botón:</p>
-                                    
-                                    <div class="flex justify-center mb-2">
-                                        <span class="inline-block bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold py-1.5 px-4 rounded-lg text-xs cursor-default opacity-90 select-none shadow-sm">
-                                            🚀 Ver Ofertas Disponibles
-                                        </span>
-                                    </div>
-                                    
-                                    <p class="text-slate-400 text-[11px] text-center leading-tight">
-                                        Serás redirigido a sitios de anunciantes. cualquier dinámica o beneficio  que te prometan estos anunciantes solo son válidos <strong>dentro de esa plataforma del anunciante</strong>.
-                                    </p>
-                                </div>
-                                
-                            </div>
-                            
-                            <button onclick="cerrarAvisoAnunciantes()" class="mt-4 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-2.5 px-4 rounded-xl transition-colors active:scale-95 text-sm">
-                                Entendido
-                            </button>
-                        </div>
-                    </div>
                     
                     <div id="seccion-noticias" class="bg-gradient-to-br from-slate-800 to-slate-900 border border-sky-500/30 rounded-2xl p-5 sm:p-6 shadow-lg relative overflow-hidden mt-4">
                         <div class="absolute -right-10 -top-10 text-sky-500/10 text-9xl"><i class="fa-regular fa-newspaper"></i></div>
@@ -496,42 +435,22 @@
 
                     <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
                         <div class="flex border-b border-slate-700 bg-slate-900/50 overflow-x-auto">
-                            <button id="tab-muro-cpalead" onclick="cambiarMuroTab('cpalead')"
-                                class="muro-tab-btn flex items-center gap-2 px-4 py-3 text-sm font-bold whitespace-nowrap border-b-2 border-purple-500 text-purple-400 transition">
-                                <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shrink-0"></span>
-                                CPAlead
-                            </button>
-                            <button id="tab-muro-adgem" onclick="cambiarMuroTab('adgem')"
-                                class="muro-tab-btn flex items-center gap-2 px-4 py-3 text-sm font-bold whitespace-nowrap border-b-2 border-transparent text-slate-400 hover:text-white transition">
-                                <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shrink-0"></span>
-                                AdGem
-                            </button>
+
+
                             <button id="tab-muro-bitlabs" onclick="cambiarMuroTab('bitlabs')"
-                                class="muro-tab-btn flex items-center gap-2 px-4 py-3 text-sm font-bold whitespace-nowrap border-b-2 border-transparent text-slate-400 hover:text-white transition">
+                                class="muro-tab-btn flex items-center gap-2 px-4 py-3 text-sm font-bold whitespace-nowrap border-b-2 border-purple-500 text-purple-400 transition">
                                 <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shrink-0"></span>
                                 BitLabs
                             </button>
+                            <button id="tab-muro-monlix" onclick="cambiarMuroTab('monlix')"
+                                class="muro-tab-btn flex items-center gap-2 px-4 py-3 text-sm font-bold whitespace-nowrap border-b-2 border-transparent text-slate-400 hover:text-white transition">
+                                <span class="w-2 h-2 bg-amber-400 rounded-full animate-pulse shrink-0"></span>
+                                Monlix
+                            </button>
                         </div>
-                        <div id="muro-cpalead" class="muro-panel">
-                            <iframe
-                                id="iframe-cpalead"
-                                sandbox='allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-popups-to-escape-sandbox'
-                                referrerpolicy='no-referrer'
-                                src='about:blank'
-                                style='width:100%; height:690px; border:none;'
-                                frameborder='0'>
-                            </iframe>
-                        </div>
-                        <div id="muro-adgem" class="muro-panel hidden">
-                            <iframe
-                                id="iframe-adgem"
-                                src="about:blank"
-                                style="width:100%; height:690px; border:none;"
-                                frameborder="0"
-                                scrolling="yes">
-                            </iframe>
-                        </div>
-                        <div id="muro-bitlabs" class="muro-panel hidden">
+
+
+                        <div id="muro-bitlabs" class="muro-panel">
                             <iframe
                                 id="iframe-bitlabs"
                                 src="about:blank"
@@ -540,14 +459,14 @@
                                 scrolling="yes">
                             </iframe>
                         </div>
-                    </div>
-
-                    <div class="bg-slate-900/50 border border-slate-700/50 rounded-2xl p-4 sm:p-5">
-                        <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-3">Más muros próximamente</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="bg-slate-800 text-slate-500 text-xs font-bold px-3 py-1.5 rounded-full border border-slate-700">⏳ Torox</span>
-                            <span class="bg-slate-800 text-slate-500 text-xs font-bold px-3 py-1.5 rounded-full border border-slate-700">⏳ Monlix</span>
-                            <span class="bg-slate-800 text-slate-500 text-xs font-bold px-3 py-1.5 rounded-full border border-slate-700">⏳ Lootably</span>
+                        <div id="muro-monlix" class="muro-panel hidden">
+                            <iframe
+                                id="iframe-monlix"
+                                src="about:blank"
+                                style="width:100%; height:690px; border:none;"
+                                frameborder="0"
+                                scrolling="yes">
+                            </iframe>
                         </div>
                     </div>
 
@@ -906,8 +825,8 @@
                             </div>
                             <div class="text-right shrink-0">
                                 <div id="vidas-display" class="text-xl leading-none mb-1">❤️❤️❤️</div>
-                                <p class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider mb-1.5">Vidas hoy</p>
-                                <button id="btn-recargar-vidas" onclick="abrirRecargarVidas()" class="hidden text-[10px] font-bold bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-400 rounded-lg px-2 py-1 transition active:scale-95 flex items-center gap-1 ml-auto">
+                                <p class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider mb-1.5">Vidas de hoy</p>
+                                <button id="btn-recargar-vidas" onclick="abrirRecargarVidas()" class="hidden text-[10px] font-bold bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-400 rounded-lg px-2 py-1 transition active:scale-95 items-center gap-1 ml-auto">
                                     <i class="fa-solid fa-heart-circle-plus text-xs"></i> Recargar
                                 </button>
                             </div>
@@ -977,7 +896,7 @@
                             <div class="flex items-start gap-2.5 bg-slate-900/50 border border-slate-700/50 rounded-xl px-3 py-2.5">
                                 <i class="fa-solid fa-heart text-rose-400 text-xs mt-0.5 shrink-0"></i>
                                 <p class="text-[11px] text-slate-300 leading-relaxed">
-                                    <strong class="text-white">Sistema de vidas:</strong> Tienes <strong class="text-rose-400">3 vidas por día</strong> (5 si eres Premium). Cada derrota consume 1 vida. Al agotar tus vidas no puedes jugar más ese día — se recargan automáticamente a medianoche.
+                                    <strong class="text-white">Sistema de vidas:</strong> Tienes <strong class="text-rose-400">3 vidas por día</strong>. Obtén <strong class="text-rose-300">vidas ilimitadas</strong> con el paquete de $29 MXN o con Premium. Cada derrota consume 1 vida. Al agotar tus vidas no puedes jugar más ese día — se recargan automáticamente a medianoche.
                                 </p>
                             </div>
                         </div>
@@ -1028,7 +947,7 @@
                                     <div class="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center text-base">🌱</div>
                                     <div class="text-left">
                                         <p class="text-sm font-extrabold text-white">100 NC <span class="text-[10px] font-semibold text-slate-500">apuesta</span></p>
-                                        <p class="text-[11px] text-slate-400">Principiante · Ideal para empezar</p>
+                                        
                                     </div>
                                 </div>
                                 <div class="text-right">
@@ -1042,7 +961,7 @@
                                     <div class="w-9 h-9 rounded-xl bg-blue-500/15 border border-blue-500/25 flex items-center justify-center text-base">⚡</div>
                                     <div class="text-left">
                                         <p class="text-sm font-extrabold text-white">200 NC <span class="text-[10px] font-semibold text-slate-500">apuesta</span></p>
-                                        <p class="text-[11px] text-slate-400">Normal · Mayor recompensa</p>
+                                        
                                     </div>
                                 </div>
                                 <div class="text-right">
@@ -1056,7 +975,7 @@
                                     <div class="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center text-base">🔥</div>
                                     <div class="text-left">
                                         <p class="text-sm font-extrabold text-white">300 NC <span class="text-[10px] font-semibold text-slate-500">apuesta</span></p>
-                                        <p class="text-[11px] text-slate-400">Pro · Para los más arriesgados</p>
+                                        
                                     </div>
                                 </div>
                                 <div class="text-right">
@@ -1325,6 +1244,14 @@
                                     Sin anuncios en toda la plataforma
                                 </li>
                                 <li class="flex items-center gap-3 text-sm text-slate-200">
+                                    <span class="w-7 h-7 rounded-full bg-rose-500/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-heart text-rose-400 text-xs"></i></span>
+                                    <span><strong class="text-white">Vidas ilimitadas</strong> <span class="text-slate-400 text-xs">para jugar sin límite</span></span>
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-slate-200">
+                                    <span class="w-7 h-7 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-tag text-amber-400 text-xs"></i></span>
+                                    Recargas de vidas con <strong class="text-amber-400 ml-1">hasta 70% de descuento</strong>
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-slate-200">
                                     <span class="w-7 h-7 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-crown text-amber-400 text-xs"></i></span>
                                     Badge <span class="text-amber-400 font-bold ml-1">👑 Premium</span> en tu perfil
                                 </li>
@@ -1369,6 +1296,14 @@
                                     <i class="fa-solid fa-circle-check text-emerald-400 shrink-0"></i> Sin anuncios en toda la plataforma
                                 </li>
                                 <li class="flex items-center gap-3 text-sm text-slate-200">
+                                    <i class="fa-solid fa-circle-check text-emerald-400 shrink-0"></i>
+                                    <span><strong class="text-white">Vidas ilimitadas</strong> <span class="text-slate-400">para jugar sin límite</span></span>
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-slate-200">
+                                    <i class="fa-solid fa-circle-check text-emerald-400 shrink-0"></i>
+                                    <span>Recargas de vidas con <strong class="text-amber-400">hasta 70% de descuento</strong></span>
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-slate-200">
                                     <i class="fa-solid fa-circle-check text-emerald-400 shrink-0"></i> Badge <span class="text-amber-400 font-bold">👑 Premium</span> en tu perfil
                                 </li>
                                 <li class="flex items-center gap-3 text-sm text-slate-200">
@@ -1393,6 +1328,128 @@
                             <span class="bg-slate-700 text-slate-300 text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5"><i class="fa-solid fa-building-columns text-emerald-400"></i> Transferencia</span>
                         </div>
                     </div>
+                </div>
+
+                <!-- TAB: PERFIL -->
+                <div id="tab-perfil" class="tab-content space-y-4 sm:space-y-5">
+
+                    <!-- Header avatar -->
+                    <div class="relative overflow-hidden rounded-2xl border border-purple-500/30 bg-gradient-to-br from-purple-950/60 via-slate-900 to-slate-900 p-5">
+                        <div class="pointer-events-none absolute -top-8 -right-8 w-40 h-40 rounded-full bg-purple-600/20 blur-3xl"></div>
+                        <div class="relative flex items-center gap-4">
+                            <div id="perfil-avatar" class="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-black text-white shadow-lg border-2 border-purple-500/50 shrink-0"></div>
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-2 flex-wrap mb-0.5">
+                                    <h2 id="perfil-nombre" class="text-lg font-black text-white leading-tight truncate"></h2>
+                                    <span id="perfil-badge-premium" class="hidden text-[10px] bg-amber-500/20 border border-amber-500/40 text-amber-300 rounded-full px-2 py-0.5 font-bold shrink-0">👑 Premium</span>
+                                </div>
+                                <p id="perfil-email" class="text-xs text-slate-400 truncate"></p>
+                                <p id="perfil-miembro-desde" class="text-[10px] text-slate-500 mt-0.5"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats rápidas -->
+                    <div class="grid grid-cols-3 gap-2">
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-3 text-center">
+                            <div id="perfil-stat-nc" class="text-lg font-black text-amber-400 leading-tight">—</div>
+                            <p class="text-[10px] text-slate-400 font-semibold mt-0.5">NetCoins</p>
+                        </div>
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-3 text-center">
+                            <div id="perfil-stat-referidos" class="text-lg font-black text-purple-400 leading-tight">—</div>
+                            <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Referidos</p>
+                        </div>
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-3 text-center">
+                            <div id="perfil-stat-vidas" class="text-lg font-black text-rose-400 leading-tight">—</div>
+                            <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Vidas hoy</p>
+                        </div>
+                    </div>
+
+                    <!-- Información de cuenta -->
+                    <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
+                        <div class="px-4 py-2.5 border-b border-slate-700">
+                            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Información de cuenta</p>
+                        </div>
+                        <div class="divide-y divide-slate-700/60">
+                            <div class="flex items-center justify-between px-4 py-3 gap-3">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-7 h-7 rounded-lg bg-purple-500/15 flex items-center justify-center shrink-0"><i class="fa-solid fa-user text-purple-400 text-xs"></i></span>
+                                    <span class="text-xs text-slate-400">Usuario</span>
+                                </div>
+                                <span id="perfil-info-username" class="text-xs font-bold text-white truncate max-w-[180px]">—</span>
+                            </div>
+                            <div class="flex items-center justify-between px-4 py-3 gap-3">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-7 h-7 rounded-lg bg-blue-500/15 flex items-center justify-center shrink-0"><i class="fa-solid fa-envelope text-blue-400 text-xs"></i></span>
+                                    <span class="text-xs text-slate-400">Correo</span>
+                                </div>
+                                <span id="perfil-info-email" class="text-xs font-bold text-white truncate max-w-[180px]">—</span>
+                            </div>
+                            <div class="flex items-center justify-between px-4 py-3 gap-3">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-7 h-7 rounded-lg bg-emerald-500/15 flex items-center justify-center shrink-0"><i class="fa-solid fa-calendar text-emerald-400 text-xs"></i></span>
+                                    <span class="text-xs text-slate-400">Se unio desde</span>
+                                </div>
+                                <span id="perfil-info-fecha" class="text-xs font-bold text-white">—</span>
+                            </div>
+                            <div class="flex items-center justify-between px-4 py-3 gap-3">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-7 h-7 rounded-lg bg-amber-500/15 flex items-center justify-center shrink-0"><i class="fa-solid fa-crown text-amber-400 text-xs"></i></span>
+                                    <span class="text-xs text-slate-400">Plan</span>
+                                </div>
+                                <span id="perfil-info-plan" class="text-xs font-bold text-slate-300">—</span>
+                            </div>
+                            <div class="flex items-center justify-between px-4 py-3 gap-3">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-7 h-7 rounded-lg bg-slate-700 flex items-center justify-center shrink-0"><i class="fa-solid fa-fingerprint text-slate-400 text-xs"></i></span>
+                                    <span class="text-xs text-slate-400">ID de cuenta</span>
+                                </div>
+                                <span id="perfil-info-id" class="text-[10px] font-mono text-slate-400">—</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Acciones rápidas -->
+                    <div class="space-y-2">
+                        <button id="perfil-btn-premium" onclick="switchTab('tab-premium', event)" class="tab-btn w-full flex items-center justify-between bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 hover:border-amber-500/50 rounded-xl px-4 py-3 transition active:scale-95 group">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-lg bg-amber-500/15 flex items-center justify-center shrink-0"><i class="fa-solid fa-crown text-amber-400 text-sm"></i></span>
+                                <div class="text-left">
+                                    <p class="text-sm font-extrabold text-amber-300">Obtener Premium</p>
+                                    <p class="text-[11px] text-slate-400">5 vidas/día · sin anuncios · más</p>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-amber-500/60 text-xs group-hover:text-amber-400 transition"></i>
+                        </button>
+                        <button id="btn-recargar-vidas-perfil" onclick="abrirRecargarVidas()" class="w-full flex items-center justify-between bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-rose-500/40 rounded-xl px-4 py-3 transition active:scale-95 group">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-lg bg-rose-500/15 flex items-center justify-center shrink-0"><i class="fa-solid fa-heart-circle-plus text-rose-400 text-sm"></i></span>
+                                <div class="text-left">
+                                    <p class="text-sm font-bold text-white">Recargar vidas</p>
+                                    <p class="text-[11px] text-slate-400">Consigue más vidas para seguir jugando</p>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slate-600 text-xs group-hover:text-rose-400 transition"></i>
+                        </button>
+                    </div>
+
+                    <!-- Cerrar sesión -->
+                    <button onclick="cerrarSesion()" class="w-full flex items-center justify-center gap-2 border border-slate-700 hover:border-rose-500/50 hover:bg-rose-500/10 text-slate-400 hover:text-rose-400 font-bold text-sm py-3 rounded-xl transition active:scale-95">
+                        <i class="fa-solid fa-right-from-bracket text-xs"></i> Cerrar sesión
+                    </button>
+
+                </div>
+
+                <!-- Anuncio Banner Desktop 728x90 (abajo, solo escritorio) -->
+                <div class="hidden sm:flex justify-center mt-4 mb-2">
+                    <iframe sandbox="allow-popups allow-scripts allow-same-origin allow-top-navigation-by-user-activation" src="about:blank" id="ad-desktop-728" style="width:728px;height:90px;border:none;overflow:hidden;" scrolling="no"></iframe>
+                    <script>
+                    (function(){
+                        var atOptions = { 'key': '1e445d6376d731d4b4b8b14f689c49ee', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };
+                        window._adOptions728 = atOptions;
+                    })();
+                    </script>
+                    <script src="https://www.highperformanceformat.com/1e445d6376d731d4b4b8b14f689c49ee/invoke.js"></script>
                 </div>
 
                 <!-- Anuncio Native Banner (visible en móvil y escritorio) -->
@@ -1442,9 +1499,9 @@
                 <i class="fa-solid fa-crown text-base"></i>
                 <span class="text-[10px] font-bold">👑</span>
             </button>
-            <button onclick="cerrarSesion()" class="flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-xl text-rose-400 transition min-w-0">
-                <i class="fa-solid fa-right-from-bracket text-base"></i>
-                <span class="text-[10px] font-semibold">Salir</span>
+            <button onclick="switchTab('tab-perfil', event)" class="tab-btn-mobile flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-xl text-slate-400 hover:text-purple-400 transition min-w-0">
+                <i class="fa-solid fa-circle-user text-base"></i>
+                <span class="text-[10px] font-semibold">Perfil</span>
             </button>
         </nav>
     </div>
@@ -1454,70 +1511,60 @@
         <div class="bg-slate-900 border border-slate-700 rounded-t-3xl sm:rounded-2xl w-full sm:max-w-sm shadow-2xl overflow-hidden">
             <div class="h-1 w-full bg-gradient-to-r from-rose-500 via-pink-500 to-rose-500"></div>
             <div class="p-5">
-                <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center justify-between mb-5">
                     <div>
-                        <h3 class="text-lg font-black text-white">💖 Recargar Vidas</h3>
-                        <p class="text-xs text-slate-400 mt-0.5">Elige el paquete que mejor te convenga</p>
+                        <h3 class="text-lg font-black text-white">♾️ Vidas Ilimitadas</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Juega sin límite, sin preocuparte por las vidas</p>
                     </div>
                     <button onclick="cerrarRecargarVidas()" class="w-8 h-8 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-full flex items-center justify-center text-slate-400 hover:text-white transition">
                         <i class="fa-solid fa-xmark text-sm"></i>
                     </button>
                 </div>
 
-                <!-- Paquetes usuario normal -->
-                <div id="paquetes-normal" class="space-y-2 mb-4">
-                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Paquetes disponibles</p>
-                    <button onclick="comprarVidas(1, 2)" class="w-full flex items-center justify-between bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-rose-500/40 rounded-xl px-4 py-3 transition active:scale-95 group">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl bg-rose-500/15 border border-rose-500/25 flex items-center justify-center text-base">❤️</div>
-                            <div class="text-left">
-                                <p class="text-sm font-extrabold text-white">1 Vida</p>
-                                <p class="text-[11px] text-slate-400">Una vida extra para seguir jugando</p>
+                <!-- Opción 1: Paquete único $29 MXN para siempre -->
+                <button onclick="comprarVidasIlimitadas()" class="w-full flex items-center justify-between bg-gradient-to-r from-rose-950/60 to-slate-800 hover:from-rose-900/60 border border-rose-500/40 hover:border-rose-500/70 rounded-xl px-4 py-4 transition active:scale-95 group mb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 rounded-xl bg-rose-500/20 border border-rose-500/30 flex items-center justify-center text-xl">♾️</div>
+                        <div class="text-left">
+                            <div class="flex items-center gap-2">
+                                <p class="text-sm font-extrabold text-white">Vidas Ilimitadas</p>
+                                <span class="text-[10px] bg-rose-500/20 border border-rose-500/30 text-rose-300 rounded-full px-2 py-0.5 font-bold">PARA SIEMPRE</span>
                             </div>
+                            <p class="text-[11px] text-slate-400 mt-0.5">Pago único · Nunca se te acaban las vidas</p>
                         </div>
-                        <span class="text-sm font-black text-rose-400 group-hover:text-rose-300">$2 MXN</span>
-                    </button>
-                    <button onclick="comprarVidas(3, 5)" class="w-full flex items-center justify-between bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-rose-500/40 rounded-xl px-4 py-3 transition active:scale-95 group">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl bg-rose-500/15 border border-rose-500/25 flex items-center justify-center text-base">❤️❤️❤️</div>
-                            <div class="text-left">
-                                <p class="text-sm font-extrabold text-white">3 Vidas <span class="text-emerald-400 text-[10px] font-bold ml-1">¡Ahorra $1!</span></p>
-                                <p class="text-[11px] text-slate-400">El mejor valor del día</p>
-                            </div>
-                        </div>
-                        <span class="text-sm font-black text-rose-400 group-hover:text-rose-300">$5 MXN</span>
-                    </button>
-                </div>
-
-                <!-- Paquetes premium -->
-                <div id="paquetes-premium" class="hidden space-y-2 mb-4">
-                    <div class="flex items-center gap-2 mb-2">
-                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Paquetes Premium</p>
-                        <span class="text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-full px-2 py-0.5 font-bold">👑 Precio especial</span>
                     </div>
-                    <button onclick="comprarVidas(1, 1)" class="w-full flex items-center justify-between bg-slate-800 hover:bg-slate-700 border border-amber-500/20 hover:border-amber-500/50 rounded-xl px-4 py-3 transition active:scale-95 group">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center text-base">❤️</div>
-                            <div class="text-left">
-                                <p class="text-sm font-extrabold text-white">1 Vida</p>
-                                <p class="text-[11px] text-slate-400">Precio exclusivo Premium</p>
-                            </div>
-                        </div>
-                        <span class="text-sm font-black text-amber-400 group-hover:text-amber-300">$1 MXN</span>
-                    </button>
-                    <button onclick="comprarVidas(5, 3)" class="w-full flex items-center justify-between bg-slate-800 hover:bg-slate-700 border border-amber-500/20 hover:border-amber-500/50 rounded-xl px-4 py-3 transition active:scale-95 group">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center text-base">❤️❤️❤️❤️❤️</div>
-                            <div class="text-left">
-                                <p class="text-sm font-extrabold text-white">5 Vidas <span class="text-emerald-400 text-[10px] font-bold ml-1">¡Mejor oferta!</span></p>
-                                <p class="text-[11px] text-slate-400">Precio exclusivo Premium</p>
-                            </div>
-                        </div>
-                        <span class="text-sm font-black text-amber-400 group-hover:text-amber-300">$3 MXN</span>
-                    </button>
+                    <div class="text-right shrink-0">
+                        <p class="text-lg font-black text-rose-400 group-hover:text-rose-300">$29 MXN</p>
+                        <p class="text-[10px] text-slate-500">pago único</p>
+                    </div>
+                </button>
+
+                <!-- Divisor -->
+                <div class="flex items-center gap-3 my-3">
+                    <div class="flex-1 h-px bg-slate-700"></div>
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">o también incluido en</p>
+                    <div class="flex-1 h-px bg-slate-700"></div>
                 </div>
 
-                <p class="text-[10px] text-slate-600 text-center">Pago seguro vía MercadoPago · Las vidas se acreditan al instante</p>
+                <!-- Opción 2: Premium -->
+                <button onclick="cerrarRecargarVidas(); switchTab('tab-premium', null)" class="w-full flex items-center justify-between bg-gradient-to-r from-amber-950/60 to-slate-800 hover:from-amber-900/60 border border-amber-500/40 hover:border-amber-500/70 rounded-xl px-4 py-4 transition active:scale-95 group mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-xl">👑</div>
+                        <div class="text-left">
+                            <div class="flex items-center gap-2">
+                                <p class="text-sm font-extrabold text-white">NetGamer Premium</p>
+                                <span class="text-[10px] bg-amber-500/20 border border-amber-500/30 text-amber-300 rounded-full px-2 py-0.5 font-bold">+BENEFICIOS</span>
+                            </div>
+                            <p class="text-[11px] text-slate-400 mt-0.5">Vidas ilimitadas + sin anuncios + más</p>
+                        </div>
+                    </div>
+                    <div class="text-right shrink-0">
+                        <p class="text-lg font-black text-amber-400 group-hover:text-amber-300">$49 MXN</p>
+                        <p class="text-[10px] text-slate-500">por mes</p>
+                    </div>
+                </button>
+
+                <p class="text-[10px] text-slate-600 text-center">Pago seguro vía MercadoPago · Se acredita al instante</p>
             </div>
         </div>
     </div>
@@ -1915,83 +1962,78 @@
 
             _supabase.channel('cambios-saldo')
                 .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'perfiles', filter: `id=eq.${user.id}` },
-                    async (payload) => {
+                    (payload) => {
                         actualizarTextosInterfaz(payload.new.netcoins || 0);
                         const el = document.getElementById("user-balance");
                         if (el) {
                             el.classList.add("balance-bump");
                             setTimeout(() => el.classList.remove("balance-bump"), 400);
                         }
+                        // Actualizar premium en tiempo real
+                        if (payload.new.is_premium !== undefined) {
+                            const isPremiumRT = payload.new.is_premium &&
+                                payload.new.premium_hasta &&
+                                new Date(payload.new.premium_hasta) >= new Date();
 
-                        // ── Actualizar premium en tiempo real ──
-                        const nuevoIsPremium = !!payload.new.is_premium &&
-                            payload.new.premium_hasta &&
-                            new Date(payload.new.premium_hasta) >= new Date();
-
-                        if (nuevoIsPremium !== isPremium) {
-                            isPremium = nuevoIsPremium;
-                            await aplicarEstadoPremium();
-                            if (isPremium) {
-                                mostrarNotificacion('🎉 ¡Premium activado! Ya no verás anuncios.', 'success');
-                                // Refrescar tab perfil si está abierto
-                                if (document.getElementById('tab-perfil').classList.contains('active')) {
-                                    cargarTabPerfil();
+                            if (isPremiumRT) {
+                                // Recién activado premium — quitar anuncios al instante
+                                document.body.classList.remove('ads-enabled');
+                                // Quitar elementos del social bar ya inyectados
+                                document.querySelectorAll('body > div[style*="position: fixed"], body > div[style*="position:fixed"], body > iframe[style*="position: fixed"], body > iframe[style*="position:fixed"]').forEach(el => el.remove());
+                                const sbContainer = document.getElementById('container-08103591ba362aeb7a7ee360f307d4ac');
+                                if (sbContainer) sbContainer.innerHTML = '';
+                                ['sb-script-1','sb-script-2'].forEach(id => { const s = document.getElementById(id); if (s) s.remove(); });
+                                // Inyectar CSS premium si no existe
+                                if (!document.getElementById('premium-ad-style')) {
+                                    const s = document.createElement('style');
+                                    s.id = 'premium-ad-style';
+                                    s.textContent = '#ad-native-banner,#ad-mobile-320-wrap,#ad-desktop-728,body>div[style*="position: fixed"],body>div[style*="position:fixed"],body>iframe[style*="position: fixed"],body>iframe[style*="position:fixed"]{display:none!important;visibility:hidden!important;}';
+                                    document.head.appendChild(s);
                                 }
+                                // Mostrar badge premium en UI
+                                document.querySelectorAll('.badge-premium-sidebar').forEach(el => el.classList.remove('hidden'));
+                            } else {
+                                // Premium vencido — mostrar anuncios
+                                document.body.classList.add('ads-enabled');
+                                const s = document.getElementById('premium-ad-style');
+                                if (s) s.remove();
                             }
                         }
 
-                        // ── Actualizar corazones en tiempo real ──
-                        const tieneVidasIlimRT = payload.new.vidas_ilimitadas_permanente ||
-                            payload.new.vidas_ilimitadas ||
-                            nuevoIsPremium;
+                        // Actualizar corazones en tiempo real
                         const vidasEl = document.getElementById('vidas-display');
-                        const btnR    = document.getElementById('btn-recargar-vidas');
-                        if (vidasEl) {
-                            if (tieneVidasIlimRT) {
-                                vidasEl.textContent = '♾️';
-                                if (btnR) { btnR.classList.add('hidden'); btnR.style.display = ''; }
-                            } else if (payload.new.vidas_hoy !== undefined) {
-                                const max   = 3;
-                                const vidas = Math.max(0, Math.min(payload.new.vidas_hoy, max));
-                                vidasEl.textContent = '❤️'.repeat(vidas) + '🖤'.repeat(max - vidas);
-                                if (btnR) { if (vidas <= 0) { btnR.classList.remove('hidden'); btnR.style.display = 'flex'; } else { btnR.classList.add('hidden'); btnR.style.display = ''; } }
+                        if (vidasEl && payload.new.vidas_hoy !== undefined) {
+                            const max = payload.new.is_premium ? 5 : 3;
+                            const vidas = Math.max(0, Math.min(payload.new.vidas_hoy, max));
+                            vidasEl.textContent = '❤️'.repeat(vidas) + '🖤'.repeat(max - vidas);
+                            const tieneIlimitadasRT = payload.new.vidas_ilimitadas_permanente ||
+                                payload.new.vidas_ilimitadas ||
+                                (payload.new.is_premium && payload.new.premium_hasta && new Date(payload.new.premium_hasta) >= new Date());
+                            const vidasDisplayEl = document.getElementById('vidas-display');
+                            if (tieneIlimitadasRT) {
+                                if (vidasDisplayEl) vidasDisplayEl.textContent = '♾️';
+                                const btnR2 = document.getElementById('btn-recargar-vidas');
+                                if (btnR2) { btnR2.classList.add('hidden'); btnR2.style.display = ''; }
+                                const statVidasRT = document.getElementById('perfil-stat-vidas');
+                                if (statVidasRT) statVidasRT.textContent = '♾️';
+                                const btnRecPerfilRT = document.getElementById('btn-recargar-vidas-perfil');
+                                if (btnRecPerfilRT) btnRecPerfilRT.classList.add('hidden');
+                            } else {
+                                const btnR = document.getElementById('btn-recargar-vidas');
+                                if (btnR) { if (vidas <= 0) { btnR.classList.remove('hidden'); btnR.style.display='flex'; } else { btnR.classList.add('hidden'); btnR.style.display=''; } }
+                                const statVidas = document.getElementById('perfil-stat-vidas');
+                                if (statVidas) statVidas.textContent = `${vidas}/${max}`;
+                                const btnRecPerfil = document.getElementById('btn-recargar-vidas-perfil');
+                                if (btnRecPerfil) btnRecPerfil.classList.toggle('hidden', vidas > 0);
                             }
                         }
                     }
                 ).subscribe();
-
-            // ── Refrescar estado premium cuando el usuario vuelve a la pestaña ──
-            // Cubre el caso en que MercadoPago redirige de vuelta y el Realtime
-            // ya disparó mientras la tab estaba oculta o el canal no estaba listo.
-            document.addEventListener('visibilitychange', async () => {
-                if (document.visibilityState === 'visible' && currentUser) {
-                    const { data } = await _supabase
-                        .from('perfiles')
-                        .select('is_premium, premium_hasta')
-                        .eq('id', currentUser.id)
-                        .single();
-                    if (!data) return;
-                    const nuevoIsPremium = !!data.is_premium &&
-                        data.premium_hasta &&
-                        new Date(data.premium_hasta) >= new Date();
-                    if (nuevoIsPremium !== isPremium) {
-                        isPremium = nuevoIsPremium;
-                        await aplicarEstadoPremium();
-                        if (isPremium) {
-                            mostrarNotificacion('🎉 ¡Premium activado! Ya no verás anuncios.', 'success');
-                            if (document.getElementById('tab-perfil').classList.contains('active')) {
-                                cargarTabPerfil();
-                            }
-                        }
-                    }
-                }
-            }, { once: false });
         }
 
         function actualizarTextosInterfaz(monedas) {
             document.getElementById("user-balance").innerText = monedas;
             document.querySelectorAll(".balance-placeholder").forEach(el => el.innerText = monedas);
-            document.getElementById("mxn-equivalence").innerText = `$${(monedas / CONVERSION_RATE).toFixed(2)} MXN`;
         }
 
         function cambiarMuro(proveedor) {
@@ -2012,8 +2054,8 @@
         function switchTab(tabId, e) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
-            // Cargar historial la primera vez que se abre
             if (tabId === 'tab-historial' && !historialCargado.ganancias) cargarHistorialGanancias();
+            if (tabId === 'tab-perfil') cargarTabPerfil();
             // Desktop sidebar
             document.querySelectorAll('.tab-btn').forEach(btn => { btn.classList.remove('bg-purple-600', 'text-white'); btn.classList.add('text-slate-400'); });
             // Mobile bottom nav
@@ -2377,7 +2419,10 @@
             document.getElementById('ruleta-resultado').innerText = '';
 
             // 1. Llamar a la Edge Function PRIMERO para obtener el premio oficial
-            const { data, error } = await _supabase.functions.invoke('girar-ruleta');
+            const { data: { session } } = await _supabase.auth.getSession();
+            const { data, error } = await _supabase.functions.invoke('girar-ruleta', {
+                headers: { Authorization: `Bearer ${session?.access_token}` }
+            });
 
             if (error || data?.error) {
                 ruletaGirando = false;
@@ -2603,6 +2648,56 @@
             }).join('');
         }
 
+        /* ==================== TAB PERFIL ==================== */
+        async function cargarTabPerfil() {
+            if (!currentUser) return;
+
+            const username = currentUser.user_metadata?.username || currentUser.email?.split('@')[0] || 'Usuario';
+            const email    = currentUser.email || '—';
+            const userId   = currentUser.id || '';
+            const creadoEn = currentUser.created_at
+                ? new Date(currentUser.created_at).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })
+                : '—';
+
+            const avatarEl = document.getElementById('perfil-avatar');
+            avatarEl.style.background = _avatarColor(userId);
+            avatarEl.textContent = _iniciales(username);
+
+            document.getElementById('perfil-nombre').textContent        = username;
+            document.getElementById('perfil-email').textContent         = email;
+            document.getElementById('perfil-miembro-desde').textContent = `Miembro desde ${creadoEn}`;
+            document.getElementById('perfil-info-username').textContent = username;
+            document.getElementById('perfil-info-email').textContent    = email;
+            document.getElementById('perfil-info-fecha').textContent    = creadoEn;
+            document.getElementById('perfil-info-id').textContent       = userId.slice(0, 8) + '...' + userId.slice(-4);
+
+            const { data } = await _supabase
+                .from('perfiles')
+                .select('netcoins, total_referidos, is_premium, vidas_hoy, vidas_reset_fecha, vidas_ilimitadas, vidas_ilimitadas_permanente, premium_hasta')
+                .eq('id', userId)
+                .single();
+
+            if (data) {
+                const hoy      = new Date().toISOString().split('T')[0];
+                const tieneVidasIlim = data.vidas_ilimitadas_permanente ||
+                    data.vidas_ilimitadas ||
+                    (data.is_premium && data.premium_hasta && new Date(data.premium_hasta) >= new Date());
+                const maxVidas = tieneVidasIlim ? null : 3;
+                const vidasHoy = tieneVidasIlim ? null : (data.vidas_reset_fecha !== hoy ? 3 : (data.vidas_hoy ?? 3));
+                const isPremium = !!data.is_premium;
+
+                document.getElementById('perfil-stat-nc').textContent        = (data.netcoins || 0).toLocaleString('es-MX');
+                document.getElementById('perfil-stat-referidos').textContent = data.total_referidos || 0;
+                document.getElementById('perfil-stat-vidas').textContent = tieneVidasIlim ? '♾️' : `${vidasHoy}/${maxVidas}`;
+                document.getElementById('perfil-info-plan').textContent      = isPremium ? '👑 Premium' : 'Gratuito';
+                document.getElementById('perfil-info-plan').className        = `text-xs font-bold ${isPremium ? 'text-amber-400' : 'text-slate-300'}`;
+                document.getElementById('perfil-badge-premium').classList.toggle('hidden', !isPremium);
+                document.getElementById('perfil-btn-premium').classList.toggle('hidden', isPremium);
+                const btnRecPerfil = document.getElementById('btn-recargar-vidas-perfil');
+                if (btnRecPerfil) btnRecPerfil.classList.toggle('hidden', tieneVidasIlim || vidasHoy > 0);
+            }
+        }
+
         async function cerrarSesion() {
             historialCargado = { ganancias: false, canjes: false };
             mostrarSplashYluego(async () => {
@@ -2678,7 +2773,7 @@
                 return;
             }
             // Cambia esta URL por la verdadera URL de tu página de noticias en GitHub
-            const urlNoticias = "https://daniel00998888.github.io/PulsoMX/index.html"; 
+            const urlNoticias = "pulsomx1.github.io"; 
             
             // Abrimos el blog en una pestaña nueva, mandando el ID oculto en la URL
             window.open(`${urlNoticias}?uid=${currentUser.id}`, '_blank');
@@ -2719,22 +2814,34 @@
             if (!currentUser) return;
             const { data } = await _supabase
                 .from('perfiles')
-                .select('vidas_hoy, vidas_reset_fecha, is_premium')
+                .select('vidas_hoy, vidas_reset_fecha, is_premium, vidas_ilimitadas, vidas_ilimitadas_permanente, premium_hasta')
                 .eq('id', currentUser.id)
                 .single();
             if (!data) return;
             const hoy = new Date().toISOString().split('T')[0];
-            let vidas = data.vidas_hoy;
-            if (data.vidas_reset_fecha !== hoy) vidas = data.is_premium ? 5 : 3;
-            const max = data.is_premium ? 5 : 3;
+            const tieneVidasIlimitadas = data.vidas_ilimitadas_permanente ||
+                data.vidas_ilimitadas ||
+                (data.is_premium && data.premium_hasta && new Date(data.premium_hasta) >= new Date());
             const el = document.getElementById('vidas-display');
-            if (el) el.textContent = '❤️'.repeat(vidas) + '🖤'.repeat(Math.max(0, max - vidas));
             const btnRecargar = document.getElementById('btn-recargar-vidas');
-            if (btnRecargar) btnRecargar.classList.toggle('hidden', vidas > 0);
+            if (tieneVidasIlimitadas) {
+                if (el) el.textContent = '♾️';
+                if (btnRecargar) { btnRecargar.classList.add('hidden'); btnRecargar.style.display = ''; }
+                return;
+            }
+            let vidas = data.vidas_hoy;
+            if (data.vidas_reset_fecha !== hoy) vidas = 3;
+            const max = 3;
+            if (el) el.textContent = '❤️'.repeat(vidas) + '🖤'.repeat(Math.max(0, max - vidas));
+            if (btnRecargar) { if (vidas <= 0) { btnRecargar.classList.remove('hidden'); btnRecargar.style.display='flex'; } else { btnRecargar.classList.add('hidden'); btnRecargar.style.display=''; } }
         }
 
+        let _buscandoPartida = false;
         async function buscarPartida(juego, apuesta) {
             if (!currentUser) { mostrarNotificacion('Inicia sesión primero', 'error'); return; }
+            if (_buscandoPartida) return;
+            _buscandoPartida = true;
+            document.querySelectorAll('.btn-jugar').forEach(b => b.disabled = true);
             _apuestaActual = apuesta;
             _jugadaHecha   = false;
             _rondaActual   = 1;
@@ -2760,11 +2867,14 @@
 
             if (codigoError || error) {
                 const msgs = {
-                    sin_vidas:        '💔 No tienes vidas para seguir jugando. Vuelve mañana.',
+                    sin_vidas:        '💔 No tienes vidas para seguir jugando. Vuelve mañana o recarga más vidas.',
                     sin_netcoins:     `💰 Balance insuficiente. Necesitas ${apuesta} NC para jugar.`,
                     apuesta_invalida: '⚠️ Apuesta no válida.'
                 };
                 mostrarNotificacion(msgs[codigoError] || '⚠️ Ocurrió un error al buscar partida. Intenta de nuevo.', 'error');
+                if (codigoError === 'sin_vidas') setTimeout(() => abrirRecargarVidas(), 600);
+                _buscandoPartida = false;
+                document.querySelectorAll('.btn-jugar').forEach(b => b.disabled = false);
                 return;
             }
 
@@ -3164,6 +3274,8 @@
         }
 
         async function cancelarBusqueda() {
+            _buscandoPartida = false;
+            document.querySelectorAll('.btn-jugar').forEach(b => b.disabled = false);
             clearInterval(_timerBusqueda);
             try {
                 const { data: { session } } = await _supabase.auth.getSession();
@@ -3175,6 +3287,8 @@
         }
 
         function cerrarModalJuego() {
+            _buscandoPartida = false;
+            document.querySelectorAll('.btn-jugar').forEach(b => b.disabled = false);
             document.getElementById('modal-buscando').classList.add('hidden');
             if (_canalPartida) { _canalPartida.unsubscribe(); _canalPartida = null; }
             clearInterval(_timerBusqueda);
@@ -3204,10 +3318,25 @@
         // ══════════════════════════════════════════
         // RECARGAR VIDAS
         // ══════════════════════════════════════════
+        async function comprarVidasIlimitadas() {
+            cerrarRecargarVidas();
+            try {
+                const { data: { session } } = await _supabase.auth.getSession();
+                const res = await fetch('https://meiwuluwrdjszxeyoqtt.supabase.co/functions/v1/comprar-vidas', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
+                    body: JSON.stringify({ tipo: 'vidas_ilimitadas' })
+                });
+                const resData = await res.json();
+                const url = resData.url || resData.init_point;
+                if (url) window.location.href = url;
+            } catch(e) {
+                console.error(e);
+                mostrarNotificacion('Error al procesar el pago. Intenta de nuevo.', 'error');
+            }
+        }
+
         function abrirRecargarVidas() {
-            // Mostrar paquetes según tipo de usuario
-            document.getElementById('paquetes-normal').classList.toggle('hidden', isPremium);
-            document.getElementById('paquetes-premium').classList.toggle('hidden', !isPremium);
             document.getElementById('modal-recargar-vidas').classList.remove('hidden');
         }
 
@@ -3276,6 +3405,7 @@
                     styleEl = document.createElement('style');
                     styleEl.id = styleId;
                     styleEl.textContent = `
+                        /* Ocultar TODOS los anuncios para premium */
                         #snigel-cmp-framework, .snigel-cmp-framework,
                         div[id*="adngin"], div[class*="adngin"],
                         div[id*="social-bar"], div[class*="social-bar"],
@@ -3284,24 +3414,57 @@
                         div[id*="floating"], div[class*="floating-ad"],
                         div[id*="adsterra"], div[class*="adsterra"],
                         div[id*="aso-"], div[class*="aso-"],
+                        div[id*="_ad_"], div[class*="_ad_"],
                         iframe[src*="effectivecpmnetwork"],
                         iframe[src*="highperformanceformat"],
+                        iframe[src*="adsterra"],
                         div[id*="container-08103591ba362aeb7a7ee360f307d4ac"],
                         #ad-native-banner, #ad-mobile-320-wrap, #ad-desktop-728,
+                        /* Social Bar Adsterra — se inyecta como fixed en body */
                         body > div[style*="position: fixed"],
                         body > div[style*="position:fixed"],
                         body > iframe[style*="position: fixed"],
-                        body > iframe[style*="position:fixed"] {
-                            display: none !important;
-                            visibility: hidden !important;
-                            opacity: 0 !important;
-                            pointer-events: none !important;
-                        }
+                        body > iframe[style*="position:fixed"] { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
                     `;
                     document.head.appendChild(styleEl);
                 }
             } else {
                 if (styleEl) styleEl.remove();
+            }
+
+            // Activar o desactivar anuncios según premium
+            if (!isPremium) {
+                document.body.classList.add('ads-enabled');
+            } else {
+                document.body.classList.remove('ads-enabled');
+            }
+
+            // Cargar Social Bar solo si NO es premium
+            if (!isPremium) {
+                if (!document.getElementById('sb-script-1')) {
+                    const sb1 = document.createElement('script');
+                    sb1.id = 'sb-script-1';
+                    sb1.async = true;
+                    sb1.setAttribute('data-cfasync', 'false');
+                    sb1.src = 'https://pl29885983.effectivecpmnetwork.com/08103591ba362aeb7a7ee360f307d4ac/invoke.js';
+                    document.head.appendChild(sb1);
+                }
+                if (!document.getElementById('sb-script-2')) {
+                    const sb2 = document.createElement('script');
+                    sb2.id = 'sb-script-2';
+                    sb2.src = 'https://pl29885986.effectivecpmnetwork.com/1f/e5/ad/1fe5ad3527321360c99671bf492a9bec.js';
+                    document.head.appendChild(sb2);
+                }
+            } else {
+                // Si es premium, remover scripts y contenedores del social bar
+                ['sb-script-1', 'sb-script-2'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.remove();
+                });
+                // Remover elementos inyectados por el social bar
+                document.querySelectorAll('body > div[style*="position: fixed"], body > div[style*="position:fixed"], body > iframe[style*="position: fixed"], body > iframe[style*="position:fixed"]').forEach(el => el.remove());
+                const sb = document.getElementById('container-08103591ba362aeb7a7ee360f307d4ac');
+                if (sb) sb.innerHTML = '';
             }
 
             // Elementos de anuncios a ocultar/mostrar
@@ -3436,7 +3599,6 @@
         };
     </script>
     <!-- Anuncio flotante / popunder CPAnetwork -->
-    <script src="https://pl29885986.effectivecpmnetwork.com/1f/e5/ad/1fe5ad3527321360c99671bf492a9bec.js"></script>
 
     <!-- Forzar sandbox en iframes de anuncios inyectados dinámicamente -->
     <script>
