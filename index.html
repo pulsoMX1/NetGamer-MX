@@ -1958,24 +1958,6 @@
 
         async function suscribirseCambiosEnVivo(user) {
             try { await _supabase.removeChannel(_supabase.channel('cambios-saldo')); } catch (e) {}
-            try { await _supabase.removeChannel(_supabase.channel('cambios-premium')); } catch (e) {}
-
-            // Canal separado sin filter para capturar cambios de premium (service role bypasea RLS)
-            _supabase.channel('cambios-premium')
-                .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'perfiles' },
-                    async (payload) => {
-                        if (payload.new.id !== user.id) return;
-                        if (payload.new.is_premium === undefined) return;
-                        const activoAhora = !!(payload.new.is_premium &&
-                            payload.new.premium_hasta &&
-                            new Date(payload.new.premium_hasta) >= new Date());
-                        if (activoAhora && !isPremium) {
-                            detenerPollPremium();
-                            window.location.reload();
-                        }
-                    }
-                ).subscribe();
-
             _supabase.channel('cambios-saldo')
                 .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'perfiles', filter: `id=eq.${user.id}` },
                     async (payload) => {
@@ -1989,7 +1971,6 @@
 
                         // Premium — detectar cambio
                         if (payload.new.is_premium !== undefined) {
-                            detenerPollPremium();
                             // Solo checar is_premium, sin importar premium_hasta
                             const nuevoEstado = !!payload.new.is_premium;
                             if (nuevoEstado && !isPremium) {
@@ -3373,33 +3354,6 @@
         // ══════════════════════════════════════════
         let isPremium = false;
         let _premiumFechas = null;
-        let _pollPremiumTimer = null;
-
-        function iniciarPollPremium() {
-            if (_pollPremiumTimer) return; // ya está corriendo
-            _pollPremiumTimer = setInterval(async () => {
-                if (isPremium) { detenerPollPremium(); return; }
-                if (!currentUser) return;
-                const { data } = await _supabase
-                    .from('perfiles')
-                    .select('is_premium, premium_desde, premium_hasta, vidas_ilimitadas, vidas_ilimitadas_permanente')
-                    .eq('id', currentUser.id)
-                    .single();
-                if (!data) return;
-                const ahora = new Date();
-                const activoAhora = !!(data.is_premium && data.premium_hasta && new Date(data.premium_hasta) >= ahora);
-                if (activoAhora && !isPremium) {
-                    detenerPollPremium();
-                    // Recargar la página — es lo más confiable para aplicar todos los cambios de premium
-                    window.location.reload();
-                }
-            }, 4000); // cada 4 segundos
-        }
-
-        function detenerPollPremium() {
-            if (_pollPremiumTimer) { clearInterval(_pollPremiumTimer); _pollPremiumTimer = null; }
-        }
-
         // Llama esto desde cargarDatosPerfil — ya inyectamos el hook abajo
         async function cargarEstadoPremium(userId) {
             const { data, error } = await _supabase
@@ -3581,10 +3535,6 @@
                 _premiumFechas = null; // reset after use
             }
             document.getElementById('premium-oferta').classList.toggle('hidden', isPremium);
-
-            // Arrancar poll si no es premium (para detectar activación tras pago)
-            if (!isPremium) iniciarPollPremium();
-            else detenerPollPremium();
 
             // Si es premium, ocultar popunder/flotante (script ya ejecutado, pero ocultamos su iframe si existe)
             if (isPremium) {
