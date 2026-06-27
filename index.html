@@ -1108,6 +1108,19 @@
                                         <p class="text-[10px] text-rose-400 font-bold mt-1">RIVAL</p>
                                     </div>
                                 </div>
+                                <!-- Resultado de ronda: jugadas -->
+                                <div id="resultado-jugadas" class="hidden flex items-center justify-center gap-6 mb-5">
+                                    <div class="text-center">
+                                        <div id="resultado-emoji-yo" class="text-6xl mb-2"></div>
+                                        <p class="text-xs font-black text-purple-400 uppercase tracking-widest">Tú</p>
+                                    </div>
+                                    <div class="text-slate-500 font-black text-xl">vs</div>
+                                    <div class="text-center">
+                                        <div id="resultado-emoji-rival" class="text-6xl mb-2"></div>
+                                        <p class="text-xs font-black text-rose-400 uppercase tracking-widest">Rival</p>
+                                    </div>
+                                </div>
+                                <div id="resultado-texto-ronda" class="hidden text-2xl font-black mb-3"></div>
                                 <div id="anuncio-ronda-texto" class="text-5xl font-black text-white mb-2 tracking-tight"></div>
                                 <div id="anuncio-ronda-sub" class="text-sm text-slate-400 font-semibold"></div>
                             </div>
@@ -3195,13 +3208,30 @@
             document.getElementById('marcador-yo').textContent    = _puntosYo;
             document.getElementById('marcador-rival').textContent  = _puntosRival;
 
-            const textoRonda = empateRond
-                ? `Empate ─ ${miEmoji} vs ${rivalEmoji}`
-                : ganeRonda
-                ? `✅ Ganaste la ronda — ${miEmoji} vs ${rivalEmoji}`
-                : `❌ Perdiste la ronda — ${miEmoji} vs ${rivalEmoji}`;
+            // Mostrar jugadas con emojis
+            const jugadasEl = document.getElementById('resultado-jugadas');
+            const textoRondaEl = document.getElementById('resultado-texto-ronda');
+            if (jugadasEl) {
+                document.getElementById('resultado-emoji-yo').textContent    = miEmoji;
+                document.getElementById('resultado-emoji-rival').textContent = rivalEmoji;
+                jugadasEl.classList.remove('hidden');
+                jugadasEl.style.display = 'flex';
+            }
+            if (textoRondaEl) {
+                textoRondaEl.classList.remove('hidden');
+                if (empateRond) {
+                    textoRondaEl.textContent = '🤝 Empate';
+                    textoRondaEl.className = 'text-2xl font-black mb-3 text-slate-300';
+                } else if (ganeRonda) {
+                    textoRondaEl.textContent = '✅ Ganaste';
+                    textoRondaEl.className = 'text-2xl font-black mb-3 text-emerald-400';
+                } else {
+                    textoRondaEl.textContent = '❌ Perdiste';
+                    textoRondaEl.className = 'text-2xl font-black mb-3 text-rose-400';
+                }
+            }
             document.getElementById('anuncio-ronda-texto').textContent = `Ronda ${_rondaActual - 1}`;
-            document.getElementById('anuncio-ronda-sub').textContent    = textoRonda;
+            document.getElementById('anuncio-ronda-sub').textContent = '';
 
             // Sincronizar inicio de siguiente ronda usando updated_at de la BD
             // Ambos clientes calculan el mismo momento de arranque sin importar
@@ -3222,6 +3252,11 @@
                 document.getElementById('fase-anuncio-ronda').classList.remove('hidden');
                 document.getElementById('anuncio-ronda-texto').textContent = `Ronda ${_rondaActual}`;
                 document.getElementById('anuncio-ronda-sub').textContent = _textoAnuncioRonda(_rondaActual, _puntosYo, _puntosRival);
+                // Ocultar jugadas de la ronda anterior
+                const jEl = document.getElementById('resultado-jugadas');
+                const tEl = document.getElementById('resultado-texto-ronda');
+                if (jEl) { jEl.classList.add('hidden'); jEl.style.display = ''; }
+                if (tEl) tEl.classList.add('hidden');
                 document.getElementById('marcador-yo').textContent    = _puntosYo;
                 document.getElementById('marcador-rival').textContent  = _puntosRival;
             }, esperaResultado);
