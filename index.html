@@ -1976,6 +1976,11 @@
                             isPremium = !!(payload.new.is_premium &&
                                 payload.new.premium_hasta &&
                                 new Date(payload.new.premium_hasta) >= new Date());
+                            // Pasar fechas del payload para no hacer otra consulta a BD
+                            _premiumFechas = {
+                                premium_desde: payload.new.premium_desde,
+                                premium_hasta: payload.new.premium_hasta
+                            };
                             await aplicarEstadoPremium();
                         }
 
@@ -3339,6 +3344,7 @@
         // SISTEMA PREMIUM
         // ══════════════════════════════════════════
         let isPremium = false;
+        let _premiumFechas = null;
 
         // Llama esto desde cargarDatosPerfil — ya inyectamos el hook abajo
         async function cargarEstadoPremium(userId) {
@@ -3448,11 +3454,15 @@
 
             // Llenar fechas de suscripción
             if (isPremium) {
-                const { data: fechas } = await _supabase
-                    .from('perfiles')
-                    .select('premium_desde, premium_hasta')
-                    .eq('id', currentUser.id)
-                    .single();
+                let fechas = _premiumFechas || null;
+                if (!fechas) {
+                    const { data } = await _supabase
+                        .from('perfiles')
+                        .select('premium_desde, premium_hasta')
+                        .eq('id', currentUser.id)
+                        .single();
+                    fechas = data;
+                }
 
                 if (fechas) {
                     const fmt = (iso) => iso ? new Date(iso).toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' }) : '—';
@@ -3463,13 +3473,13 @@
                     if (elVence)   elVence.textContent   = fmt(fechas.premium_hasta);
                     if (elRenovar) elRenovar.textContent = fmt(fechas.premium_hasta);
 
-                    // Aviso si vence en menos de 3 días
                     if (fechas.premium_hasta) {
                         const diasRestantes = (new Date(fechas.premium_hasta) - new Date()) / (1000 * 60 * 60 * 24);
                         const avisoEl = document.getElementById('premium-aviso-vence');
                         if (avisoEl && diasRestantes <= 3) avisoEl.classList.remove('hidden');
                     }
                 }
+                _premiumFechas = null; // reset after use
             }
             document.getElementById('premium-oferta').classList.toggle('hidden', isPremium);
 
