@@ -3362,21 +3362,9 @@
                 const ahora = new Date();
                 const activoAhora = !!(data.is_premium && data.premium_hasta && new Date(data.premium_hasta) >= ahora);
                 if (activoAhora && !isPremium) {
-                    // Se activó premium — aplicar todo
-                    isPremium = true;
-                    _premiumFechas = { premium_desde: data.premium_desde, premium_hasta: data.premium_hasta };
-                    await aplicarEstadoPremium();
-                    await cargarVidas();
-                    await cargarTabPerfil();
                     detenerPollPremium();
-                    // Limpiar anuncios repetidamente por 5s por si Adsterra sigue inyectando
-                    let intentos = 0;
-                    const limpiador = setInterval(() => {
-                        _limpiarAnunciosDom();
-                        document.body.classList.remove('ads-enabled');
-                        intentos++;
-                        if (intentos >= 10) clearInterval(limpiador);
-                    }, 500);
+                    // Recargar la página — es lo más confiable para aplicar todos los cambios de premium
+                    window.location.reload();
                 }
             }, 4000); // cada 4 segundos
         }
