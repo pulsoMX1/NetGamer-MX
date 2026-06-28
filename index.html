@@ -398,6 +398,38 @@
 
 
                     
+
+                    <!-- ══ RULETA DIARIA ══ -->
+                    <div class="bg-slate-800 border border-amber-500/30 rounded-2xl p-5 sm:p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-base sm:text-lg font-extrabold text-amber-400"><i class="fa-solid fa-rotate mr-2"></i>Ruleta Diaria</h3>
+                                <p class="text-slate-400 text-xs mt-0.5">Gira gratis una vez al día y gana NetCoins</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs text-slate-400">Próximo giro en:</p>
+                                <p id="ruleta-countdown" class="text-amber-400 font-extrabold text-sm">--:--:--</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center gap-4">
+                            <div class="relative" style="width:220px;height:220px;">
+                                <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 z-10 text-2xl">▼</div>
+                                <canvas id="ruleta-canvas" width="220" height="220" class="rounded-full shadow-xl shadow-purple-900/50 cursor-pointer"></canvas>
+                            </div>
+                            <button id="btn-girar" onclick="girarRuleta()"
+                                class="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-900 font-extrabold px-8 py-3 rounded-2xl shadow-lg shadow-amber-500/30 transition active:scale-95 text-sm sm:text-base">
+                                🎰 ¡Girar Gratis!
+                            </button>
+                            <p id="ruleta-resultado" class="text-sm font-bold text-center min-h-[20px]"></p>
+                        </div>
+                        <div class="grid grid-cols-4 gap-2 mt-5">
+                            <div class="bg-slate-900/60 rounded-xl p-2 text-center"><p class="text-amber-400 font-black text-sm">50</p><p class="text-slate-500 text-xs">NC</p></div>
+                            <div class="bg-slate-900/60 rounded-xl p-2 text-center"><p class="text-amber-400 font-black text-sm">100</p><p class="text-slate-500 text-xs">NC</p></div>
+                            <div class="bg-slate-900/60 rounded-xl p-2 text-center"><p class="text-amber-400 font-black text-sm">250</p><p class="text-slate-500 text-xs">NC</p></div>
+                            <div class="bg-slate-900/60 rounded-xl p-2 text-center"><p class="text-emerald-400 font-black text-sm">500</p><p class="text-slate-500 text-xs">NC</p></div>
+                        </div>
+                    </div>
+
                     <div id="seccion-noticias" class="bg-gradient-to-br from-slate-800 to-slate-900 border border-sky-500/30 rounded-2xl p-5 sm:p-6 shadow-lg relative overflow-hidden mt-4">
                         <div class="absolute -right-10 -top-10 text-sky-500/10 text-9xl"><i class="fa-regular fa-newspaper"></i></div>
                         
@@ -433,10 +465,58 @@
 
                 <div id="tab-ofertas" class="tab-content space-y-4 sm:space-y-6">
 
+                    <!-- ══ ACORDEÓN ¿QUÉ SON LOS MUROS? ══ -->
+                    <div class="rounded-2xl border border-slate-700/80 bg-slate-800/60 overflow-hidden">
+                        <button onclick="this.parentElement.querySelector('#muros-info-body').classList.toggle('hidden'); this.querySelector('i.fa-chevron-down').classList.toggle('rotate-180')" class="w-full flex items-center justify-between gap-2 px-4 py-3.5 bg-slate-800 hover:bg-slate-750 transition active:bg-slate-700 text-left">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-circle-info text-purple-400 text-sm"></i>
+                                <h3 class="font-extrabold text-white text-sm">¿Qué son los muros de ofertas?</h3>
+                            </div>
+                            <i class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform duration-300"></i>
+                        </button>
+                        <div id="muros-info-body" class="hidden border-t border-slate-700/60">
+                            <div class="p-4 space-y-3">
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                    <div class="flex items-start gap-3 bg-slate-900/50 rounded-xl p-3">
+                                        <div class="w-7 h-7 shrink-0 rounded-lg bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-xs font-black text-purple-400">1</div>
+                                        <div>
+                                            <p class="text-xs font-bold text-white">Elige una oferta</p>
+                                            <p class="text-[11px] text-slate-400 mt-0.5">Selecciona una tarea disponible: encuestas, registros, descargas de apps u otras actividades.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3 bg-slate-900/50 rounded-xl p-3">
+                                        <div class="w-7 h-7 shrink-0 rounded-lg bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-xs font-black text-blue-400">2</div>
+                                        <div>
+                                            <p class="text-xs font-bold text-white">Complétala</p>
+                                            <p class="text-[11px] text-slate-400 mt-0.5">Sigue las instrucciones de cada oferta. Algunas son inmediatas y otras pueden tardar unos minutos.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3 bg-slate-900/50 rounded-xl p-3">
+                                        <div class="w-7 h-7 shrink-0 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-xs font-black text-emerald-400">3</div>
+                                        <div>
+                                            <p class="text-xs font-bold text-white">Gana NetCoins</p>
+                                            <p class="text-[11px] text-slate-400 mt-0.5">Al completarla, los NC se acreditan automáticamente a tu cuenta y puedes retirarlos.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-2.5 bg-amber-500/8 border border-amber-500/20 rounded-xl px-3 py-2.5">
+                                    <i class="fa-solid fa-triangle-exclamation text-amber-400 text-xs mt-0.5 shrink-0"></i>
+                                    <p class="text-[11px] text-amber-200/80 leading-relaxed">
+                                        <strong class="text-amber-300">Importante:</strong> Completa las ofertas con información verídica. Ofertas fraudulentas o revertidas pueden resultar en la cancelación de los NC acreditados.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ══ LABEL MUROS DISPONIBLES ══ -->
+                    <div>
+                        <p class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Muros de ofertas disponibles</p>
+                    </div>
+
+                    <!-- ══ MUROS ══ -->
                     <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
                         <div class="flex border-b border-slate-700 bg-slate-900/50 overflow-x-auto">
-
-
                             <button id="tab-muro-bitlabs" onclick="cambiarMuroTab('bitlabs')"
                                 class="muro-tab-btn flex items-center gap-2 px-4 py-3 text-sm font-bold whitespace-nowrap border-b-2 border-purple-500 text-purple-400 transition">
                                 <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shrink-0"></span>
@@ -448,57 +528,11 @@
                                 Monlix
                             </button>
                         </div>
-
-
                         <div id="muro-bitlabs" class="muro-panel">
-                            <iframe
-                                id="iframe-bitlabs"
-                                src="about:blank"
-                                style="width:100%; height:690px; border:none;"
-                                frameborder="0"
-                                scrolling="yes">
-                            </iframe>
+                            <iframe id="iframe-bitlabs" src="about:blank" style="width:100%; height:690px; border:none;" frameborder="0" scrolling="yes"></iframe>
                         </div>
                         <div id="muro-monlix" class="muro-panel hidden">
-                            <iframe
-                                id="iframe-monlix"
-                                src="about:blank"
-                                style="width:100%; height:690px; border:none;"
-                                frameborder="0"
-                                scrolling="yes">
-                            </iframe>
-                        </div>
-                    </div>
-
-                    <div class="bg-slate-800 border border-amber-500/30 rounded-2xl p-5 sm:p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <h3 class="text-base sm:text-lg font-extrabold text-amber-400"><i class="fa-solid fa-rotate mr-2"></i>Ruleta Diaria</h3>
-                                <p class="text-slate-400 text-xs mt-0.5">Gira gratis una vez al día y gana NetCoins</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-xs text-slate-400">Próximo giro en:</p>
-                                <p id="ruleta-countdown" class="text-amber-400 font-extrabold text-sm">--:--:--</p>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-col items-center gap-4">
-                            <div class="relative" style="width:220px;height:220px;">
-                                <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 z-10 text-2xl">▼</div>
-                                <canvas id="ruleta-canvas" width="220" height="220" class="rounded-full shadow-xl shadow-purple-900/50 cursor-pointer"></canvas>
-                            </div>
-                            <button id="btn-girar" onclick="girarRuleta()"
-                                class="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-900 font-extrabold px-8 py-3 rounded-2xl shadow-lg shadow-amber-500/30 transition active:scale-95 text-sm sm:text-base">
-                                🎰 ¡Girar Gratis!
-                            </button>
-                            <p id="ruleta-resultado" class="text-sm font-bold text-center min-h-[20px]"></p>
-                        </div>
-
-                        <div class="grid grid-cols-4 gap-2 mt-5">
-                            <div class="bg-slate-900/60 rounded-xl p-2 text-center"><p class="text-amber-400 font-black text-sm">50</p><p class="text-slate-500 text-xs">NC</p></div>
-                            <div class="bg-slate-900/60 rounded-xl p-2 text-center"><p class="text-amber-400 font-black text-sm">100</p><p class="text-slate-500 text-xs">NC</p></div>
-                            <div class="bg-slate-900/60 rounded-xl p-2 text-center"><p class="text-amber-400 font-black text-sm">250</p><p class="text-slate-500 text-xs">NC</p></div>
-                            <div class="bg-slate-900/60 rounded-xl p-2 text-center"><p class="text-emerald-400 font-black text-sm">500</p><p class="text-slate-500 text-xs">NC</p></div>
+                            <iframe id="iframe-monlix" src="about:blank" style="width:100%; height:690px; border:none;" frameborder="0" scrolling="yes"></iframe>
                         </div>
                     </div>
                 </div>
