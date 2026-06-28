@@ -1885,7 +1885,23 @@
                 document.getElementById("auth-container").classList.add("hidden");
                 document.getElementById("app-container").classList.remove("hidden");
                 document.getElementById("user-display-name").innerText = currentUser.user_metadata.username || currentUser.email;
-                cargarDatosPerfil(currentUser);
+
+                // Esperar a que todos los datos carguen antes de ocultar el splash
+                await Promise.all([
+                    cargarDatosPerfil(currentUser),
+                    cargarVidas(),
+                ]);
+                await aplicarEstadoPremium();
+
+                // Ahora sí ocultar splash
+                const splash = document.getElementById("splash-screen");
+                if (splash && splash.style.display !== "none") {
+                    splash.style.transition = "opacity 0.4s ease";
+                    splash.style.opacity = "0";
+                    setTimeout(() => splash.style.display = "none", 400);
+                }
+
+                // El resto no bloquea el splash
                 suscribirseCambiosEnVivo(currentUser);
                 cargarDatosReferidos(currentUser);
                 generarEnlaceReferido(currentUser);
@@ -1894,14 +1910,14 @@
             } else {
                 document.getElementById("auth-container").classList.remove("hidden");
                 document.getElementById("app-container").classList.add("hidden");
-            }
 
-            // Ocultar splash al terminar de cargar
-            const splash = document.getElementById("splash-screen");
-            if (splash.style.display !== "none") {
-                splash.style.transition = "opacity 0.4s ease";
-                splash.style.opacity = "0";
-                setTimeout(() => splash.style.display = "none", 400);
+                // Ocultar splash en caso de no haber sesión
+                const splash = document.getElementById("splash-screen");
+                if (splash && splash.style.display !== "none") {
+                    splash.style.transition = "opacity 0.4s ease";
+                    splash.style.opacity = "0";
+                    setTimeout(() => splash.style.display = "none", 400);
+                }
             }
         }
 
