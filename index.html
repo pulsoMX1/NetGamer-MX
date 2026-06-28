@@ -29,7 +29,13 @@
         .tab-content.active { display: block; }
 
         /* Sidebar desktop */
-        #sidebar { width: 256px; min-width: 256px; }
+        #sidebar { width: 256px; min-width: 256px; transition: width 0.25s ease, min-width 0.25s ease; }
+        #sidebar.collapsed { width: 72px; min-width: 72px; }
+        #sidebar.collapsed .sidebar-label { display: none; }
+        #sidebar.collapsed .sidebar-logo span { display: none; }
+        #sidebar.collapsed .sidebar-logo { justify-content: center; }
+        #sidebar .tab-btn { transition: justify-content 0.25s; }
+        #sidebar.collapsed .tab-btn { justify-content: center; }
 
         /* Offerwall iframe */
         #iframe-wrapper iframe { width: 100%; height: calc(100vh - 260px); min-height: 400px; border: none; }
@@ -311,9 +317,12 @@
 
     <div id="app-container" class="hidden flex min-h-screen">
 
-        <aside id="sidebar" class="bg-slate-800 border-r border-slate-700 flex flex-col justify-between flex-shrink-0">
+        <aside id="sidebar" class="bg-slate-800 border-r border-slate-700 flex flex-col justify-between flex-shrink-0 relative">
             <div class="p-4 sm:p-6">
                 <div class="sidebar-logo flex items-center gap-2 mb-6 sm:mb-8">
+                    <button onclick="toggleSidebar()" class="absolute top-4 right-3 w-7 h-7 bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition" title="Colapsar menú">
+                        <i id="sidebar-toggle-icon" class="fa-solid fa-angles-left text-xs"></i>
+                    </button>
                     <svg width="34" height="34" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
                         <polygon points="50,5 88,27 88,73 50,95 12,73 12,27" fill="#7c3aed"/>
                         <polygon points="50,16 78,32 78,68 50,84 22,68 22,32" fill="#6d28d9"/>
@@ -2054,6 +2063,25 @@
                     }
                 ).subscribe();
         }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const icon = document.getElementById('sidebar-toggle-icon');
+            sidebar.classList.toggle('collapsed');
+            const isCollapsed = sidebar.classList.contains('collapsed');
+            icon.className = isCollapsed ? 'fa-solid fa-angles-right text-xs' : 'fa-solid fa-angles-left text-xs';
+            localStorage.setItem('sidebarCollapsed', isCollapsed);
+        }
+
+        // Restaurar estado del sidebar
+        (function() {
+            if (localStorage.getItem('sidebarCollapsed') === 'true') {
+                const sidebar = document.getElementById('sidebar');
+                const icon = document.getElementById('sidebar-toggle-icon');
+                if (sidebar) sidebar.classList.add('collapsed');
+                if (icon) icon.className = 'fa-solid fa-angles-right text-xs';
+            }
+        })();
 
         function actualizarTextosInterfaz(monedas) {
             document.getElementById("user-balance").innerText = monedas;
