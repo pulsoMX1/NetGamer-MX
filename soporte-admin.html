@@ -454,72 +454,40 @@ function renderMensajeAdmin(msg) {
     const esAdmin = msg.sender === 'admin';
     const hora = new Date(msg.created_at).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
     const fecha = new Date(msg.created_at).toLocaleDateString('es-MX', { day: '2-digit', month: 'short' });
-
-    const soloImagenes = !msg.message && msg.images && msg.images.length > 0;
     const tieneImagenes = msg.images && msg.images.length > 0;
+    const tieneTexto = !!msg.message;
 
     const div = document.createElement('div');
     div.dataset.msgId = msg.id;
-    div.className = `flex ${esAdmin ? 'justify-end' : 'gap-2.5 items-end'} mb-1`;
+    div.className = `flex ${esAdmin ? 'justify-end' : 'gap-2.5 items-end'} mb-2`;
 
-    // Solo imágenes — sin burbuja
-    if (soloImagenes) {
-        const imagenes = msg.images.map(url => `
-            <a href="${url}" target="_blank">
-                <img src="${url}" class="w-28 h-28 object-cover rounded-2xl border border-slate-700 hover:opacity-90 transition cursor-zoom-in shadow-lg" />
-            </a>`).join('');
-
-        if (esAdmin) {
-            div.innerHTML = `
-                <div class="flex flex-col items-end gap-1 max-w-[72%]">
-                    <p class="text-xs text-slate-500 mr-1">${fecha} ${hora}</p>
-                    <div class="flex flex-wrap gap-1.5 justify-end">${imagenes}</div>
-                </div>`;
-        } else {
-            div.innerHTML = `
-                <div class="w-7 h-7 rounded-full bg-purple-600/20 border border-purple-500/20 flex items-center justify-center flex-shrink-0 mb-1">
-                    <i class="fa-solid fa-user text-purple-400 text-xs"></i>
-                </div>
-                <div class="flex flex-col gap-1 max-w-[72%]">
-                    <p class="text-xs text-slate-500 ml-1">${fecha} ${hora}</p>
-                    <div class="flex flex-wrap gap-1.5">${imagenes}</div>
-                </div>`;
-        }
-        container.appendChild(div);
-        return;
-    }
-
-    // Mensaje con texto
-    let media = '';
-    if (tieneImagenes) {
-        media = `<div class="flex flex-wrap gap-1.5 mt-2">
-            ${msg.images.map(url => `
-                <a href="${url}" target="_blank">
-                    <img src="${url}" class="w-24 h-24 object-cover rounded-xl border border-slate-600 hover:opacity-90 transition cursor-zoom-in" />
-                </a>`).join('')}
-        </div>`;
-    }
+    const imagenes = tieneImagenes ? msg.images.map(url => `
+        <a href="${url}" target="_blank">
+            <img src="${url}" class="w-28 h-28 object-cover rounded-2xl border border-slate-700 hover:opacity-90 transition cursor-zoom-in shadow-lg" />
+        </a>`).join('') : '';
 
     if (esAdmin) {
         div.innerHTML = `
-            <div class="max-w-[72%]">
-                <p class="text-xs text-slate-500 text-right mb-1 mr-1">Tú · ${fecha} ${hora}</p>
-                <div class="msg-admin px-4 py-2.5">
-                    ${msg.message ? `<p class="text-sm text-slate-200 leading-relaxed break-words overflow-hidden">${escapeHtml(msg.message)}</p>` : ''}
-                    ${media}
-                </div>
+            <div class="flex flex-col items-end gap-1 max-w-[72%]">
+                <p class="text-xs text-slate-500 mr-1">Tú · ${fecha} ${hora}</p>
+                ${tieneImagenes ? `<div class="flex flex-wrap gap-1.5 justify-end">${imagenes}</div>` : ''}
+                ${tieneTexto ? `
+                <div class="msg-admin px-4 py-2.5 ${tieneImagenes ? 'rounded-tr-sm' : ''}">
+                    <p class="text-sm text-slate-200 leading-relaxed break-words overflow-hidden">${escapeHtml(msg.message)}</p>
+                </div>` : ''}
             </div>`;
     } else {
         div.innerHTML = `
             <div class="w-7 h-7 rounded-full bg-purple-600/20 border border-purple-500/20 flex items-center justify-center flex-shrink-0 mb-1">
                 <i class="fa-solid fa-user text-purple-400 text-xs"></i>
             </div>
-            <div class="max-w-[72%]">
-                <p class="text-xs text-slate-500 mb-1 ml-1">${fecha} ${hora}</p>
-                <div class="msg-user px-4 py-2.5">
-                    ${msg.message ? `<p class="text-sm text-white leading-relaxed break-words overflow-hidden">${escapeHtml(msg.message)}</p>` : ''}
-                    ${media}
-                </div>
+            <div class="flex flex-col gap-1 max-w-[72%]">
+                <p class="text-xs text-slate-500 ml-1">${fecha} ${hora}</p>
+                ${tieneImagenes ? `<div class="flex flex-wrap gap-1.5">${imagenes}</div>` : ''}
+                ${tieneTexto ? `
+                <div class="msg-user px-4 py-2.5 ${tieneImagenes ? 'rounded-tl-sm' : ''}">
+                    <p class="text-sm text-white leading-relaxed break-words overflow-hidden">${escapeHtml(msg.message)}</p>
+                </div>` : ''}
             </div>`;
     }
 
