@@ -1885,7 +1885,8 @@
                 suscribirseCambiosEnVivo(currentUser);
                 cargarDatosReferidos(currentUser);
                 generarEnlaceReferido(currentUser);
-                inicializarRuleta(data?.ultimo_giro_ruleta ?? null);
+                const _ugrCache = data?.ultimo_giro_ruleta ?? null;
+                setTimeout(() => inicializarRuleta(_ugrCache), 300);
                 inicializarCPAlead();
             } else {
                 document.getElementById("auth-container").classList.remove("hidden");
