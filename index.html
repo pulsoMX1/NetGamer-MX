@@ -1885,7 +1885,7 @@
                 suscribirseCambiosEnVivo(currentUser);
                 cargarDatosReferidos(currentUser);
                 generarEnlaceReferido(currentUser);
-                inicializarRuleta(data?.ultimo_giro_ruleta ?? null);
+                setTimeout(() => inicializarRuleta(), 500);
                 inicializarCPAlead();
             } else {
                 document.getElementById("auth-container").classList.remove("hidden");
@@ -1902,7 +1902,7 @@
         }
 
         async function cargarDatosPerfil(user) {
-            const { data, error } = await _supabase.from('perfiles').select('netcoins, total_referidos, bonus_bienvenida_reclamado, ultimo_giro_ruleta').eq('id', user.id).single();
+            const { data, error } = await _supabase.from('perfiles').select('netcoins, total_referidos, bonus_bienvenida_reclamado').eq('id', user.id).single();
             if (!error && data) {
                 actualizarTextosInterfaz(data.netcoins || 0);
                 const totalRef = data.total_referidos || 0;
@@ -2419,32 +2419,23 @@
             inicializarIframeMuro('cpalead');
         }
 
-        let _ultimoGiroRuleta = null;
-
-        function inicializarRuleta(ultimoGiro) {
-            if (ultimoGiro !== undefined) _ultimoGiroRuleta = ultimoGiro;
+        function inicializarRuleta() {
             dibujarRuleta(0);
             verificarEstadoRuleta();
         }
 
         async function verificarEstadoRuleta() {
             if (!currentUser) return;
-            const hoy = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Mexico_City' })).toISOString().split('T')[0];
-
-            // Usar dato ya cargado si existe, si no consultar BD
-            let ultimoGiro = _ultimoGiroRuleta;
-            if (ultimoGiro === null) {
-                const { data } = await _supabase.from('perfiles')
-                    .select('ultimo_giro_ruleta')
-                    .eq('id', currentUser.id)
-                    .single();
-                ultimoGiro = data?.ultimo_giro_ruleta;
-            }
+            const hoy = new Date().toISOString().split('T')[0];
+            const { data } = await _supabase.from('perfiles')
+                .select('ultimo_giro_ruleta')
+                .eq('id', currentUser.id)
+                .single();
 
             const btn = document.getElementById('btn-girar');
             if (!btn) return;
 
-            if (ultimoGiro === hoy) {
+            if (data?.ultimo_giro_ruleta === hoy) {
                 btn.disabled = true;
                 btn.innerText = '✅ Ya giraste hoy';
                 btn.className = btn.className.replace('from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-900', 'from-slate-700 to-slate-600 text-slate-400 cursor-not-allowed');
