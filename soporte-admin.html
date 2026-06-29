@@ -569,21 +569,14 @@ async function toggleEstadoTicket() {
         .select('id, images')
         .eq('ticket_id', ticketActivoId);
 
-    // 2. Eliminar imágenes del storage
-    if (msgs) {
-        const paths = [];
-        msgs.forEach(m => {
-            if (m.images && m.images.length > 0) {
-                m.images.forEach(url => {
-                    // Extraer el path relativo del URL público
-                    const match = url.match(/support-images\/(.+)$/);
-                    if (match) paths.push(match[1]);
-                });
-            }
-        });
-        if (paths.length > 0) {
-            await _supabase.storage.from('support-images').remove(paths);
-        }
+    // 2. Eliminar imágenes del storage listando la carpeta del ticket
+    const { data: archivos } = await _supabase.storage
+        .from('support-images')
+        .list(`support/${ticketActivoId}`);
+
+    if (archivos && archivos.length > 0) {
+        const paths = archivos.map(f => `support/${ticketActivoId}/${f.name}`);
+        await _supabase.storage.from('support-images').remove(paths);
     }
 
     // 3. Eliminar mensajes
