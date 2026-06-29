@@ -546,11 +546,61 @@ async function toggleEstadoTicket() {
     const ticket = todosLosTickets.find(t => t.id === ticketActivoId);
     if (!ticket) return;
 
-    const nuevoEstado = ticket.status === 'open' ? 'resolved' : 'open';
-    await _supabase.from('support_tickets').update({ status: nuevoEstado }).eq('id', ticketActivoId);
-    ticket.status = nuevoEstado;
-    actualizarBadgeStatus(nuevoEstado);
+    // Si ya está resuelto, solo reabrirlo normal
+    if (ticket.status === 'resolved') {
+        await _supabase.from('support_tickets').update({ status: 'open' }).eq('id', ticketActivoId);
+        ticket.status = 'open';
+        actualizarBadgeStatus('open');
+        renderTicketsList();
+        return;
+    }
+
+    // Si está abierto → confirmar y borrar todo
+    const confirmar = confirm('¿Marcar como resuelto? Esto eliminará todos los mensajes e imágenes de esta conversación permanentemente.');
+    if (!confirmar) return;
+
+    const btn = document.getElementById('toggle-status-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin mr-1"></i>Eliminando...';
+
+    // 1. Obtener todos los mensajes con imágenes
+    const { data: msgs } = await _supabase
+        .from('support_messages')
+        .select('id, images')
+        .eq('ticket_id', ticketActivoId);
+
+    // 2. Eliminar imágenes del storage
+    if (msgs) {
+        const paths = [];
+        msgs.forEach(m => {
+            if (m.images && m.images.length > 0) {
+                m.images.forEach(url => {
+                    // Extraer el path relativo del URL público
+                    const match = url.match(/support-images\/(.+)$/);
+                    if (match) paths.push(match[1]);
+                });
+            }
+        });
+        if (paths.length > 0) {
+            await _supabase.storage.from('support-images').remove(paths);
+        }
+    }
+
+    // 3. Eliminar mensajes
+    await _supabase.from('support_messages').delete().eq('ticket_id', ticketActivoId);
+
+    // 4. Eliminar ticket
+    await _supabase.from('support_tickets').delete().eq('id', ticketActivoId);
+
+    // 5. Limpiar UI
+    todosLosTickets = todosLosTickets.filter(t => t.id !== ticketActivoId);
+    ticketActivoId = null;
+    if (chatRealtimeChannel) { _supabase.removeChannel(chatRealtimeChannel); chatRealtimeChannel = null; }
+    document.getElementById('chat-active').classList.add('hidden');
+    document.getElementById('chat-active').classList.remove('flex');
+    document.getElementById('chat-empty').classList.remove('hidden');
     renderTicketsList();
+    mostrarToast('Conversación eliminada correctamente.', 'success');
 }
 
 function actualizarBadgeStatus(status) {
