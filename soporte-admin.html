@@ -474,7 +474,7 @@ function renderMensajeAdmin(msg) {
             <div class="max-w-[72%]">
                 <p class="text-xs text-slate-500 text-right mb-1 mr-1">Tú · ${fecha} ${hora}</p>
                 <div class="msg-admin px-4 py-2.5">
-                    ${msg.message ? `<p class="text-sm text-slate-200 leading-relaxed">${escapeHtml(msg.message)}</p>` : ''}
+                    ${msg.message ? `<p class="text-sm text-slate-200 leading-relaxed break-words overflow-hidden">${escapeHtml(msg.message)}</p>` : ''}
                     ${media}
                 </div>
             </div>`;
@@ -486,7 +486,7 @@ function renderMensajeAdmin(msg) {
             <div class="max-w-[72%]">
                 <p class="text-xs text-slate-500 mb-1 ml-1">${fecha} ${hora}</p>
                 <div class="msg-user px-4 py-2.5">
-                    ${msg.message ? `<p class="text-sm text-white leading-relaxed">${escapeHtml(msg.message)}</p>` : ''}
+                    ${msg.message ? `<p class="text-sm text-white leading-relaxed break-words overflow-hidden">${escapeHtml(msg.message)}</p>` : ''}
                     ${media}
                 </div>
             </div>`;
