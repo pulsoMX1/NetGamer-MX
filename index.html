@@ -2426,7 +2426,7 @@
 
         async function verificarEstadoRuleta() {
             if (!currentUser) return;
-            const hoy = new Date().toISOString().split('T')[0];
+            const hoy = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Monterrey' });
             const { data } = await _supabase.from('perfiles')
                 .select('ultimo_giro_ruleta')
                 .eq('id', currentUser.id)
@@ -2435,7 +2435,8 @@
             const btn = document.getElementById('btn-girar');
             if (!btn) return;
 
-            if (data?.ultimo_giro_ruleta === hoy) {
+            const ultimoGiro = (data?.ultimo_giro_ruleta || '').slice(0, 10);
+            if (ultimoGiro === hoy) {
                 btn.disabled = true;
                 btn.innerText = '✅ Ya giraste hoy';
                 btn.className = 'bg-gradient-to-r from-slate-700 to-slate-600 text-slate-400 cursor-not-allowed font-extrabold px-8 py-3 rounded-2xl shadow-lg transition text-sm sm:text-base';
@@ -2481,8 +2482,9 @@
 
             if (error || data?.error) {
                 ruletaGirando = false;
+                btn.disabled = true;
                 btn.innerText = '✅ Ya giraste hoy';
-                btn.className = btn.className.replace('from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-900', 'from-slate-700 to-slate-600 text-slate-400 cursor-not-allowed');
+                btn.className = 'bg-gradient-to-r from-slate-700 to-slate-600 text-slate-400 cursor-not-allowed font-extrabold px-8 py-3 rounded-2xl shadow-lg transition text-sm sm:text-base';
                 document.getElementById('ruleta-resultado').innerText = '⚠️ Ya usaste tu giro de hoy.';
                 iniciarCuentaRegresiva();
                 return;
@@ -2518,8 +2520,9 @@
                     
                     mostrarNotificacion(`¡Ganaste ${ncGanadas} NetCoins en la ruleta!`, "success");
 
+                    btn.disabled = true;
                     btn.innerText = '✅ Ya giraste hoy';
-                    btn.className = btn.className.replace('from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-900', 'from-slate-700 to-slate-600 text-slate-400 cursor-not-allowed');
+                    btn.className = 'bg-gradient-to-r from-slate-700 to-slate-600 text-slate-400 cursor-not-allowed font-extrabold px-8 py-3 rounded-2xl shadow-lg transition text-sm sm:text-base';
                     iniciarCuentaRegresiva();
                 }
             }
@@ -2547,7 +2550,7 @@
             const btn = document.getElementById('btn-girar');
             btn.innerText = '✅ Ya giraste hoy';
             btn.disabled = true;
-            btn.className = btn.className.replace('from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-900', 'from-slate-700 to-slate-600 text-slate-400 cursor-not-allowed');
+            btn.className = 'bg-gradient-to-r from-slate-700 to-slate-600 text-slate-400 cursor-not-allowed font-extrabold px-8 py-3 rounded-2xl shadow-lg transition text-sm sm:text-base';
             iniciarCuentaRegresiva();
         }
 
