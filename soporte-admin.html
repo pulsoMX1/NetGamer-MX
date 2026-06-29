@@ -535,33 +535,48 @@ async function enviarRespuestaAdmin() {
     const btn = document.getElementById('admin-send-btn');
     btn.disabled = true;
 
-    let imageUrls = [];
-    for (const file of adminFilesSelected) {
-        const ext = file.name.split('.').pop();
-        const path = `support/${ticketActivoId}/admin_${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
-        const { data: uploadData, error: uploadError } = await _supabase.storage
-            .from('support-images')
-            .upload(path, file, { cacheControl: '3600', upsert: false });
-        if (!uploadError && uploadData) {
-            const { data: { publicUrl } } = _supabase.storage.from('support-images').getPublicUrl(path);
-            imageUrls.push(publicUrl);
+    // 1. Imágenes primero como mensaje separado
+    if (adminFilesSelected.length > 0) {
+        let imageUrls = [];
+        for (const file of adminFilesSelected) {
+            const ext = file.name.split('.').pop();
+            const path = `support/${ticketActivoId}/admin_${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+            const { data: uploadData, error: uploadError } = await _supabase.storage
+                .from('support-images')
+                .upload(path, file, { cacheControl: '3600', upsert: false });
+            if (!uploadError && uploadData) {
+                const { data: { publicUrl } } = _supabase.storage.from('support-images').getPublicUrl(path);
+                imageUrls.push(publicUrl);
+            }
         }
+        if (imageUrls.length > 0) {
+            await _supabase.from('support_messages').insert({
+                ticket_id: ticketActivoId,
+                sender: 'admin',
+                user_id: adminUser.id,
+                message: null,
+                images: imageUrls
+            });
+        }
+        limpiarAdminFiles();
     }
 
-    await _supabase.from('support_messages').insert({
-        ticket_id: ticketActivoId,
-        sender: 'admin',
-        user_id: adminUser.id,
-        message: texto || null,
-        images: imageUrls.length > 0 ? imageUrls : null
-    });
+    // 2. Texto después como mensaje separado
+    if (texto) {
+        await _supabase.from('support_messages').insert({
+            ticket_id: ticketActivoId,
+            sender: 'admin',
+            user_id: adminUser.id,
+            message: texto,
+            images: null
+        });
+        input.value = '';
+        input.style.height = 'auto';
+    }
 
     // Actualizar updated_at del ticket
     await _supabase.from('support_tickets').update({ updated_at: new Date().toISOString() }).eq('id', ticketActivoId);
 
-    input.value = '';
-    input.style.height = 'auto';
-    limpiarAdminFiles();
     btn.disabled = false;
     input.focus();
 }
