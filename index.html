@@ -431,9 +431,9 @@
                                 <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 z-10 text-2xl">▼</div>
                                 <canvas id="ruleta-canvas" width="220" height="220" class="rounded-full shadow-xl shadow-purple-900/50 cursor-pointer"></canvas>
                             </div>
-                            <button id="btn-girar" onclick="girarRuleta()"
-                                class="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-900 font-extrabold px-8 py-3 rounded-2xl shadow-lg shadow-amber-500/30 transition active:scale-95 text-sm sm:text-base">
-                                🎰 ¡Girar Gratis!
+                            <button id="btn-girar" onclick="girarRuleta()" disabled
+                                class="bg-gradient-to-r from-slate-700 to-slate-600 text-slate-400 cursor-not-allowed font-extrabold px-8 py-3 rounded-2xl shadow-lg transition text-sm sm:text-base">
+                                ⏳ Verificando...
                             </button>
                             <p id="ruleta-resultado" class="text-sm font-bold text-center min-h-[20px]"></p>
                         </div>
@@ -2438,8 +2438,12 @@
             if (data?.ultimo_giro_ruleta === hoy) {
                 btn.disabled = true;
                 btn.innerText = '✅ Ya giraste hoy';
-                btn.className = btn.className.replace('from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-900', 'from-slate-700 to-slate-600 text-slate-400 cursor-not-allowed');
+                btn.className = 'bg-gradient-to-r from-slate-700 to-slate-600 text-slate-400 cursor-not-allowed font-extrabold px-8 py-3 rounded-2xl shadow-lg transition text-sm sm:text-base';
                 iniciarCuentaRegresiva();
+            } else {
+                btn.disabled = false;
+                btn.innerText = '🎰 ¡Girar Gratis!';
+                btn.className = 'bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-900 font-extrabold px-8 py-3 rounded-2xl shadow-lg shadow-amber-500/30 transition active:scale-95 text-sm sm:text-base';
             }
         }
 
