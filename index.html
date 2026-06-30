@@ -2849,41 +2849,87 @@
         }
 
         // ══════════════════════════════════════════
-        // SISTEMA DE SONIDOS — PIEDRA PAPEL TIJERAS
+        // SISTEMA DE SONIDOS AMBIENTAL — PIEDRA PAPEL TIJERAS
         // ══════════════════════════════════════════
         let _audioCtx = null;
         let _sonidosActivos = (localStorage.getItem('netgamer_sonidos') !== 'false');
+        let _reverbBuffer = null;
+        let _masterGain = null;
+        let _ambienteNodos = [];      // nodos del drone/ambiente activo (búsqueda, rival encontrado, jugando)
+        let _ambienteTimers = [];
 
         function _getAudioCtx() {
             if (!_audioCtx) {
-                try { _audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-                catch(e) { return null; }
+                try {
+                    _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    _masterGain = _audioCtx.createGain();
+                    _masterGain.gain.value = 1;
+                    _masterGain.connect(_audioCtx.destination);
+                    _construirReverb();
+                } catch(e) { return null; }
             }
             if (_audioCtx.state === 'suspended') _audioCtx.resume();
             return _audioCtx;
         }
 
-        function _tono(freq, duracion, tipo = 'sine', volumenInicial = 0.18, delay = 0) {
+        // Genera un impulso de reverb sintético (sala pequeña/cálida) una sola vez
+        function _construirReverb() {
+            const ctx = _audioCtx;
+            const duracion = 1.6, decaimiento = 2.2;
+            const sampleRate = ctx.sampleRate;
+            const longitud = sampleRate * duracion;
+            const buffer = ctx.createBuffer(2, longitud, sampleRate);
+            for (let canal = 0; canal < 2; canal++) {
+                const datos = buffer.getChannelData(canal);
+                for (let i = 0; i < longitud; i++) {
+                    datos[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / longitud, decaimiento);
+                }
+            }
+            _reverbBuffer = buffer;
+        }
+
+        function _crearSalidaConReverb(mezclaSeca = 0.75, mezclaReverb = 0.25) {
+            const ctx = _getAudioCtx();
+            const seco = ctx.createGain();
+            seco.gain.value = mezclaSeca;
+            seco.connect(_masterGain);
+            if (_reverbBuffer) {
+                const convolver = ctx.createConvolver();
+                convolver.buffer = _reverbBuffer;
+                const wet = ctx.createGain();
+                wet.gain.value = mezclaReverb;
+                convolver.connect(wet);
+                wet.connect(_masterGain);
+                return { seco, reverb: convolver };
+            }
+            return { seco, reverb: seco };
+        }
+
+        function _tono(freq, duracion, tipo = 'sine', volumenInicial = 0.18, delay = 0, reverbMix = 0.2) {
             if (!_sonidosActivos) return;
             const ctx = _getAudioCtx();
             if (!ctx) return;
+            const { seco, reverb } = _crearSalidaConReverb(1, reverbMix);
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
             osc.type = tipo;
             osc.frequency.value = freq;
             const t0 = ctx.currentTime + delay;
-            gain.gain.setValueAtTime(volumenInicial, t0);
+            gain.gain.setValueAtTime(0.0001, t0);
+            gain.gain.exponentialRampToValueAtTime(volumenInicial, t0 + 0.012);
             gain.gain.exponentialRampToValueAtTime(0.001, t0 + duracion);
             osc.connect(gain);
-            gain.connect(ctx.destination);
+            gain.connect(seco);
+            gain.connect(reverb);
             osc.start(t0);
-            osc.stop(t0 + duracion);
+            osc.stop(t0 + duracion + 0.05);
         }
 
-        function _tonoDeslizante(freqInicio, freqFin, duracion, tipo = 'sine', volumen = 0.15, delay = 0) {
+        function _tonoDeslizante(freqInicio, freqFin, duracion, tipo = 'sine', volumen = 0.15, delay = 0, reverbMix = 0.2) {
             if (!_sonidosActivos) return;
             const ctx = _getAudioCtx();
             if (!ctx) return;
+            const { seco, reverb } = _crearSalidaConReverb(1, reverbMix);
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
             osc.type = tipo;
@@ -2893,73 +2939,247 @@
             gain.gain.setValueAtTime(volumen, t0);
             gain.gain.exponentialRampToValueAtTime(0.001, t0 + duracion);
             osc.connect(gain);
-            gain.connect(ctx.destination);
+            gain.connect(seco);
+            gain.connect(reverb);
             osc.start(t0);
-            osc.stop(t0 + duracion);
+            osc.stop(t0 + duracion + 0.05);
+        }
+
+        // Acorde: varias notas simultáneas con leve detune para dar cuerpo (capas armónicas)
+        function _acorde(freqs, duracion, tipo = 'triangle', volumen = 0.1, delay = 0, reverbMix = 0.3) {
+            if (!_sonidosActivos) return;
+            freqs.forEach((f, i) => {
+                _tono(f, duracion, tipo, volumen * (1 - i * 0.12), delay, reverbMix);
+                // capa de detune sutil para textura tipo "pad"
+                _tono(f * 1.003, duracion * 1.1, tipo, volumen * 0.4, delay + 0.01, reverbMix);
+            });
+        }
+
+        // Percusión sintética (impacto seco, tipo "kick" suave o "hit")
+        function _percusion(freqInicio, freqFin, duracion, volumen, delay = 0, ruido = false) {
+            if (!_sonidosActivos) return;
+            const ctx = _getAudioCtx();
+            if (!ctx) return;
+            const { seco, reverb } = _crearSalidaConReverb(1, 0.15);
+            const t0 = ctx.currentTime + delay;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freqInicio, t0);
+            osc.frequency.exponentialRampToValueAtTime(freqFin, t0 + duracion);
+            gain.gain.setValueAtTime(volumen, t0);
+            gain.gain.exponentialRampToValueAtTime(0.001, t0 + duracion);
+            osc.connect(gain); gain.connect(seco); gain.connect(reverb);
+            osc.start(t0); osc.stop(t0 + duracion + 0.05);
+
+            if (ruido) {
+                const bufferSize = ctx.sampleRate * 0.08;
+                const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                const datos = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) datos[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufferSize, 3);
+                const ruidoSrc = ctx.createBufferSource();
+                ruidoSrc.buffer = buffer;
+                const ruidoGain = ctx.createGain();
+                ruidoGain.gain.value = volumen * 0.6;
+                const filtro = ctx.createBiquadFilter();
+                filtro.type = 'highpass';
+                filtro.frequency.value = 800;
+                ruidoSrc.connect(filtro); filtro.connect(ruidoGain); ruidoGain.connect(seco);
+                ruidoSrc.start(t0);
+            }
+        }
+
+        // ── Capa ambiental: ruido rosa filtrado muy suave para dar "aire" de fondo ──
+        function _crearRuidoAmbiente(volumen = 0.025, frecuenciaFiltro = 600) {
+            const ctx = _getAudioCtx();
+            if (!ctx) return null;
+            const bufferSize = 2 * ctx.sampleRate;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const datos = buffer.getChannelData(0);
+            let b0=0,b1=0,b2=0;
+            for (let i = 0; i < bufferSize; i++) {
+                const white = Math.random() * 2 - 1;
+                b0 = 0.99765 * b0 + white * 0.0990460;
+                b1 = 0.96300 * b1 + white * 0.2965164;
+                b2 = 0.57000 * b2 + white * 1.0526913;
+                datos[i] = (b0 + b1 + b2 + white * 0.1848) * 0.11;
+            }
+            const src = ctx.createBufferSource();
+            src.buffer = buffer;
+            src.loop = true;
+            const filtro = ctx.createBiquadFilter();
+            filtro.type = 'lowpass';
+            filtro.frequency.value = frecuenciaFiltro;
+            const gain = ctx.createGain();
+            gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(volumen, ctx.currentTime + 1.2);
+            src.connect(filtro); filtro.connect(gain); gain.connect(_masterGain);
+            src.start();
+            return { src, gain, filtro };
+        }
+
+        // ── Drone armónico de fondo (pad sostenido con respiración lenta) ──
+        function _crearDronePad(freqBase, volumen = 0.05) {
+            const ctx = _getAudioCtx();
+            if (!ctx) return [];
+            const nodos = [];
+            const armonicos = [1, 1.5, 2.003, 2.5];
+            armonicos.forEach((mult, i) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                const lfo = ctx.createOscillator();
+                const lfoGain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = freqBase * mult;
+                lfo.frequency.value = 0.08 + i * 0.015;
+                lfoGain.gain.value = volumen * 0.4 / (i + 1);
+                lfo.connect(lfoGain);
+                gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(volumen / (i + 1.3), ctx.currentTime + 1.5);
+                lfoGain.connect(gain.gain);
+                osc.connect(gain);
+                gain.connect(_masterGain);
+                osc.start(); lfo.start();
+                nodos.push({ osc, gain, lfo, lfoGain });
+            });
+            return nodos;
+        }
+
+        function _detenerAmbiente() {
+            const ctx = _audioCtx;
+            if (!ctx) { _ambienteNodos = []; return; }
+            const ahora = ctx.currentTime;
+            _ambienteNodos.forEach(n => {
+                try {
+                    if (n.gain) { n.gain.gain.cancelScheduledValues(ahora); n.gain.gain.setValueAtTime(n.gain.gain.value, ahora); n.gain.gain.exponentialRampToValueAtTime(0.0001, ahora + 0.6); }
+                    setTimeout(() => { try { n.osc && n.osc.stop(); n.lfo && n.lfo.stop(); n.src && n.src.stop(); } catch(e){} }, 700);
+                } catch(e) {}
+            });
+            _ambienteNodos = [];
+            _ambienteTimers.forEach(t => clearTimeout(t));
+            _ambienteTimers = [];
         }
 
         const Sonidos = {
             // Click genérico de UI (botones, selección de apuesta)
             click() {
-                _tono(700, 0.06, 'square', 0.08);
+                _tono(700, 0.06, 'square', 0.07, 0, 0.1);
+                _tono(1050, 0.04, 'sine', 0.03, 0.01, 0.1);
             },
-            // Iniciar búsqueda de partida
+
+            // ── Búsqueda de rival: drone tenso + ruido ambiental + pulso rítmico ──
             buscando() {
-                _tonoDeslizante(440, 660, 0.25, 'sine', 0.1);
+                _detenerAmbiente();
+                _tonoDeslizante(440, 660, 0.3, 'sine', 0.1, 0, 0.3);
+                const ruido = _crearRuidoAmbiente(0.018, 500);
+                const drone = _crearDronePad(110, 0.045);
+                if (ruido) _ambienteNodos.push(ruido);
+                _ambienteNodos.push(...drone);
+                // pulso rítmico suave tipo "radar" cada 1.4s mientras se busca
+                let pulsos = 0;
+                const pulso = () => {
+                    if (!_sonidosActivos) return;
+                    _tono(220, 0.4, 'sine', 0.05, 0, 0.4);
+                    _tono(880, 0.15, 'sine', 0.025, 0, 0.5);
+                    pulsos++;
+                    if (pulsos < 40) _ambienteTimers.push(setTimeout(pulso, 1400));
+                };
+                _ambienteTimers.push(setTimeout(pulso, 600));
             },
-            // Rival encontrado
+
+            // Rival encontrado — fanfarria cálida con acorde + detiene el drone de búsqueda
             rivalEncontrado() {
-                _tono(523.25, 0.12, 'triangle', 0.15);
-                _tono(659.25, 0.12, 'triangle', 0.15, 0.1);
-                _tono(783.99, 0.18, 'triangle', 0.15, 0.2);
+                _detenerAmbiente();
+                _acorde([523.25, 659.25, 783.99], 0.5, 'triangle', 0.13, 0, 0.35);
+                _tono(1046.5, 0.35, 'triangle', 0.1, 0.18, 0.35);
+                _percusion(150, 60, 0.25, 0.12, 0, true);
+                // Drone de tensión suave durante la fase "rival encontrado / countdown"
+                const drone = _crearDronePad(146.83, 0.035);
+                _ambienteNodos.push(...drone);
             },
+
             // Cuenta atrás (tick) en fase rival encontrado / countdown jugada
             tick() {
-                _tono(880, 0.05, 'square', 0.06);
+                _tono(880, 0.06, 'sine', 0.05, 0, 0.15);
             },
-            // Últimos 3 segundos del countdown de jugada — más urgente
+
+            // Últimos 3 segundos del countdown de jugada — más urgente, doble pulso
             tickUrgente() {
-                _tono(1100, 0.08, 'square', 0.12);
+                _tono(1100, 0.07, 'square', 0.11, 0, 0.1);
+                _tono(1100, 0.05, 'square', 0.05, 0.09, 0.1);
             },
+
+            // Inicia la fase de elegir jugada — drone de tensión tipo "duelo"
+            iniciarTensionJugada() {
+                _detenerAmbiente();
+                const drone = _crearDronePad(98, 0.04);
+                _ambienteNodos.push(...drone);
+            },
+
             // El jugador elige piedra/papel/tijeras
             elegirJugada() {
-                _tono(950, 0.08, 'sine', 0.14);
+                _tono(950, 0.07, 'sine', 0.13, 0, 0.2);
+                _tono(1425, 0.05, 'sine', 0.04, 0.02, 0.2);
             },
-            // Inicio de ronda ("Ronda X")
+
+            // Esperando jugada del rival — pequeño "latido" repetitivo
+            esperandoRival() {
+                _tono(300, 0.3, 'sine', 0.04, 0, 0.3);
+            },
+
+            // Inicio de ronda ("Ronda X") — golpe ascendente con cuerpo
             inicioRonda() {
-                _tonoDeslizante(300, 500, 0.2, 'triangle', 0.12);
+                _detenerAmbiente();
+                _tonoDeslizante(220, 440, 0.25, 'triangle', 0.1, 0, 0.25);
+                _percusion(120, 50, 0.2, 0.1, 0.05, true);
             },
-            // Empate en la ronda
+
+            // Empate en la ronda — acorde neutro, ligeramente disonante
             empate() {
-                _tono(440, 0.15, 'sine', 0.12);
-                _tono(440, 0.15, 'sine', 0.12, 0.18);
+                _acorde([392, 415.3], 0.4, 'sine', 0.1, 0, 0.3);
             },
-            // Gana la ronda (no el partido completo)
+
+            // Gana la ronda (no el partido completo) — acorde mayor brillante
             ganaRonda() {
-                _tono(523.25, 0.1, 'triangle', 0.15);
-                _tono(659.25, 0.14, 'triangle', 0.15, 0.08);
+                _acorde([523.25, 659.25, 783.99], 0.35, 'triangle', 0.13, 0, 0.3);
+                _percusion(400, 700, 0.15, 0.08, 0, false);
             },
-            // Pierde la ronda (no el partido completo)
+
+            // Pierde la ronda (no el partido completo) — acorde menor descendente
             pierdeRonda() {
-                _tono(330, 0.12, 'sawtooth', 0.1);
-                _tono(247, 0.18, 'sawtooth', 0.1, 0.1);
+                _acorde([329.6, 277.2], 0.4, 'sawtooth', 0.09, 0, 0.3);
+                _tonoDeslizante(220, 140, 0.3, 'sawtooth', 0.08, 0.05, 0.3);
             },
-            // Victoria final del partido (mejor de 3)
+
+            // Victoria final del partido — fanfarria completa, varios acordes ascendentes
             victoriaFinal() {
-                _tono(523.25, 0.13, 'triangle', 0.18);
-                _tono(659.25, 0.13, 'triangle', 0.18, 0.13);
-                _tono(783.99, 0.13, 'triangle', 0.18, 0.26);
-                _tono(1046.5, 0.3, 'triangle', 0.2, 0.39);
+                _detenerAmbiente();
+                _acorde([523.25, 659.25, 783.99], 0.3, 'triangle', 0.15, 0, 0.4);
+                _acorde([659.25, 830.6, 987.77], 0.3, 'triangle', 0.15, 0.22, 0.4);
+                _acorde([783.99, 987.77, 1174.66], 0.5, 'triangle', 0.17, 0.44, 0.45);
+                _tono(1567.98, 0.6, 'triangle', 0.12, 0.6, 0.5);
+                _percusion(180, 50, 0.3, 0.13, 0, true);
+                _percusion(220, 60, 0.25, 0.1, 0.22, true);
             },
-            // Derrota final del partido
+
+            // Derrota final del partido — caída larga con armonía menor triste
             derrotaFinal() {
-                _tono(392, 0.18, 'sawtooth', 0.14);
-                _tono(329.6, 0.18, 'sawtooth', 0.14, 0.16);
-                _tono(261.6, 0.35, 'sawtooth', 0.14, 0.32);
+                _detenerAmbiente();
+                _acorde([392, 329.6, 261.6], 0.5, 'sawtooth', 0.12, 0, 0.4);
+                _tonoDeslizante(330, 165, 0.6, 'sawtooth', 0.1, 0.2, 0.45);
+                _tono(196, 0.7, 'sine', 0.08, 0.45, 0.5);
+                _percusion(120, 40, 0.4, 0.1, 0.1, true);
             },
+
             // No se encontró rival / cancelar búsqueda
             cancelar() {
-                _tonoDeslizante(500, 280, 0.2, 'sine', 0.1);
+                _detenerAmbiente();
+                _tonoDeslizante(500, 280, 0.25, 'sine', 0.1, 0, 0.25);
+            },
+
+            // Detener todo ambiente (al cerrar el modal del juego)
+            detenerTodo() {
+                _detenerAmbiente();
             }
         };
 
@@ -2972,7 +3192,11 @@
                     ? '<i class="fa-solid fa-volume-high"></i>'
                     : '<i class="fa-solid fa-volume-xmark"></i>';
             }
-            if (_sonidosActivos) Sonidos.click();
+            if (!_sonidosActivos) {
+                _detenerAmbiente();
+            } else {
+                Sonidos.click();
+            }
         }
 
         // ══════════════════════════════════════════
@@ -3254,6 +3478,7 @@
             document.getElementById('apuesta-display').textContent = _apuestaActual;
             const premioEl = document.getElementById('premio-display');
             if (premioEl) premioEl.textContent = _apuestaActual;
+            Sonidos.iniciarTensionJugada();
 
             // Actualizar label de ronda y marcador inline
             const labelRonda = document.getElementById('label-ronda-actual');
@@ -3548,6 +3773,7 @@
 
         function cerrarModalJuego() {
             _buscandoPartida = false;
+            Sonidos.detenerTodo();
             document.querySelectorAll('.btn-jugar').forEach(b => b.disabled = false);
             document.getElementById('modal-buscando').classList.add('hidden');
             if (_canalPartida) { _canalPartida.unsubscribe(); _canalPartida = null; }
