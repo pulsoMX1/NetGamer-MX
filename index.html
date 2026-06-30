@@ -3375,6 +3375,15 @@
 
             cargarVidas();
             cargarDatosPerfil(currentUser);
+
+            // Limpiar partida terminada de Supabase para ahorrar espacio
+            if (_partidaActual) {
+                const partidaId = _partidaActual;
+                setTimeout(async () => {
+                    await _supabase.from('historial_juegos').delete().eq('partida_id', partidaId);
+                    await _supabase.from('partidas').delete().eq('id', partidaId);
+                }, 3000); // esperar 3s para que ambos jugadores reciban el resultado
+            }
         }
 
         // alias legacy por si Realtime llega con estatus terminada directamente en 1 ronda
