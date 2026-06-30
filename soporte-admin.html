@@ -2,7 +2,7 @@
 <html lang="es" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin – Soporte NetGamer MX</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -21,15 +21,6 @@
         #login-screen { display: flex; }
         #app-screen { display: none; }
         textarea { resize: none; }
-
-        /* Móvil: sidebar angosto, chat ocupa el resto */
-        @media (max-width: 767px) {
-            #sidebar-panel { width: 120px !important; min-width: 120px !important; }
-            #sidebar-panel .ticket-email { font-size: 10px; }
-            #sidebar-panel .ticket-date { display: none; }
-            #sidebar-panel .ticket-id { display: none; }
-            #btn-back-mobile { display: none !important; }
-        }
     </style>
 </head>
 <body class="h-screen overflow-hidden">
@@ -95,10 +86,10 @@
     </div>
 
     <!-- Cuerpo principal -->
-    <div id="main-body" class="flex flex-1 overflow-hidden">
+    <div class="flex flex-1 overflow-hidden">
 
         <!-- ── SIDEBAR – Lista de tickets ── -->
-        <div id="sidebar-panel" class="w-72 xl:w-80 flex-shrink-0 bg-slate-900 border-r border-slate-700/80 flex flex-col">
+        <div class="w-72 xl:w-80 flex-shrink-0 bg-slate-900 border-r border-slate-700/80 flex flex-col">
 
             <!-- Búsqueda + filtros -->
             <div class="p-3 border-b border-slate-700/50 space-y-2">
@@ -135,7 +126,7 @@
         </div>
 
         <!-- ── CHAT PRINCIPAL ── -->
-        <div id="chat-panel" class="flex-1 flex flex-col overflow-hidden bg-slate-950">
+        <div id="chat-area" class="flex-1 flex flex-col overflow-hidden bg-slate-950">
 
             <!-- Estado vacío -->
             <div id="chat-empty" class="flex-1 flex flex-col items-center justify-center text-center p-8">
@@ -230,20 +221,10 @@ async function iniciarSesionAdmin() {
     btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin mr-2"></i>Entrando...';
     errorEl.classList.add('hidden');
 
-    const ADMIN_EMAIL = 'ed8108868@gmail.com';
-
     const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
 
     if (error || !data.user) {
         showLoginError('Credenciales incorrectas. Verifica tu email y contraseña.');
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-right-to-bracket mr-2"></i>Entrar al panel';
-        return;
-    }
-
-    if (data.user.email !== ADMIN_EMAIL) {
-        await _supabase.auth.signOut();
-        showLoginError('No tienes permiso para acceder a este panel.');
         btn.disabled = false;
         btn.innerHTML = '<i class="fa-solid fa-right-to-bracket mr-2"></i>Entrar al panel';
         return;
@@ -319,29 +300,29 @@ function renderTicketsList() {
 
     container.innerHTML = lista.map(t => {
         const email = t.perfiles?.email || 'Usuario desconocido';
-        const emailCorto = email.length > 18 ? email.slice(0, 15) + '...' : email;
+        const emailCorto = email.length > 26 ? email.slice(0, 23) + '...' : email;
         const fecha = formatFecha(t.updated_at);
         const esActivo = t.id === ticketActivoId;
         const sinLeerT = t.unread_admin || 0;
         const statusColor = t.status === 'open' ? 'bg-emerald-400' : 'bg-slate-500';
 
         return `<div onclick="abrirTicket('${t.id}')" data-ticket-id="${t.id}"
-            class="ticket-item cursor-pointer px-2 sm:px-4 py-3 border-b border-slate-800 ${esActivo ? 'active' : ''}">
-            <div class="flex items-start gap-2">
+            class="ticket-item cursor-pointer px-4 py-3.5 border-b border-slate-800 ${esActivo ? 'active' : ''}">
+            <div class="flex items-start gap-3">
                 <div class="relative flex-shrink-0 mt-0.5">
-                    <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-purple-600/20 border border-purple-500/20 flex items-center justify-center">
+                    <div class="w-8 h-8 rounded-full bg-purple-600/20 border border-purple-500/20 flex items-center justify-center">
                         <i class="fa-solid fa-user text-purple-400 text-xs"></i>
                     </div>
-                    <span class="absolute -bottom-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 ${statusColor} rounded-full border-2 border-slate-900"></span>
+                    <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 ${statusColor} rounded-full border-2 border-slate-900"></span>
                 </div>
                 <div class="flex-1 min-w-0">
                     <div class="flex items-center justify-between gap-1">
-                        <p class="ticket-email text-xs sm:text-sm font-semibold text-white truncate">${emailCorto}</p>
-                        <span class="ticket-date text-xs text-slate-500 flex-shrink-0">${fecha}</span>
+                        <p class="text-sm font-semibold text-white truncate">${emailCorto}</p>
+                        <span class="text-xs text-slate-500 flex-shrink-0">${fecha}</span>
                     </div>
                     <div class="flex items-center justify-between mt-0.5">
-                        <p class="ticket-id text-xs text-slate-500 truncate">#${t.id.slice(0,6)}</p>
-                        ${sinLeerT > 0 ? `<span class="flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5 bg-purple-600 rounded-full text-xs text-white font-bold flex items-center justify-center">${sinLeerT}</span>` : ''}
+                        <p class="text-xs text-slate-500 truncate">Ticket #${t.id.slice(0,8)}</p>
+                        ${sinLeerT > 0 ? `<span class="flex-shrink-0 w-5 h-5 bg-purple-600 rounded-full text-xs text-white font-bold flex items-center justify-center">${sinLeerT}</span>` : ''}
                     </div>
                 </div>
             </div>
@@ -609,7 +590,7 @@ async function toggleEstadoTicket() {
     document.getElementById('chat-active').classList.add('hidden');
     document.getElementById('chat-active').classList.remove('flex');
     document.getElementById('chat-empty').classList.remove('hidden');
-    // Resetear botón
+    // Resetear botón para que funcione en la siguiente conversación
     const btnReset = document.getElementById('toggle-status-btn');
     btnReset.disabled = false;
     btnReset.innerHTML = '<i class="fa-solid fa-check mr-1"></i>Marcar resuelto';
@@ -667,10 +648,6 @@ function limpiarAdminFiles() { adminFilesSelected = []; renderAdminPreview(); }
 //           UTILS
 // ══════════════════════════════════
 
-function volverSidebar() {
-    document.getElementById('chat-panel').classList.remove('mobile-visible');
-}
-
 function scrollChatAbajo() {
     const c = document.getElementById('chat-messages');
     if (c) setTimeout(() => { c.scrollTop = c.scrollHeight; }, 50);
@@ -711,15 +688,13 @@ function mostrarToast(msg, tipo) {
 // ══════════════════════════════════
 (async () => {
     const { data: { session } } = await _supabase.auth.getSession();
-    if (session?.user && session.user.email === 'ed8108868@gmail.com') {
+    if (session?.user) {
         adminUser = session.user;
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('app-screen').style.display = 'flex';
         document.getElementById('admin-email-label').textContent = adminUser.email;
         await cargarTickets();
         suscribirTicketsRealtime();
-    } else if (session?.user) {
-        await _supabase.auth.signOut();
     }
 })();
 </script>
