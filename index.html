@@ -1067,6 +1067,11 @@
 
                 <!-- ══ MODAL BUSCANDO PARTIDA ══ -->
                 <div id="modal-buscando" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md flex items-end sm:items-center justify-center z-[6000] p-0 sm:p-4">
+                    <button id="btn-toggle-sonido" onclick="toggleSonidosJuego()"
+                        class="absolute top-4 right-4 sm:top-6 sm:right-6 z-[6001] w-9 h-9 rounded-full bg-slate-800/90 border border-slate-600 flex items-center justify-center text-slate-300 hover:text-white transition active:scale-90"
+                        title="Activar/desactivar sonido">
+                        <i class="fa-solid fa-volume-high"></i>
+                    </button>
                     <div class="bg-slate-900 border border-slate-700/80 rounded-t-3xl sm:rounded-2xl w-full sm:max-w-sm shadow-2xl overflow-hidden">
 
                         <!-- ── FASE: BUSCANDO ── -->
@@ -2844,6 +2849,133 @@
         }
 
         // ══════════════════════════════════════════
+        // SISTEMA DE SONIDOS — PIEDRA PAPEL TIJERAS
+        // ══════════════════════════════════════════
+        let _audioCtx = null;
+        let _sonidosActivos = (localStorage.getItem('netgamer_sonidos') !== 'false');
+
+        function _getAudioCtx() {
+            if (!_audioCtx) {
+                try { _audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+                catch(e) { return null; }
+            }
+            if (_audioCtx.state === 'suspended') _audioCtx.resume();
+            return _audioCtx;
+        }
+
+        function _tono(freq, duracion, tipo = 'sine', volumenInicial = 0.18, delay = 0) {
+            if (!_sonidosActivos) return;
+            const ctx = _getAudioCtx();
+            if (!ctx) return;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = tipo;
+            osc.frequency.value = freq;
+            const t0 = ctx.currentTime + delay;
+            gain.gain.setValueAtTime(volumenInicial, t0);
+            gain.gain.exponentialRampToValueAtTime(0.001, t0 + duracion);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(t0);
+            osc.stop(t0 + duracion);
+        }
+
+        function _tonoDeslizante(freqInicio, freqFin, duracion, tipo = 'sine', volumen = 0.15, delay = 0) {
+            if (!_sonidosActivos) return;
+            const ctx = _getAudioCtx();
+            if (!ctx) return;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = tipo;
+            const t0 = ctx.currentTime + delay;
+            osc.frequency.setValueAtTime(freqInicio, t0);
+            osc.frequency.exponentialRampToValueAtTime(freqFin, t0 + duracion);
+            gain.gain.setValueAtTime(volumen, t0);
+            gain.gain.exponentialRampToValueAtTime(0.001, t0 + duracion);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(t0);
+            osc.stop(t0 + duracion);
+        }
+
+        const Sonidos = {
+            // Click genérico de UI (botones, selección de apuesta)
+            click() {
+                _tono(700, 0.06, 'square', 0.08);
+            },
+            // Iniciar búsqueda de partida
+            buscando() {
+                _tonoDeslizante(440, 660, 0.25, 'sine', 0.1);
+            },
+            // Rival encontrado
+            rivalEncontrado() {
+                _tono(523.25, 0.12, 'triangle', 0.15);
+                _tono(659.25, 0.12, 'triangle', 0.15, 0.1);
+                _tono(783.99, 0.18, 'triangle', 0.15, 0.2);
+            },
+            // Cuenta atrás (tick) en fase rival encontrado / countdown jugada
+            tick() {
+                _tono(880, 0.05, 'square', 0.06);
+            },
+            // Últimos 3 segundos del countdown de jugada — más urgente
+            tickUrgente() {
+                _tono(1100, 0.08, 'square', 0.12);
+            },
+            // El jugador elige piedra/papel/tijeras
+            elegirJugada() {
+                _tono(950, 0.08, 'sine', 0.14);
+            },
+            // Inicio de ronda ("Ronda X")
+            inicioRonda() {
+                _tonoDeslizante(300, 500, 0.2, 'triangle', 0.12);
+            },
+            // Empate en la ronda
+            empate() {
+                _tono(440, 0.15, 'sine', 0.12);
+                _tono(440, 0.15, 'sine', 0.12, 0.18);
+            },
+            // Gana la ronda (no el partido completo)
+            ganaRonda() {
+                _tono(523.25, 0.1, 'triangle', 0.15);
+                _tono(659.25, 0.14, 'triangle', 0.15, 0.08);
+            },
+            // Pierde la ronda (no el partido completo)
+            pierdeRonda() {
+                _tono(330, 0.12, 'sawtooth', 0.1);
+                _tono(247, 0.18, 'sawtooth', 0.1, 0.1);
+            },
+            // Victoria final del partido (mejor de 3)
+            victoriaFinal() {
+                _tono(523.25, 0.13, 'triangle', 0.18);
+                _tono(659.25, 0.13, 'triangle', 0.18, 0.13);
+                _tono(783.99, 0.13, 'triangle', 0.18, 0.26);
+                _tono(1046.5, 0.3, 'triangle', 0.2, 0.39);
+            },
+            // Derrota final del partido
+            derrotaFinal() {
+                _tono(392, 0.18, 'sawtooth', 0.14);
+                _tono(329.6, 0.18, 'sawtooth', 0.14, 0.16);
+                _tono(261.6, 0.35, 'sawtooth', 0.14, 0.32);
+            },
+            // No se encontró rival / cancelar búsqueda
+            cancelar() {
+                _tonoDeslizante(500, 280, 0.2, 'sine', 0.1);
+            }
+        };
+
+        function toggleSonidosJuego() {
+            _sonidosActivos = !_sonidosActivos;
+            localStorage.setItem('netgamer_sonidos', _sonidosActivos);
+            const btn = document.getElementById('btn-toggle-sonido');
+            if (btn) {
+                btn.innerHTML = _sonidosActivos
+                    ? '<i class="fa-solid fa-volume-high"></i>'
+                    : '<i class="fa-solid fa-volume-xmark"></i>';
+            }
+            if (_sonidosActivos) Sonidos.click();
+        }
+
+        // ══════════════════════════════════════════
         // SISTEMA DE JUEGOS — AL MEJOR DE 3 RONDAS
         // ══════════════════════════════════════════
         let _partidaActual = null;
@@ -2904,6 +3036,7 @@
         async function buscarPartida(juego, apuesta) {
             if (!currentUser) { mostrarNotificacion('Inicia sesión primero', 'error'); return; }
             if (_buscandoPartida) return;
+            Sonidos.click();
             _buscandoPartida = true;
             document.querySelectorAll('.btn-jugar').forEach(b => b.disabled = true);
             _apuestaActual = apuesta;
@@ -2985,6 +3118,13 @@
             document.getElementById('modal-buscando').classList.remove('hidden');
             _ocultarTodasFases();
             document.getElementById('fase-buscando').classList.remove('hidden');
+            const btnSonido = document.getElementById('btn-toggle-sonido');
+            if (btnSonido) {
+                btnSonido.innerHTML = _sonidosActivos
+                    ? '<i class="fa-solid fa-volume-high"></i>'
+                    : '<i class="fa-solid fa-volume-xmark"></i>';
+            }
+            Sonidos.buscando();
         }
 
         function _ocultarTodasFases() {
@@ -2996,6 +3136,7 @@
         function mostrarFaseRivalEncontrado() {
             _ocultarTodasFases();
             document.getElementById('fase-rival-encontrado').classList.remove('hidden');
+            Sonidos.rivalEncontrado();
 
             // Rellenar datos
             const miNombre = currentUser.user_metadata?.username || currentUser.email?.split('@')[0] || 'Tú';
@@ -3018,6 +3159,7 @@
             _timerRival = setInterval(() => {
                 seg--;
                 document.getElementById('rival-encontrado-counter').textContent = seg + 's';
+                if (seg > 0) Sonidos.tick();
                 if (seg <= 0) {
                     clearInterval(_timerRival);
                     mostrarAnuncioRonda(_rondaActual, () => iniciarFaseJugando());
@@ -3028,6 +3170,7 @@
         function mostrarAnuncioRonda(numeroRonda, callback) {
             _ocultarTodasFases();
             document.getElementById('fase-anuncio-ronda').classList.remove('hidden');
+            Sonidos.inicioRonda();
 
             // Actualizar marcador
             document.getElementById('marcador-yo').textContent    = _puntosYo;
@@ -3058,6 +3201,7 @@
                 if (seg <= 0) {
                     clearInterval(_timerBusqueda);
                     await cancelarBusqueda();
+                    Sonidos.cancelar();
                     mostrarNotificacion('No se encontró rival. Se devolvieron tus NC.', 'info');
                 }
             }, 1000);
@@ -3139,6 +3283,7 @@
                 seg--;
                 document.getElementById('countdown-jugada').textContent = seg;
                 if (barraJugada) barraJugada.style.width = (seg / DURACION_JUGADA * 100) + '%';
+                if (seg > 0 && seg <= 3) Sonidos.tickUrgente();
                 if (seg <= 0) {
                     clearInterval(_timerJugada);
                     if (!_jugadaHecha) { const ops = ['piedra','papel','tijeras']; await hacerJugada(ops[Math.floor(Math.random()*3)]); }
@@ -3152,6 +3297,7 @@
             if (_jugadaHecha) return;
             _jugadaHecha = true;
             _miUltimaJugada = jugada;
+            Sonidos.elegirJugada();
             // NO detenemos _timerJugada aqui -- el contador sigue corriendo visualmente
 
             document.querySelectorAll('.btn-jugada').forEach(b => {
@@ -3276,7 +3422,9 @@
 
             // ¿Alguien ganó ya 3 rondas?
             if (_puntosYo >= 3 || _puntosRival >= 3) {
-                mostrarResultadoFinal(ganeRonda || (_puntosYo > _puntosRival), miEmoji, rivalEmoji);
+                const ganeElPartido = ganeRonda || (_puntosYo > _puntosRival);
+                if (ganeElPartido) Sonidos.victoriaFinal(); else Sonidos.derrotaFinal();
+                mostrarResultadoFinal(ganeElPartido, miEmoji, rivalEmoji);
                 return;
             }
 
@@ -3302,12 +3450,15 @@
                 if (empateRond) {
                     textoRondaEl.textContent = '🤝 Empate';
                     textoRondaEl.className = 'text-2xl font-black mb-3 text-slate-300';
+                    Sonidos.empate();
                 } else if (ganeRonda) {
                     textoRondaEl.textContent = '✅ Ganaste';
                     textoRondaEl.className = 'text-2xl font-black mb-3 text-emerald-400';
+                    Sonidos.ganaRonda();
                 } else {
                     textoRondaEl.textContent = '❌ Perdiste';
                     textoRondaEl.className = 'text-2xl font-black mb-3 text-rose-400';
+                    Sonidos.pierdeRonda();
                 }
             }
             document.getElementById('anuncio-ronda-texto').textContent = `Ronda ${_rondaActual - 1}`;
