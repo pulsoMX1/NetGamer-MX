@@ -4476,9 +4476,9 @@ function _esPremiumActivo() {
 
 function programarSiguienteAnuncio() {
     if (_anuncioTimerProgramado) clearTimeout(_anuncioTimerProgramado);
-    // Entre 2 y 3 minutos en milisegundos
-    const minMs = 2 * 60 * 1000;
-    const maxMs = 3 * 60 * 1000;
+    // Entre 1 y 2 minutos en milisegundos
+    const minMs = 1 * 60 * 1000;
+    const maxMs = 2 * 60 * 1000;
     const espera = minMs + Math.random() * (maxMs - minMs);
     _anuncioTimerProgramado = setTimeout(intentarMostrarAnuncio, espera);
 }
