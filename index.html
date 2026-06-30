@@ -3307,6 +3307,7 @@
                 seg--;
                 document.getElementById('countdown-busqueda').textContent = seg;
                 document.getElementById('barra-busqueda').style.width = (seg / 30 * 100) + '%';
+                if (seg > 0) Sonidos.tick();
                 if (seg <= 0) {
                     clearInterval(_timerBusqueda);
                     await cancelarBusqueda();
