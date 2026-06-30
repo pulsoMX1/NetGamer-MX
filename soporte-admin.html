@@ -22,28 +22,12 @@
         #app-screen { display: none; }
         textarea { resize: none; }
 
-        /* ── Mobile: sidebar fullscreen, chat fullscreen ── */
+        /* Móvil: sidebar angosto, chat ocupa el resto */
         @media (max-width: 767px) {
-            #sidebar-panel {
-                position: fixed; inset: 0; z-index: 10;
-                width: 100% !important;
-                display: flex; flex-direction: column;
-            }
-            #chat-panel {
-                position: fixed; inset: 0; z-index: 20;
-                width: 100% !important;
-                display: none; flex-direction: column;
-            }
-            #chat-panel.mobile-visible {
-                display: flex;
-            }
-            #main-body {
-                position: relative;
-            }
-        }
-        @media (min-width: 768px) {
-            #sidebar-panel { display: flex !important; flex-direction: column; }
-            #chat-panel { display: flex !important; flex-direction: column; }
+            #sidebar-panel { width: 120px !important; min-width: 120px !important; }
+            #sidebar-panel .ticket-email { font-size: 10px; }
+            #sidebar-panel .ticket-date { display: none; }
+            #sidebar-panel .ticket-id { display: none; }
             #btn-back-mobile { display: none !important; }
         }
     </style>
@@ -88,7 +72,7 @@
 <div id="app-screen" class="h-screen flex flex-col">
 
     <!-- Topbar -->
-    <div class="flex items-center justify-between px-4 py-3 bg-slate-900 border-b border-slate-700/80 flex-shrink-0" style="padding-top: calc(0.75rem + env(safe-area-inset-top));">
+    <div class="flex items-center justify-between px-5 py-3.5 bg-slate-900 border-b border-slate-700/80 flex-shrink-0">
         <div class="flex items-center gap-3">
             <div class="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
                 <i class="fa-solid fa-headset text-white text-sm"></i>
@@ -166,11 +150,8 @@
             <div id="chat-active" class="hidden flex-1 flex flex-col overflow-hidden">
 
                 <!-- Header del chat -->
-                <div class="flex items-center justify-between px-4 py-3.5 bg-slate-900 border-b border-slate-700/50 flex-shrink-0" style="padding-top: calc(0.875rem + env(safe-area-inset-top));">
+                <div class="flex items-center justify-between px-5 py-3.5 bg-slate-900 border-b border-slate-700/50 flex-shrink-0">
                     <div class="flex items-center gap-3 min-w-0">
-                        <button id="btn-back-mobile" onclick="volverSidebar()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center flex-shrink-0 transition">
-                            <i class="fa-solid fa-arrow-left text-slate-300 text-sm"></i>
-                        </button>
                         <div class="w-9 h-9 rounded-full bg-purple-600/30 border border-purple-500/30 flex items-center justify-center flex-shrink-0">
                             <i class="fa-solid fa-user text-purple-400 text-sm"></i>
                         </div>
@@ -338,29 +319,29 @@ function renderTicketsList() {
 
     container.innerHTML = lista.map(t => {
         const email = t.perfiles?.email || 'Usuario desconocido';
-        const emailCorto = email.length > 26 ? email.slice(0, 23) + '...' : email;
+        const emailCorto = email.length > 18 ? email.slice(0, 15) + '...' : email;
         const fecha = formatFecha(t.updated_at);
         const esActivo = t.id === ticketActivoId;
         const sinLeerT = t.unread_admin || 0;
         const statusColor = t.status === 'open' ? 'bg-emerald-400' : 'bg-slate-500';
 
         return `<div onclick="abrirTicket('${t.id}')" data-ticket-id="${t.id}"
-            class="ticket-item cursor-pointer px-4 py-3.5 border-b border-slate-800 ${esActivo ? 'active' : ''}">
-            <div class="flex items-start gap-3">
+            class="ticket-item cursor-pointer px-2 sm:px-4 py-3 border-b border-slate-800 ${esActivo ? 'active' : ''}">
+            <div class="flex items-start gap-2">
                 <div class="relative flex-shrink-0 mt-0.5">
-                    <div class="w-8 h-8 rounded-full bg-purple-600/20 border border-purple-500/20 flex items-center justify-center">
+                    <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-purple-600/20 border border-purple-500/20 flex items-center justify-center">
                         <i class="fa-solid fa-user text-purple-400 text-xs"></i>
                     </div>
-                    <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 ${statusColor} rounded-full border-2 border-slate-900"></span>
+                    <span class="absolute -bottom-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 ${statusColor} rounded-full border-2 border-slate-900"></span>
                 </div>
                 <div class="flex-1 min-w-0">
                     <div class="flex items-center justify-between gap-1">
-                        <p class="text-sm font-semibold text-white truncate">${emailCorto}</p>
-                        <span class="text-xs text-slate-500 flex-shrink-0">${fecha}</span>
+                        <p class="ticket-email text-xs sm:text-sm font-semibold text-white truncate">${emailCorto}</p>
+                        <span class="ticket-date text-xs text-slate-500 flex-shrink-0">${fecha}</span>
                     </div>
                     <div class="flex items-center justify-between mt-0.5">
-                        <p class="text-xs text-slate-500 truncate">Ticket #${t.id.slice(0,8)}</p>
-                        ${sinLeerT > 0 ? `<span class="flex-shrink-0 w-5 h-5 bg-purple-600 rounded-full text-xs text-white font-bold flex items-center justify-center">${sinLeerT}</span>` : ''}
+                        <p class="ticket-id text-xs text-slate-500 truncate">#${t.id.slice(0,6)}</p>
+                        ${sinLeerT > 0 ? `<span class="flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5 bg-purple-600 rounded-full text-xs text-white font-bold flex items-center justify-center">${sinLeerT}</span>` : ''}
                     </div>
                 </div>
             </div>
@@ -410,11 +391,6 @@ async function abrirTicket(ticketId) {
     document.getElementById('chat-empty').classList.add('hidden');
     document.getElementById('chat-active').classList.remove('hidden');
     document.getElementById('chat-active').classList.add('flex');
-
-    // En móvil: mostrar chat y ocultar sidebar
-    if (window.innerWidth < 768) {
-        document.getElementById('chat-panel').classList.add('mobile-visible');
-    }
 
     // Marcar como activo en sidebar
     document.querySelectorAll('.ticket-item').forEach(el => {
@@ -633,8 +609,6 @@ async function toggleEstadoTicket() {
     document.getElementById('chat-active').classList.add('hidden');
     document.getElementById('chat-active').classList.remove('flex');
     document.getElementById('chat-empty').classList.remove('hidden');
-    // En móvil volver al sidebar
-    document.getElementById('chat-panel').classList.remove('mobile-visible');
     // Resetear botón
     const btnReset = document.getElementById('toggle-status-btn');
     btnReset.disabled = false;
