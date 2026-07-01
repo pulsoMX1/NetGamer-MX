@@ -4763,21 +4763,6 @@ function cerrarAnuncioPersonalizado() {
     _anuncioIdActual = null;
     programarSiguienteAnuncio();
 }
-    
-    // Restaurar z-index de Adsterra
-    document.querySelectorAll(
-        '[id*="adsterra"], [id*="social-bar"], [id*="aso-"], ' +
-        'iframe[src*="adsterra"], iframe[src*="socialbar"], ' +
-        '.adsterra, .social-bar, .aso-container'
-    ).forEach(el => {
-        el.style.zIndex = '';
-        el.style.position = '';
-    });
-    
-    _anuncioMostrandose = false;
-    _anuncioIdActual = null;
-    programarSiguienteAnuncio();
-}
 
 function registrarClicAnuncio() {
     if (!_anuncioIdActual) return;
