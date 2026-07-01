@@ -3868,7 +3868,12 @@
                     sb1.src = 'https://pl29885983.effectivecpmnetwork.com/08103591ba362aeb7a7ee360f307d4ac/invoke.js';
                     document.head.appendChild(sb1);
                 }
-                
+                if (!document.getElementById('sb-script-2')) {
+                    const sb2 = document.createElement('script');
+                    sb2.id = 'sb-script-2';
+                    sb2.src = 'https://pl29885986.effectivecpmnetwork.com/1f/e5/ad/1fe5ad3527321360c99671bf492a9bec.js';
+                    document.head.appendChild(sb2);
+                }
             } else {
                 // Si es premium, remover scripts y contenedores del social bar
                 ['sb-script-1', 'sb-script-2'].forEach(id => {
@@ -4522,6 +4527,56 @@ function escapeHtml(text) {
     });
 })();
 
+// ══════════════════════════════════════════════════════════════════════════
+// VARIABLES PARA BLOQUEO AGRESIVO DE ADSTERRA EN ANUNCIOS
+// ══════════════════════════════════════════════════════════════════════════
+let _anuncioBlockInterval = null;
+let _anuncioBlockAbierto = false;
+
+function _bloquearAdsterraAgresivo() {
+    console.log('🔥 BLOQUEANDO ADSTERRA DE FORMA AGRESIVA...');
+    
+    // 1. Inyectar CSS blocker si no existe
+    if (!document.getElementById('temp-ad-blocker-aggressive')) {
+        const styleEl = document.createElement('style');
+        styleEl.id = 'temp-ad-blocker-aggressive';
+        styleEl.textContent = `
+            /* BLOQUEO AGRESIVO DE ADSTERRA */
+            [id*="aso"], [id*="adsterra"], [id*="social-bar"], [id*="socialbar"],
+            [class*="aso"], [class*="adsterra"], [class*="social-bar"],
+            iframe[src*="effectivecpmnetwork"], iframe[src*="adsterra"],
+            body > div[style*="position: fixed"], body > iframe[style*="position: fixed"]
+            { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
+        `;
+        document.head.appendChild(styleEl);
+        console.log('✅ CSS blocker AGRESIVO inyectado');
+    }
+    
+    // 2. ELIMINAR TODOS los elementos de Adsterra del DOM
+    const selectores = ['[id*="aso"]', '[id*="adsterra"]', '[id*="social-bar"]', 
+        'iframe[src*="effectivecpmnetwork"]', 'iframe[src*="adsterra"]', 
+        'body > div[style*="position: fixed"]', 'body > iframe[style*="position: fixed"]'];
+    
+    let eliminados = 0;
+    selectores.forEach(selector => {
+        document.querySelectorAll(selector).forEach(el => { el.remove(); eliminados++; });
+    });
+    if (eliminados > 0) console.log(`🗑️  ${eliminados} elementos de Adsterra eliminados`);
+}
+
+function _iniciarBloqueoAdsterraIntervalo() {
+    console.log('⏱️  Iniciando bloqueo continuo de Adsterra...');
+    if (_anuncioBlockInterval) clearInterval(_anuncioBlockInterval);
+    _anuncioBlockInterval = setInterval(() => {
+        if (!_anuncioBlockAbierto) return;
+        const hay = document.querySelectorAll('[id*="aso"], [id*="adsterra"], [id*="social-bar"]').length;
+        if (hay > 0) { console.warn('⚠️  BLOQUEANDO Adsterra...'); _bloquearAdsterraAgresivo(); }
+    }, 300);
+}
+
+function _detenerBloqueoAdsterraIntervalo() {
+    if (_anuncioBlockInterval) { clearInterval(_anuncioBlockInterval); _anuncioBlockInterval = null; }
+}
 
 // ══════════════════════════════════════════════════════════════════════════
 //      SISTEMA DE ANUNCIOS PERSONALIZADOS
@@ -4611,43 +4666,7 @@ function mostrarAnuncioPersonalizado(anuncio) {
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
     
-    // 🔥 APLICAR EXACTAMENTE EL MISMO SISTEMA QUE PREMIUM
-    console.log('🎬 Aplicando bloqueo de anuncios (SISTEMA PREMIUM)...');
-    
-    const styleId = 'anuncio-ad-blocker';
-    let styleEl = document.getElementById(styleId);
-    if (!styleEl) {
-        styleEl = document.createElement('style');
-        styleEl.id = styleId;
-        styleEl.textContent = `
-            /* Ocultar TODOS los anuncios IGUAL QUE PREMIUM */
-            #snigel-cmp-framework, .snigel-cmp-framework,
-            div[id*="adngin"], div[class*="adngin"],
-            div[id*="social-bar"], div[class*="social-bar"],
-            div[id*="socialbar"], div[class*="socialbar"],
-            div[id*="sticky-footer"], div[class*="sticky-footer"],
-            div[id*="floating"], div[class*="floating-ad"],
-            div[id*="adsterra"], div[class*="adsterra"],
-            div[id*="aso-"], div[class*="aso-"],
-            div[id*="_ad_"], div[class*="_ad_"],
-            iframe[src*="effectivecpmnetwork"],
-            iframe[src*="highperformanceformat"],
-            iframe[src*="adsterra"],
-            div[id*="container-08103591ba362aeb7a7ee360f307d4ac"],
-            #ad-native-banner, #ad-mobile-320-wrap, #ad-desktop-728,
-            body > div[style*="position: fixed"],
-            body > div[style*="position:fixed"],
-            body > iframe[style*="position: fixed"],
-            body > iframe[style*="position:fixed"] { 
-                display: none !important; 
-                visibility: hidden !important; 
-                opacity: 0 !important; 
-                pointer-events: none !important; 
-            }
-        `;
-        document.head.appendChild(styleEl);
-        console.log('✅ CSS blocker PREMIUM inyectado al anuncio');
-    }
+
     
     // Ejecutar EXACTAMENTE lo que se hace en premium
     _limpiarAnunciosDom();      // Limpiar anuncios del DOM (SISTEMA PREMIUM)
@@ -4691,23 +4710,7 @@ function cerrarAnuncioPersonalizado() {
     modal.style.zIndex = '';
     document.body.style.overflow = '';
     
-    // 🔄 REMOVER BLOQUEADOR (IGUAL QUE PREMIUM)
-    console.log('❌ Removiendo bloqueo de anuncios...');
-    
-    // Remover CSS blocker
-    const styleEl = document.getElementById('anuncio-ad-blocker');
-    if (styleEl) {
-        styleEl.remove();
-        console.log('✅ CSS blocker removido');
-    }
-    
-    // Detener vigilancia (SISTEMA PREMIUM)
-    _detenerAdObserver();
-    
-    _anuncioMostrandose = false;
-    _anuncioIdActual = null;
-    programarSiguienteAnuncio();
-}
+
 
 function registrarClicAnuncio() {
     if (!_anuncioIdActual) return;
