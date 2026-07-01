@@ -4522,56 +4522,6 @@ function escapeHtml(text) {
     });
 })();
 
-// ══════════════════════════════════════════════════════════════════════════
-// VARIABLES PARA BLOQUEO AGRESIVO DE ADSTERRA EN ANUNCIOS
-// ══════════════════════════════════════════════════════════════════════════
-let _anuncioBlockInterval = null;
-let _anuncioBlockAbierto = false;
-
-function _bloquearAdsterraAgresivo() {
-    console.log('🔥 BLOQUEANDO ADSTERRA DE FORMA AGRESIVA...');
-    
-    // 1. Inyectar CSS blocker si no existe
-    if (!document.getElementById('temp-ad-blocker-aggressive')) {
-        const styleEl = document.createElement('style');
-        styleEl.id = 'temp-ad-blocker-aggressive';
-        styleEl.textContent = `
-            /* BLOQUEO AGRESIVO DE ADSTERRA */
-            [id*="aso"], [id*="adsterra"], [id*="social-bar"], [id*="socialbar"],
-            [class*="aso"], [class*="adsterra"], [class*="social-bar"],
-            iframe[src*="effectivecpmnetwork"], iframe[src*="adsterra"],
-            body > div[style*="position: fixed"], body > iframe[style*="position: fixed"]
-            { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
-        `;
-        document.head.appendChild(styleEl);
-        console.log('✅ CSS blocker AGRESIVO inyectado');
-    }
-    
-    // 2. ELIMINAR TODOS los elementos de Adsterra del DOM
-    const selectores = ['[id*="aso"]', '[id*="adsterra"]', '[id*="social-bar"]', 
-        'iframe[src*="effectivecpmnetwork"]', 'iframe[src*="adsterra"]', 
-        'body > div[style*="position: fixed"]', 'body > iframe[style*="position: fixed"]'];
-    
-    let eliminados = 0;
-    selectores.forEach(selector => {
-        document.querySelectorAll(selector).forEach(el => { el.remove(); eliminados++; });
-    });
-    if (eliminados > 0) console.log(`🗑️  ${eliminados} elementos de Adsterra eliminados`);
-}
-
-function _iniciarBloqueoAdsterraIntervalo() {
-    console.log('⏱️  Iniciando bloqueo continuo de Adsterra...');
-    if (_anuncioBlockInterval) clearInterval(_anuncioBlockInterval);
-    _anuncioBlockInterval = setInterval(() => {
-        if (!_anuncioBlockAbierto) return;
-        const hay = document.querySelectorAll('[id*="aso"], [id*="adsterra"], [id*="social-bar"]').length;
-        if (hay > 0) { console.warn('⚠️  BLOQUEANDO Adsterra...'); _bloquearAdsterraAgresivo(); }
-    }, 300);
-}
-
-function _detenerBloqueoAdsterraIntervalo() {
-    if (_anuncioBlockInterval) { clearInterval(_anuncioBlockInterval); _anuncioBlockInterval = null; }
-}
 
 // ══════════════════════════════════════════════════════════════════════════
 //      SISTEMA DE ANUNCIOS PERSONALIZADOS
