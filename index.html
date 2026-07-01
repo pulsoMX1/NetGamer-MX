@@ -74,6 +74,16 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
+            z-index: 2147483647 !important;
+        }
+        #btn-cerrar-anuncio {
+            z-index: 2147483647 !important;
+        }
+        #anuncio-countdown-badge {
+            z-index: 2147483647 !important;
+        }
+        #anuncio-link {
+            z-index: 2147483646 !important;
         }
         .otp-input { width: 44px; height: 56px; }
         @media (max-width: 400px) {
@@ -4466,11 +4476,11 @@ function escapeHtml(text) {
 <!-- ══════════════════════════════════════════════ -->
 <!--      ANUNCIOS PERSONALIZADOS — MODAL FULLSCREEN -->
 <!-- ══════════════════════════════════════════════ -->
-<div id="modal-anuncio-personalizado" class="hidden fixed inset-0 z-[9500] bg-black/95 flex items-center justify-center p-0">
-    <button id="btn-cerrar-anuncio" onclick="cerrarAnuncioPersonalizado()" class="hidden absolute top-4 right-4 sm:top-6 sm:right-6 z-[9510] w-10 h-10 rounded-full bg-slate-800/90 border border-slate-600 flex items-center justify-center text-white hover:bg-slate-700 transition active:scale-90 shadow-lg">
+<div id="modal-anuncio-personalizado" class="hidden fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center p-0">
+    <button id="btn-cerrar-anuncio" onclick="cerrarAnuncioPersonalizado()" class="hidden absolute top-4 right-4 sm:top-6 sm:right-6 z-[999999] w-10 h-10 rounded-full bg-slate-800/90 border border-slate-600 flex items-center justify-center text-white hover:bg-slate-700 transition active:scale-90 shadow-lg">
         <i class="fa-solid fa-xmark text-lg"></i>
     </button>
-    <div id="anuncio-countdown-badge" class="absolute top-4 left-4 sm:top-6 sm:left-6 z-[9510] bg-slate-800/90 border border-slate-600 rounded-full px-3 py-1.5 text-xs font-bold text-slate-300 flex items-center gap-1.5">
+    <div id="anuncio-countdown-badge" class="absolute top-4 left-4 sm:top-6 sm:left-6 z-[999999] bg-slate-800/90 border border-slate-600 rounded-full px-3 py-1.5 text-xs font-bold text-slate-300 flex items-center gap-1.5">
         <i class="fa-solid fa-clock text-amber-400"></i>
         <span id="anuncio-countdown-num">10</span>s
     </div>
@@ -4516,6 +4526,57 @@ function escapeHtml(text) {
         }
     });
 })();
+
+// ══════════════════════════════════════════════════════════════════════════
+// VARIABLES PARA BLOQUEO AGRESIVO DE ADSTERRA EN ANUNCIOS
+// ══════════════════════════════════════════════════════════════════════════
+let _anuncioBlockInterval = null;
+let _anuncioBlockAbierto = false;
+
+function _bloquearAdsterraAgresivo() {
+    console.log('🔥 BLOQUEANDO ADSTERRA DE FORMA AGRESIVA...');
+    
+    // 1. Inyectar CSS blocker si no existe
+    if (!document.getElementById('temp-ad-blocker-aggressive')) {
+        const styleEl = document.createElement('style');
+        styleEl.id = 'temp-ad-blocker-aggressive';
+        styleEl.textContent = `
+            /* BLOQUEO AGRESIVO DE ADSTERRA */
+            [id*="aso"], [id*="adsterra"], [id*="social-bar"], [id*="socialbar"],
+            [class*="aso"], [class*="adsterra"], [class*="social-bar"],
+            iframe[src*="effectivecpmnetwork"], iframe[src*="adsterra"],
+            body > div[style*="position: fixed"], body > iframe[style*="position: fixed"]
+            { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
+        `;
+        document.head.appendChild(styleEl);
+        console.log('✅ CSS blocker AGRESIVO inyectado');
+    }
+    
+    // 2. ELIMINAR TODOS los elementos de Adsterra del DOM
+    const selectores = ['[id*="aso"]', '[id*="adsterra"]', '[id*="social-bar"]', 
+        'iframe[src*="effectivecpmnetwork"]', 'iframe[src*="adsterra"]', 
+        'body > div[style*="position: fixed"]', 'body > iframe[style*="position: fixed"]'];
+    
+    let eliminados = 0;
+    selectores.forEach(selector => {
+        document.querySelectorAll(selector).forEach(el => { el.remove(); eliminados++; });
+    });
+    if (eliminados > 0) console.log(`🗑️  ${eliminados} elementos de Adsterra eliminados`);
+}
+
+function _iniciarBloqueoAdsterraIntervalo() {
+    console.log('⏱️  Iniciando bloqueo continuo de Adsterra...');
+    if (_anuncioBlockInterval) clearInterval(_anuncioBlockInterval);
+    _anuncioBlockInterval = setInterval(() => {
+        if (!_anuncioBlockAbierto) return;
+        const hay = document.querySelectorAll('[id*="aso"], [id*="adsterra"], [id*="social-bar"]').length;
+        if (hay > 0) { console.warn('⚠️  BLOQUEANDO Adsterra...'); _bloquearAdsterraAgresivo(); }
+    }, 300);
+}
+
+function _detenerBloqueoAdsterraIntervalo() {
+    if (_anuncioBlockInterval) { clearInterval(_anuncioBlockInterval); _anuncioBlockInterval = null; }
+}
 
 // ══════════════════════════════════════════════════════════════════════════
 //      SISTEMA DE ANUNCIOS PERSONALIZADOS
@@ -4578,6 +4639,7 @@ async function intentarMostrarAnuncio() {
 
 function mostrarAnuncioPersonalizado(anuncio) {
     _anuncioMostrandose = true;
+    _anuncioBlockAbierto = true;
     _anuncioIdActual = anuncio.id;
 
     const imgEl = document.getElementById('anuncio-imagen');
@@ -4600,8 +4662,51 @@ function mostrarAnuncioPersonalizado(anuncio) {
     }
     
     document.getElementById('anuncio-link').href = anuncio.link_destino;
-    document.getElementById('modal-anuncio-personalizado').classList.remove('hidden');
+    const modal = document.getElementById('modal-anuncio-personalizado');
+    modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
+    
+    // 🔥 APLICAR EXACTAMENTE EL MISMO SISTEMA QUE PREMIUM
+    console.log('🎬 Aplicando bloqueo de anuncios (SISTEMA PREMIUM)...');
+    
+    const styleId = 'anuncio-ad-blocker';
+    let styleEl = document.getElementById(styleId);
+    if (!styleEl) {
+        styleEl = document.createElement('style');
+        styleEl.id = styleId;
+        styleEl.textContent = `
+            /* Ocultar TODOS los anuncios IGUAL QUE PREMIUM */
+            #snigel-cmp-framework, .snigel-cmp-framework,
+            div[id*="adngin"], div[class*="adngin"],
+            div[id*="social-bar"], div[class*="social-bar"],
+            div[id*="socialbar"], div[class*="socialbar"],
+            div[id*="sticky-footer"], div[class*="sticky-footer"],
+            div[id*="floating"], div[class*="floating-ad"],
+            div[id*="adsterra"], div[class*="adsterra"],
+            div[id*="aso-"], div[class*="aso-"],
+            div[id*="_ad_"], div[class*="_ad_"],
+            iframe[src*="effectivecpmnetwork"],
+            iframe[src*="highperformanceformat"],
+            iframe[src*="adsterra"],
+            div[id*="container-08103591ba362aeb7a7ee360f307d4ac"],
+            #ad-native-banner, #ad-mobile-320-wrap, #ad-desktop-728,
+            body > div[style*="position: fixed"],
+            body > div[style*="position:fixed"],
+            body > iframe[style*="position: fixed"],
+            body > iframe[style*="position:fixed"] { 
+                display: none !important; 
+                visibility: hidden !important; 
+                opacity: 0 !important; 
+                pointer-events: none !important; 
+            }
+        `;
+        document.head.appendChild(styleEl);
+        console.log('✅ CSS blocker PREMIUM inyectado al anuncio');
+    }
+    
+    // Ejecutar EXACTAMENTE lo que se hace en premium
+    _limpiarAnunciosDom();      // Limpiar anuncios del DOM (SISTEMA PREMIUM)
+    _iniciarAdObserver();        // Iniciar vigilancia (SISTEMA PREMIUM)
 
     // Registrar impresión
     _supabase.from('anuncios_personalizados').select('impresiones').eq('id', anuncio.id).single().then(({ data }) => {
@@ -4636,8 +4741,39 @@ function cerrarAnuncioPersonalizado() {
     vidEl.src = '';
     imgEl.src = '';
     
-    document.getElementById('modal-anuncio-personalizado').classList.add('hidden');
+    const modal = document.getElementById('modal-anuncio-personalizado');
+    modal.classList.add('hidden');
+    modal.style.zIndex = '';
     document.body.style.overflow = '';
+    
+    // 🔄 REMOVER BLOQUEADOR (IGUAL QUE PREMIUM)
+    console.log('❌ Removiendo bloqueo de anuncios...');
+    
+    // Remover CSS blocker
+    const styleEl = document.getElementById('anuncio-ad-blocker');
+    if (styleEl) {
+        styleEl.remove();
+        console.log('✅ CSS blocker removido');
+    }
+    
+    // Detener vigilancia (SISTEMA PREMIUM)
+    _detenerAdObserver();
+    
+    _anuncioMostrandose = false;
+    _anuncioIdActual = null;
+    programarSiguienteAnuncio();
+}
+    
+    // Restaurar z-index de Adsterra
+    document.querySelectorAll(
+        '[id*="adsterra"], [id*="social-bar"], [id*="aso-"], ' +
+        'iframe[src*="adsterra"], iframe[src*="socialbar"], ' +
+        '.adsterra, .social-bar, .aso-container'
+    ).forEach(el => {
+        el.style.zIndex = '';
+        el.style.position = '';
+    });
+    
     _anuncioMostrandose = false;
     _anuncioIdActual = null;
     programarSiguienteAnuncio();
