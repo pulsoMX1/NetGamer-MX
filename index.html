@@ -74,6 +74,13 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
+            z-index: 99999 !important;
+        }
+        #btn-cerrar-anuncio {
+            z-index: 999999 !important;
+        }
+        #anuncio-countdown-badge {
+            z-index: 999999 !important;
         }
         .otp-input { width: 44px; height: 56px; }
         @media (max-width: 400px) {
@@ -4466,11 +4473,11 @@ function escapeHtml(text) {
 <!-- ══════════════════════════════════════════════ -->
 <!--      ANUNCIOS PERSONALIZADOS — MODAL FULLSCREEN -->
 <!-- ══════════════════════════════════════════════ -->
-<div id="modal-anuncio-personalizado" class="hidden fixed inset-0 z-[9500] bg-black/95 flex items-center justify-center p-0">
-    <button id="btn-cerrar-anuncio" onclick="cerrarAnuncioPersonalizado()" class="hidden absolute top-4 right-4 sm:top-6 sm:right-6 z-[9510] w-10 h-10 rounded-full bg-slate-800/90 border border-slate-600 flex items-center justify-center text-white hover:bg-slate-700 transition active:scale-90 shadow-lg">
+<div id="modal-anuncio-personalizado" class="hidden fixed inset-0 z-[99999] bg-black/95 flex items-center justify-center p-0">
+    <button id="btn-cerrar-anuncio" onclick="cerrarAnuncioPersonalizado()" class="hidden absolute top-4 right-4 sm:top-6 sm:right-6 z-[999999] w-10 h-10 rounded-full bg-slate-800/90 border border-slate-600 flex items-center justify-center text-white hover:bg-slate-700 transition active:scale-90 shadow-lg">
         <i class="fa-solid fa-xmark text-lg"></i>
     </button>
-    <div id="anuncio-countdown-badge" class="absolute top-4 left-4 sm:top-6 sm:left-6 z-[9510] bg-slate-800/90 border border-slate-600 rounded-full px-3 py-1.5 text-xs font-bold text-slate-300 flex items-center gap-1.5">
+    <div id="anuncio-countdown-badge" class="absolute top-4 left-4 sm:top-6 sm:left-6 z-[999999] bg-slate-800/90 border border-slate-600 rounded-full px-3 py-1.5 text-xs font-bold text-slate-300 flex items-center gap-1.5">
         <i class="fa-solid fa-clock text-amber-400"></i>
         <span id="anuncio-countdown-num">10</span>s
     </div>
