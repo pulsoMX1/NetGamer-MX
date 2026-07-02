@@ -4685,6 +4685,19 @@ function registrarClicAnuncio() {
     });
 }
 
+// ══════════════════════════════════════════════════════════════════════════
+// Iniciar el ciclo de anuncios personalizados cuando el usuario se autentica
+// ══════════════════════════════════════════════════════════════════════════
+if (typeof verificarSesionActiva !== 'undefined') {
+    const _verificarSesionActivaOriginal = verificarSesionActiva;
+    verificarSesionActiva = async function() {
+        await _verificarSesionActivaOriginal();
+        if (currentUser && typeof programarSiguienteAnuncio === 'function') {
+            programarSiguienteAnuncio();
+        }
+    };
+}
+
 </script>
 
 </body>
