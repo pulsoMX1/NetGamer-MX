@@ -1027,14 +1027,6 @@ function previewImagenAnuncio(input) {
     const file = input.files[0];
     if (!file) return;
     
-    const maxSize = anuncioTipoMediaActual === 'video' ? 20 * 1024 * 1024 : 5 * 1024 * 1024;
-    const maxSizeLabel = anuncioTipoMediaActual === 'video' ? '20MB' : '5MB';
-    
-    if (file.size > maxSize) {
-        mostrarToast(`El archivo supera los ${maxSizeLabel}`, 'error');
-        input.value = '';
-        return;
-    }
     
     anuncioMediaFile = file;
     const url = URL.createObjectURL(file);
