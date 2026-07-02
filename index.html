@@ -83,7 +83,7 @@
             z-index: 2147483647 !important;
         }
         #anuncio-link {
-            z-index: 2147483646 !important;
+            /* z-index removido - permite que el texto "Publicidad" esté arriba */
         }
         .otp-input { width: 44px; height: 56px; }
         @media (max-width: 400px) {
@@ -4512,7 +4512,7 @@ function escapeHtml(text) {
         <img id="anuncio-imagen" src="" alt="Anuncio" class="max-w-full max-h-full object-contain hidden" />
         <video id="anuncio-video" class="max-w-full max-h-full object-contain hidden" autoplay muted playsinline disablePictureInPicture></video>
     </a>
-    <p class="absolute bottom-4 left-1/2 -translate-x-1/2 text-[10px] text-slate-500 font-semibold uppercase tracking-widest">Publicidad</p>
+    <p class="absolute bottom-4 left-1/2 -translate-x-1/2 text-[10px] text-slate-500 font-semibold uppercase tracking-widest z-[9999]">Publicidad</p>
 </div>
 
 <script>
