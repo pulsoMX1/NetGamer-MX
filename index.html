@@ -3857,8 +3857,103 @@
                 _limpiarAnunciosDom(); // eliminar lo que ya está en DOM
                 _iniciarAdObserver(); // vigilar y eliminar lo que se inyecte después
             }
+        function _limpiarAnunciosDom() {
+            // Eliminar todos los elementos inyectados por Adsterra/Social Bar del DOM
+            document.querySelectorAll(
+                'body > div[style*="position: fixed"], body > div[style*="position:fixed"],' +
+                'body > iframe[style*="position: fixed"], body > iframe[style*="position:fixed"],' +
+                'div[id*="social-bar"], div[class*="social-bar"],' +
+                'div[id*="socialbar"], div[class*="socialbar"],' +
+                'div[id*="aso-"], div[id*="adsterra"],' +
+                '[id^="container-08103591"]'
+            ).forEach(el => el.remove());
 
-            // Social Bar ELIMINADO - Se quitó completamente del código
+            // Scripts del social bar
+            ['sb-script-1','sb-script-2'].forEach(id => {
+                const s = document.getElementById(id); if (s) s.remove();
+            });
+
+            // Ocultar iframes de redes de anuncios
+            document.querySelectorAll('iframe').forEach(f => {
+                const src = f.src || f.getAttribute('src') || '';
+                if (src.includes('effectivecpmnetwork') || src.includes('highperformanceformat') || src.includes('adsterra')) {
+                    f.remove();
+                }
+            });
+        }
+
+        function _iniciarAdObserver() {
+            if (_adObserver) return;
+            _adObserver = new MutationObserver(() => {
+                if (isPremium) _limpiarAnunciosDom();
+            });
+            _adObserver.observe(document.body, { childList: true, subtree: true });
+        }
+
+        function _detenerAdObserver() {
+            if (_adObserver) { _adObserver.disconnect(); _adObserver = null; }
+        }
+
+        async function aplicarEstadoPremium() {
+            // Inyectar/quitar CSS global para ocultar social bar y ads externos
+            const styleId = 'premium-ad-blocker';
+            let styleEl = document.getElementById(styleId);
+            if (isPremium) {
+                if (!styleEl) {
+                    styleEl = document.createElement('style');
+                    styleEl.id = styleId;
+                    styleEl.textContent = `
+                        /* Ocultar TODOS los anuncios para premium */
+                        #snigel-cmp-framework, .snigel-cmp-framework,
+                        div[id*="adngin"], div[class*="adngin"],
+                        div[id*="social-bar"], div[class*="social-bar"],
+                        div[id*="socialbar"], div[class*="socialbar"],
+                        div[id*="sticky-footer"], div[class*="sticky-footer"],
+                        div[id*="floating"], div[class*="floating-ad"],
+                        div[id*="adsterra"], div[class*="adsterra"],
+                        div[id*="aso-"], div[class*="aso-"],
+                        div[id*="_ad_"], div[class*="_ad_"],
+                        iframe[src*="effectivecpmnetwork"],
+                        iframe[src*="highperformanceformat"],
+                        iframe[src*="adsterra"],
+                        div[id*="container-08103591ba362aeb7a7ee360f307d4ac"],
+                        #ad-native-banner, #ad-mobile-320-wrap, #ad-desktop-728,
+                        /* Social Bar Adsterra — se inyecta como fixed en body */
+                        body > div[style*="position: fixed"],
+                        body > div[style*="position:fixed"],
+                        body > iframe[style*="position: fixed"],
+                        body > iframe[style*="position:fixed"] { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
+                    `;
+                    document.head.appendChild(styleEl);
+                }
+            } else {
+                if (styleEl) styleEl.remove();
+            }
+
+            // Activar o desactivar anuncios según premium
+            if (!isPremium) {
+                document.body.classList.add('ads-enabled');
+                _detenerAdObserver();
+            } else {
+                document.body.classList.remove('ads-enabled');
+                _limpiarAnunciosDom(); // eliminar lo que ya está en DOM
+                _iniciarAdObserver(); // vigilar y eliminar lo que se inyecte después
+            }
+
+            // 🗑️  SOCIAL BAR ELIMINADO - NO SE CARGA NI COMO PREMIUM NI COMO NO PREMIUM
+            // Las líneas que cargaban sb-script-1 y sb-script-2 fueron ELIMINADAS
+
+            // Si es premium, remover scripts y contenedores del social bar
+            if (isPremium) {
+                ['sb-script-1', 'sb-script-2'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.remove();
+                });
+                // Remover elementos inyectados por el social bar
+                document.querySelectorAll('body > div[style*="position: fixed"], body > div[style*="position:fixed"], body > iframe[style*="position: fixed"], body > iframe[style*="position:fixed"]').forEach(el => el.remove());
+                const sb = document.getElementById('container-08103591ba362aeb7a7ee360f307d4ac');
+                if (sb) sb.innerHTML = '';
+            }
 
             // Elementos de anuncios a ocultar/mostrar
             const adEls = [
